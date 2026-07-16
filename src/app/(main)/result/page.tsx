@@ -32,72 +32,72 @@ export default async function ResultPage({ searchParams }: PageProps) {
 
   return (
     <ContentArea>
-      <div className="max-w-2xl mx-auto py-12 px-4">
-        <div className="bg-white rounded-[20px] shadow-[0_1px_3px_rgba(0,0,0,0.10)] border border-[#CFCFCF] p-8 text-center mb-8">
-          <h1 className="text-[34px] font-[650] mb-2 font-display tracking-[-0.035em]">🎉 Practice Completed</h1>
-          <p className="text-gray-500 mb-8 font-body">You have successfully completed the practice session.</p>
+      <div className="max-w-2xl mx-auto w-full">
+        <div className="bg-card rounded-md shadow-sm border border-border p-5 text-center mb-5">
+          <h1 className="text-xl font-bold mb-1">🎉 Practice Completed</h1>
+          <p className="text-[13px] text-muted-foreground mb-6">You have successfully completed the practice session.</p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-left">
-            <div className="bg-[#F8F9FA] p-4 rounded-lg">
-              <div className="text-sm text-gray-500 mb-1 font-body">Total Questions</div>
-              <div className="text-2xl font-bold font-display">{total}</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 text-left">
+            <div className="bg-surface-muted p-3 rounded-md border border-border">
+              <div className="text-[11px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Total Questions</div>
+              <div className="text-lg font-bold">{total}</div>
             </div>
-            <div className="bg-[#F8F9FA] p-4 rounded-lg">
-              <div className="text-sm text-gray-500 mb-1 font-body">Correct Answers</div>
-              <div className="text-2xl font-bold text-green-600 font-display">{correct}</div>
+            <div className="bg-surface-muted p-3 rounded-md border border-border">
+              <div className="text-[11px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Correct Answers</div>
+              <div className="text-lg font-bold text-success">{correct}</div>
             </div>
-            <div className="bg-[#F8F9FA] p-4 rounded-lg">
-              <div className="text-sm text-gray-500 mb-1 font-body">Wrong Answers</div>
-              <div className="text-2xl font-bold text-red-600 font-display">{wrong}</div>
+            <div className="bg-surface-muted p-3 rounded-md border border-border">
+              <div className="text-[11px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Wrong Answers</div>
+              <div className="text-lg font-bold text-destructive">{wrong}</div>
             </div>
-            <div className="bg-[#F8F9FA] p-4 rounded-lg">
-              <div className="text-sm text-gray-500 mb-1 font-body">Accuracy %</div>
-              <div className="text-2xl font-bold font-display">{accuracy}%</div>
+            <div className="bg-surface-muted p-3 rounded-md border border-border">
+              <div className="text-[11px] font-semibold text-muted-foreground mb-1 uppercase tracking-wider">Accuracy %</div>
+              <div className="text-lg font-bold">{accuracy}%</div>
             </div>
           </div>
 
-          <div className="mb-10 bg-[#F8F9FA] rounded-lg p-6">
-            <div className="text-lg text-gray-600 font-semibold mb-2 font-body">Performance</div>
-            <div className={`text-[40px] font-bold font-display ${performanceColor}`}>{performanceText}</div>
+          <div className="mb-6 bg-surface-muted rounded-md p-4 border border-border">
+            <div className="text-[12px] text-muted-foreground font-semibold mb-1 uppercase tracking-wider">Performance</div>
+            <div className={`text-2xl font-bold ${performanceColor}`}>{performanceText}</div>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-2 justify-center">
             {chapterId && (
               <Link href={`/practice/${chapterId}`}>
-                <Button className="rounded-[14px] bg-[#202020] text-white hover:bg-[#1E1E1E] px-[18px] py-[12px] h-auto font-button">
+                <Button className="font-semibold h-8 text-[12px]">
                   Retry Practice
                 </Button>
               </Link>
             )}
             {paperId && mode === 'exam' && (
               <Link href={`/pyq/${paperId}/exam`}>
-                <Button className="rounded-[14px] bg-[#202020] text-white hover:bg-[#1E1E1E] px-[18px] py-[12px] h-auto font-button">
+                <Button className="font-semibold h-8 text-[12px]">
                   Retry Exam
                 </Button>
               </Link>
             )}
             {paperId && mode !== 'exam' && (
               <Link href={`/pyq/${paperId}/practice`}>
-                <Button className="rounded-[14px] bg-[#202020] text-white hover:bg-[#1E1E1E] px-[18px] py-[12px] h-auto font-button">
+                <Button className="font-semibold h-8 text-[12px]">
                   Retry Practice
                 </Button>
               </Link>
             )}
             {paperId ? (
               <Link href="/pyq">
-                <Button variant="outline" className="rounded-[14px] border-[#CFCFCF] px-[18px] py-[12px] h-auto font-button">
+                <Button variant="outline" className="font-semibold h-8 text-[12px]">
                   Back to PYQs
                 </Button>
               </Link>
             ) : (
               <Link href="/subjects">
-                <Button variant="outline" className="rounded-[14px] border-[#CFCFCF] px-[18px] py-[12px] h-auto font-button">
+                <Button variant="outline" className="font-semibold h-8 text-[12px]">
                   Back to Subjects
                 </Button>
               </Link>
             )}
             <Link href="/dashboard">
-              <Button variant="outline" className="rounded-[14px] border-[#CFCFCF] px-[18px] py-[12px] h-auto font-button">
+              <Button variant="outline" className="font-semibold h-8 text-[12px]">
                 Dashboard
               </Button>
             </Link>

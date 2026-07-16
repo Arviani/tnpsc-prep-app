@@ -41,30 +41,32 @@ export default async function DashboardPage() {
   ]
 
   return (
-    <ContentArea>
-      <ContentHeader 
-        title={`Welcome back, ${userName}`} 
-        description="Here is an overview of your study progress." 
-      />
-
-      <div className="grid gap-4 md:grid-cols-2 mt-6">
+    <ContentArea 
+      header={
+        <ContentHeader 
+          title={`Welcome back, ${userName}`} 
+          description="Here is an overview of your study progress." 
+        />
+      }
+    >
+      <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4 mt-2">
         {dashboardCards.map((card) => {
           const Icon = card.icon
           return (
-            <div key={card.title} className="p-6 border border-border rounded-xl bg-card shadow-[0_1px_3px_rgba(0,0,0,0.10)] flex flex-col justify-between h-40">
+            <div key={card.title} className="p-3 border border-border rounded-md bg-card shadow-sm flex flex-col justify-between h-28 hover:border-border-strong transition-colors">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-sm font-semibold text-muted-foreground mb-1">{card.title}</h3>
-                  <p className="text-2xl font-bold mt-1 text-foreground tracking-tight font-heading">{card.value}</p>
+                  <h3 className="text-xs font-semibold text-muted-foreground mb-1">{card.title}</h3>
+                  <p className="text-lg font-bold mt-0.5 text-foreground tracking-tight">{card.value}</p>
                 </div>
-                <div className="p-2 bg-muted rounded-lg">
-                  <Icon className="h-5 w-5 text-accent" />
+                <div className="p-1 bg-surface-muted rounded-md">
+                  <Icon className="h-4 w-4 text-muted-foreground" />
                 </div>
               </div>
-              <div className="flex items-center justify-between mt-4">
-                <span className="text-sm text-muted-foreground">{card.description}</span>
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-[11px] text-muted-foreground">{card.description}</span>
                 {card.action && (
-                  <Button variant="secondary" size="sm" className="font-semibold text-xs h-8">
+                  <Button variant="secondary" size="xs" className="font-semibold h-6 px-2">
                     Start
                   </Button>
                 )}

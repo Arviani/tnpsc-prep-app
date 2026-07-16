@@ -19,14 +19,14 @@ export default async function SubjectsLayout({
   return (
     <>
       <SecondarySidebar>
-        <div className="p-4 border-b">
-          <h2 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Subjects</h2>
+        <div className="flex items-center h-12 px-4 border-b border-[#E8E8E8] shrink-0">
+          <h2 className="font-semibold text-[11px] text-[#909090] uppercase tracking-wider">Subjects</h2>
         </div>
         <SecondarySidebarNav subjects={subjects || []} />
       </SecondarySidebar>
-      <ContentArea>
+      <div className="flex-1 flex flex-col w-full h-full bg-transparent overflow-hidden">
         {children}
-      </ContentArea>
+      </div>
     </>
   )
 }

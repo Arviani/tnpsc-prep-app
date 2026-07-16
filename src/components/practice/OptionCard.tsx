@@ -20,11 +20,11 @@ export function OptionCard({ option, isSelected, isSubmitted, onSelect }: Option
   if (isSubmitted) {
     if (isOptionCorrect) {
       // Always highlight correct option
-      optionStyles = "border-success bg-success/10 cursor-default"
+      optionStyles = "border-success bg-success/10 cursor-default ring-1 ring-success/50"
       indicator = <CheckCircle2 className="w-5 h-5 text-success shrink-0" />
     } else if (isSelected && !isOptionCorrect) {
       // Highlight selected wrong option
-      optionStyles = "border-destructive bg-destructive/10 cursor-default"
+      optionStyles = "border-destructive bg-destructive/10 cursor-default ring-1 ring-destructive/50"
       indicator = <XCircle className="w-5 h-5 text-destructive shrink-0" />
     } else {
       // Dim other unselected options
@@ -42,25 +42,25 @@ export function OptionCard({ option, isSelected, isSubmitted, onSelect }: Option
         }
       }}
       className={cn(
-        "flex items-start md:items-center gap-4 p-4 border rounded-lg transition-all",
+        "flex w-full items-start md:items-center gap-3 p-2.5 border rounded-md transition-all",
         optionStyles
       )}
     >
       {!isSubmitted && (
         <div className="pt-0.5 md:pt-0 shrink-0">
           <div className={cn(
-            "w-5 h-5 rounded-full border flex items-center justify-center transition-colors",
-            isSelected ? "border-primary bg-primary" : "border-muted-foreground bg-background"
+            "w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-colors",
+            isSelected ? "border-primary bg-primary" : "border-border-strong bg-background"
           )}>
-            {isSelected && <div className="w-2 h-2 rounded-full bg-primary-foreground" />}
+            {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />}
           </div>
         </div>
       )}
       {indicator && <div className="pt-0.5 md:pt-0">{indicator}</div>}
       
-      <div className="flex-1 flex gap-3">
-        <span className="font-bold text-muted-foreground w-6 shrink-0">{option.label}.</span>
-        <span className="font-medium text-foreground text-base md:text-lg">{option.body}</span>
+      <div className="flex-1 flex gap-2 min-w-0">
+        <span className="font-semibold text-muted-foreground w-4 shrink-0 text-[14px]">{option.label}.</span>
+        <span className="font-medium text-foreground text-[14px] leading-snug break-words whitespace-pre-wrap">{option.body}</span>
       </div>
     </label>
   )

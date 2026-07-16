@@ -49,28 +49,29 @@ export function Topbar() {
   }
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-6">
-      <div className="flex-1">
-        <h1 className="text-lg font-semibold">{getPageTitle()}</h1>
+    <header className="flex h-12 items-center justify-between border-b border-[#E8E8E8] bg-white px-4 shrink-0 w-full z-30">
+      <div className="flex items-center gap-3 min-w-[200px]">
+        <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white text-[10px] font-bold">T</div>
+        <span className="font-semibold text-[14px] text-[#202020]">TNPSC Prep</span>
       </div>
 
       <div className="flex-1 max-w-md hidden md:block">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+        <div className="relative flex items-center justify-center">
+          <Search className="absolute left-3 top-2 h-4 w-4 text-[#909090]" />
           <Input
             type="search"
             placeholder="Search..."
-            className="w-full bg-background pl-8 sm:w-[300px] lg:w-[400px]"
+            className="w-full bg-[#F9F9F9] pl-9 h-8 text-[13px] border-none rounded-md"
           />
         </div>
       </div>
 
-      <div className="flex-1 flex justify-end">
+      <div className="flex items-center justify-end gap-3 min-w-[200px]">
         <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback>{userName.charAt(0).toUpperCase()}</AvatarFallback>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="relative h-7 w-7 rounded-full p-0 overflow-hidden border border-[#E8E8E8]">
+              <Avatar className="h-7 w-7 rounded-full">
+                <AvatarFallback className="text-[11px] font-semibold text-[#6B6B6B]">{userName.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>

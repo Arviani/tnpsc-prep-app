@@ -28,12 +28,12 @@ export default function ImportPage() {
   } = useImport()
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6 w-full max-w-7xl mx-auto">
       {currentState === 'upload' && (
-        <div className="max-w-3xl mx-auto mt-12">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-2">Import Question Paper</h1>
-            <p className="text-muted-foreground">Extract TNPSC questions from documents automatically or using Gemini Vision AI.</p>
+        <div className="max-w-3xl mx-auto mt-8">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold mb-1">Import Question Paper</h1>
+            <p className="text-[13px] text-muted-foreground">Extract TNPSC questions from documents automatically or using Gemini Vision AI.</p>
           </div>
           
           <ModeSelection selectedMode={extractionMode} onSelect={setExtractionMode} />
@@ -60,15 +60,15 @@ export default function ImportPage() {
       )}
 
       {currentState === 'review' && (
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
+        <div className="w-full">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold mb-1">Review Workspace</h1>
-              <p className="text-muted-foreground text-sm">Review, edit, and validate extracted questions before importing into Supabase.</p>
+              <h1 className="text-xl font-bold mb-1">Review Workspace</h1>
+              <p className="text-muted-foreground text-[13px]">Review, edit, and validate extracted questions before importing into Supabase.</p>
             </div>
             <button
               onClick={reset}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground"
+              className="text-[13px] font-medium text-muted-foreground hover:text-foreground"
             >
               Cancel Import
             </button>

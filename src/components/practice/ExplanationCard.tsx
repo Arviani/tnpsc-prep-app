@@ -8,14 +8,14 @@ interface ExplanationCardProps {
 
 export function ExplanationCard({ body }: ExplanationCardProps) {
   return (
-    <Card className="mb-6 animate-in slide-in-from-bottom-2 fade-in duration-300 shadow-none bg-secondary/50 border-border">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-primary text-lg">
+    <Card className="mb-4 animate-in slide-in-from-bottom-2 fade-in duration-300 shadow-none bg-surface-muted border-border rounded-md">
+      <CardHeader className="pb-2 pt-3 px-4">
+        <CardTitle className="flex items-center gap-2 text-primary text-[13px]">
           Explanation
         </CardTitle>
       </CardHeader>
-      <CardContent>
-        <p className="text-foreground text-sm md:text-base leading-relaxed">
+      <CardContent className="px-4 pb-4">
+        <p className="text-foreground text-[14px] leading-relaxed">
           {body}
         </p>
       </CardContent>

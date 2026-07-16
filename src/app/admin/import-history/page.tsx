@@ -12,70 +12,70 @@ const mockHistory = [
 
 export default function ImportHistoryPage() {
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
+    <div className="p-4 md:p-6 w-full max-w-[1600px] mx-auto">
+      <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Import History</h1>
-          <p className="text-muted-foreground mt-2">Audit log of all PDF parsing and database import operations.</p>
+          <h1 className="text-2xl font-bold tracking-tight">Import History</h1>
+          <p className="text-[13px] text-muted-foreground mt-1">Audit log of all PDF parsing and database import operations.</p>
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-card border border-border rounded-md shadow-sm overflow-hidden flex flex-col">
         {/* Toolbar */}
-        <div className="p-4 border-b border-border flex items-center justify-between bg-muted/20">
-          <div className="flex items-center gap-4 flex-1">
-            <Input placeholder="Search filenames..." className="max-w-xs bg-background" />
-            <Button variant="outline" size="sm" className="gap-2">
-              <Filter className="w-4 h-4" /> Filter Status
+        <div className="p-3 border-b border-border flex items-center justify-between bg-surface-muted">
+          <div className="flex items-center gap-3 flex-1">
+            <Input placeholder="Search filenames..." className="max-w-xs bg-background h-8 text-[13px]" />
+            <Button variant="outline" className="gap-2 h-8 text-[12px] px-3">
+              <Filter className="w-3.5 h-3.5" /> Filter Status
             </Button>
           </div>
-          <div className="text-sm text-muted-foreground">
+          <div className="text-[12px] font-medium text-muted-foreground">
             Total Imports: 124
           </div>
         </div>
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-xs text-muted-foreground uppercase bg-muted/50 border-b border-border">
+          <table className="w-full text-[13px] text-left">
+            <thead className="text-[11px] font-semibold text-muted-foreground uppercase bg-surface-muted border-b border-border">
               <tr>
-                <th className="px-6 py-4 font-medium">Date</th>
-                <th className="px-6 py-4 font-medium">File Name</th>
-                <th className="px-6 py-4 font-medium text-center">Imported</th>
-                <th className="px-6 py-4 font-medium text-center">Duplicates</th>
-                <th className="px-6 py-4 font-medium text-center">Errors</th>
-                <th className="px-6 py-4 font-medium text-center">Status</th>
-                <th className="px-6 py-4 font-medium text-right">View</th>
+                <th className="px-3 py-2.5">Date</th>
+                <th className="px-3 py-2.5">File Name</th>
+                <th className="px-3 py-2.5 text-center">Imported</th>
+                <th className="px-3 py-2.5 text-center">Duplicates</th>
+                <th className="px-3 py-2.5 text-center">Errors</th>
+                <th className="px-3 py-2.5 text-center">Status</th>
+                <th className="px-3 py-2.5 text-right">View</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
               {mockHistory.map((h) => (
-                <tr key={h.id} className="hover:bg-muted/20 transition-colors">
-                  <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">{h.date}</td>
-                  <td className="px-6 py-4 font-medium text-foreground">{h.filename}</td>
-                  <td className="px-6 py-4 text-center">
+                <tr key={h.id} className="hover:bg-muted/30 transition-colors">
+                  <td className="px-3 py-2.5 text-muted-foreground whitespace-nowrap">{h.date}</td>
+                  <td className="px-3 py-2.5 font-medium text-foreground">{h.filename}</td>
+                  <td className="px-3 py-2.5 text-center">
                     <span className="font-bold text-foreground">{h.questions}</span>
                   </td>
-                  <td className="px-6 py-4 text-center text-orange-500 font-medium">
+                  <td className="px-3 py-2.5 text-center text-orange-500 font-medium">
                     {h.duplicates > 0 ? h.duplicates : '-'}
                   </td>
-                  <td className="px-6 py-4 text-center text-red-500 font-medium">
+                  <td className="px-3 py-2.5 text-center text-red-500 font-medium">
                     {h.errors > 0 ? h.errors : '-'}
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="px-3 py-2.5 text-center">
                     {h.status === 'success' ? (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-green-500/10 text-green-600">
-                        <CheckCircle className="w-3.5 h-3.5" /> Success
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[11px] font-medium bg-green-500/10 text-green-600">
+                        <CheckCircle className="w-3 h-3" /> Success
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-red-500/10 text-red-600">
-                        <AlertTriangle className="w-3.5 h-3.5" /> Failed
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-sm text-[11px] font-medium bg-red-500/10 text-red-600">
+                        <AlertTriangle className="w-3 h-3" /> Failed
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2 text-muted-foreground">
-                      <button className="p-1 hover:text-primary transition-colors"><Eye className="w-4 h-4" /></button>
+                  <td className="px-3 py-2.5 text-right">
+                    <div className="flex justify-end gap-1.5 text-muted-foreground">
+                      <button className="p-1 hover:text-primary transition-colors bg-surface-muted rounded border border-transparent hover:border-border"><Eye className="w-3.5 h-3.5" /></button>
                     </div>
                   </td>
                 </tr>

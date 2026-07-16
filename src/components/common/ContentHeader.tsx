@@ -6,12 +6,12 @@ interface ContentHeaderProps {
 
 export function ContentHeader({ title, description, action }: ContentHeaderProps) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-8">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">{title}</h1>
-        {description && <p className="text-muted-foreground mt-2 text-lg">{description}</p>}
+        <h1 className="text-[16px] font-semibold tracking-tight text-[#202020]">{title}</h1>
+        {description && <p className="text-[13px] text-muted-foreground mt-0.5">{description}</p>}
       </div>
-      {action && <div>{action}</div>}
+      {action && <div className="flex items-center">{action}</div>}
     </div>
   )
 }

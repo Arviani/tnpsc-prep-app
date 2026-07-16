@@ -88,62 +88,67 @@ export function PYQExamEngine({ paperId, title, durationMinutes, questions }: { 
   const answeredCount = Object.keys(answers).length
 
   return (
-    <div className="max-w-7xl mx-auto py-6 px-4 md:px-8 h-[calc(100vh-4rem)] flex flex-col">
+    <div className="w-full h-full flex flex-col bg-background p-3 md:p-4 gap-3">
       {/* Header */}
-      <div className="flex items-center justify-between bg-card border p-4 rounded-xl mb-6 shrink-0 shadow-sm">
+      <div className="flex items-center justify-between bg-card border border-border p-3 rounded-md shrink-0 shadow-sm">
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="h-8 w-8 -ml-2">
-            <ChevronLeft className="w-5 h-5" />
+          <Button variant="ghost" size="icon" onClick={() => router.back()} className="h-7 w-7 -ml-1">
+            <ChevronLeft className="w-4 h-4" />
           </Button>
-          <h2 className="font-bold text-lg hidden md:block truncate max-w-sm">{title}</h2>
+          <h2 className="font-semibold text-[14px] hidden md:block truncate max-w-sm">{title}</h2>
         </div>
         
-        <div className="flex items-center gap-6">
-           <div className="flex items-center gap-2 font-mono text-xl font-bold bg-muted px-4 py-2 rounded-lg text-primary">
-             <Clock className="w-5 h-5" />
+        <div className="flex items-center gap-3">
+           <div className="flex items-center gap-2 font-mono text-[14px] font-bold bg-surface-muted px-2.5 py-1 rounded text-primary">
+             <Clock className="w-4 h-4" />
              {formatTime(timeLeft)}
            </div>
-           <Button onClick={handleSubmitExam} disabled={isSubmitting} variant="destructive">
+           <Button onClick={handleSubmitExam} disabled={isSubmitting} variant="destructive" className="font-semibold h-7 text-[12px] px-3">
              {isSubmitting ? 'Submitting...' : 'Submit Exam'}
            </Button>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6 items-stretch flex-1 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-3 items-stretch flex-1 min-h-0">
         {/* Main Question Area */}
-        <div className="flex-1 min-w-0 w-full flex flex-col gap-4 h-full">
-          <div className="bg-card border rounded-xl p-6 md:p-8 flex flex-col min-h-0 flex-1">
-            <div className="flex items-center justify-between mb-6 shrink-0">
-              <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+        <div className="flex-1 min-w-0 w-full flex flex-col gap-3 h-full">
+          <div className="bg-card border border-border rounded-md p-4 shadow-sm flex flex-col min-h-0 flex-1">
+            <div className="flex items-center justify-between mb-4 shrink-0 border-b border-border-subtle pb-3">
+              <span className="text-[12px] font-bold text-muted-foreground uppercase tracking-wider">
                 Question {currentIndex + 1} of {questions.length}
               </span>
             </div>
             
-            <div className="w-full flex-1 min-h-0 overflow-y-auto pr-4 -mr-4 custom-scrollbar">
-              <div className="prose prose-slate max-w-none mb-8 whitespace-pre-wrap text-lg">
+            <div className="w-full flex-1 min-h-0 overflow-y-auto pr-3 -mr-3 custom-scrollbar">
+              <h2 className="text-[15px] font-semibold text-foreground mb-4 leading-relaxed whitespace-pre-wrap">
                 {currentQuestion.body}
-              </div>
+              </h2>
               
-              <div className="flex flex-col gap-3 pb-6">
+              <div className="flex flex-col gap-2 pb-4 mt-5">
                 {sortedOptions.map((option) => (
                   <div 
                     key={option.id}
                     onClick={() => handleSelectOption(option.id)}
-                    className={`w-full text-left p-4 rounded-xl border-2 transition-all cursor-pointer flex gap-4 ${
+                    className={`flex w-full items-start md:items-center gap-3 p-2.5 rounded-md border transition-all cursor-pointer ${
                       answers[currentQuestion.id] === option.id 
-                        ? 'border-primary bg-primary/5 shadow-sm' 
-                        : 'border-border bg-card hover:bg-muted hover:border-muted-foreground/30'
+                        ? 'border-primary bg-primary/5 ring-1 ring-primary' 
+                        : 'border-border bg-card hover:bg-secondary hover:border-border-strong'
                     }`}
                   >
-                    <div className={`w-8 h-8 shrink-0 flex items-center justify-center rounded-lg font-bold text-sm ${
-                      answers[currentQuestion.id] === option.id
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted-foreground/10 text-muted-foreground'
-                    }`}>
-                      {option.label}
+                    <div className="pt-0.5 md:pt-0 shrink-0">
+                      <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center transition-colors ${
+                        answers[currentQuestion.id] === option.id
+                          ? 'border-primary bg-primary'
+                          : 'border-border-strong bg-background'
+                      }`}>
+                        {answers[currentQuestion.id] === option.id && (
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground" />
+                        )}
+                      </div>
                     </div>
-                    <div className="text-base font-medium leading-relaxed flex-1 mt-0.5">
-                      {option.body}
+                    <div className="flex-1 flex gap-2 min-w-0">
+                      <span className="font-semibold text-muted-foreground w-4 shrink-0 text-[14px]">{option.label}.</span>
+                      <span className="font-medium text-foreground text-[14px] leading-snug break-words whitespace-pre-wrap">{option.body}</span>
                     </div>
                   </div>
                 ))}
@@ -151,47 +156,52 @@ export function PYQExamEngine({ paperId, title, durationMinutes, questions }: { 
             </div>
           </div>
 
-          <div className="flex justify-between items-center bg-card border p-4 rounded-xl shrink-0">
-             <div className="flex items-center gap-3">
+          <div className="flex justify-between items-center bg-card border border-border p-3 rounded-md shrink-0 shadow-sm">
+             <div className="flex items-center gap-2">
                <Button 
                  variant="outline" 
+                 size="sm"
                  onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
                  disabled={currentIndex === 0}
-                 className="flex items-center gap-2"
+                 className="flex items-center gap-1.5 h-8 text-xs"
                >
-                 <ChevronLeft className="w-4 h-4" /> Previous
+                 <ChevronLeft className="w-3.5 h-3.5" /> Previous
                </Button>
                
                <Button 
                  variant="outline"
+                 size="sm"
                  onClick={() => setCurrentIndex(prev => Math.min(questions.length - 1, prev + 1))}
                  disabled={currentIndex === questions.length - 1}
+                 className="h-8 text-xs"
                >
                  Skip
                </Button>
              </div>
              
              <Button 
+               size="sm"
                onClick={() => setCurrentIndex(prev => Math.min(questions.length - 1, prev + 1))}
                disabled={currentIndex === questions.length - 1}
-               className="flex items-center gap-2"
+               className="flex items-center gap-1.5 font-semibold h-8 text-xs px-4"
              >
-               Next <ChevronRight className="w-4 h-4" />
+               Next <ChevronRight className="w-3.5 h-3.5" />
              </Button>
           </div>
         </div>
 
         {/* Question Palette Sidebar */}
-        <div className="w-full lg:w-80 shrink-0 bg-card border rounded-xl p-5 flex flex-col h-full min-h-0">
-          <div className="mb-4 shrink-0">
-            <h3 className="font-bold text-sm uppercase tracking-wider text-muted-foreground mb-1">Question Palette</h3>
-            <p className="text-xs font-semibold text-primary bg-primary/10 px-2 py-1 rounded-md inline-block">
-              Answered: {answeredCount} / {questions.length}
-            </p>
+        <div className="w-full lg:w-[280px] shrink-0 bg-card border border-border rounded-md p-4 flex flex-col h-full min-h-0 shadow-sm">
+          <div className="mb-3 shrink-0 border-b border-border-subtle pb-3">
+            <h3 className="font-semibold text-[11px] uppercase tracking-wider text-muted-foreground mb-2">Question Palette</h3>
+            <div className="flex items-center justify-between text-[12px]">
+              <span className="text-muted-foreground">Answered:</span>
+              <span className="font-bold text-primary">{answeredCount} / {questions.length}</span>
+            </div>
           </div>
           
-          <div className="flex-1 min-h-0 overflow-y-auto p-1 -m-1 custom-scrollbar">
-            <div className="grid grid-cols-5 gap-2 pb-4">
+          <div className="flex-1 min-h-0 overflow-y-auto pr-1 custom-scrollbar">
+            <div className="grid grid-cols-5 gap-1.5 pb-2">
             {questions.map((q, idx) => {
               const isAnswered = !!answers[q.id]
               const isCurrent = idx === currentIndex
@@ -199,12 +209,12 @@ export function PYQExamEngine({ paperId, title, durationMinutes, questions }: { 
                 <button
                   key={q.id}
                   onClick={() => setCurrentIndex(idx)}
-                  className={`h-10 rounded-md text-sm font-bold transition-colors border ${
+                  className={`h-9 w-full flex items-center justify-center rounded-sm text-xs font-medium transition-colors border ${
                     isCurrent ? 'ring-2 ring-primary ring-offset-1' : ''
                   } ${
                     isAnswered 
                       ? 'bg-primary text-primary-foreground border-primary' 
-                      : 'bg-muted text-muted-foreground hover:bg-muted/80'
+                      : 'bg-muted text-muted-foreground hover:bg-muted/80 border-transparent'
                   }`}
                 >
                   {idx + 1}
@@ -213,12 +223,12 @@ export function PYQExamEngine({ paperId, title, durationMinutes, questions }: { 
             })}
             </div>
           </div>
-          <div className="pt-4 mt-2 border-t flex gap-4 text-xs font-medium shrink-0">
+          <div className="pt-3 mt-2 border-t border-border-subtle flex gap-4 text-[11px] font-medium shrink-0">
              <div className="flex items-center gap-2">
-               <div className="w-3 h-3 bg-primary rounded-sm"></div> Answered
+               <div className="w-2.5 h-2.5 bg-primary rounded-[2px]"></div> Answered
              </div>
              <div className="flex items-center gap-2">
-               <div className="w-3 h-3 bg-muted border rounded-sm"></div> Unanswered
+               <div className="w-2.5 h-2.5 bg-muted border border-border-strong rounded-[2px]"></div> Unanswered
              </div>
           </div>
         </div>

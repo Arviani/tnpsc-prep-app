@@ -39,14 +39,20 @@ export function ReviewWorkspace({
   const errorsForActive = validationErrors.filter(e => e.questionIndex === selectedIdx)
 
   return (
-    <div className="flex h-[calc(100vh-12rem)] border rounded-xl overflow-hidden bg-card">
-      {/* Sidebar List */}
-      <div className="w-1/3 border-r border-border flex flex-col bg-muted/20">
-        <div className="p-4 border-b border-border bg-card">
-          <h3 className="font-semibold text-lg flex items-center justify-between">
-            <span>Parsed Questions</span>
-            <span className="text-sm bg-primary/10 text-primary px-2 py-0.5 rounded-full">{questions.length}</span>
-          </h3>
+    <div className="flex h-[calc(100vh-10rem)] border border-border rounded-md overflow-hidden bg-card shadow-sm">
+      {/* Left Sidebar - Question List */}
+      <div className="w-[300px] border-r border-border flex flex-col bg-surface-muted">
+        <div className="p-3 border-b border-border">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-muted-foreground" />
+            <input 
+              type="text" 
+              placeholder="Search questions..."
+              className="w-full pl-8 pr-3 py-1.5 text-[13px] rounded-md border border-input bg-background"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
           {validationErrors.length > 0 && (
             <div className="mt-2 text-xs font-medium text-destructive flex items-center gap-1.5 bg-destructive/10 px-2 py-1.5 rounded-md">
               <AlertCircle className="h-3.5 w-3.5" />
@@ -122,51 +128,51 @@ export function ReviewWorkspace({
         )}
 
         {!activeQuestion ? (
-          <div className="flex-1 flex items-center justify-center text-muted-foreground">Select a question to review</div>
+          <div className="flex-1 flex items-center justify-center text-[13px] text-muted-foreground">Select a question to review</div>
         ) : (
           <>
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-5">
               
               {errorsForActive.length > 0 && (
-                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 space-y-2">
-                  <div className="font-semibold text-destructive flex items-center gap-2">
+                <div className="bg-destructive/10 border border-destructive/20 rounded-md p-3 space-y-2">
+                  <div className="font-semibold text-destructive text-[13px] flex items-center gap-2">
                     <AlertCircle className="h-4 w-4" /> Issues to fix
                   </div>
-                  <ul className="text-sm text-destructive/90 list-disc pl-5 space-y-1">
+                  <ul className="text-[13px] text-destructive/90 list-disc pl-5 space-y-1">
                     {errorsForActive.map((e, i) => <li key={i}>{e.message}</li>)}
                   </ul>
                 </div>
               )}
 
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium">Question Number</label>
+                    <label className="text-[13px] font-medium">Question Number</label>
                     <input 
                       type="number"
                       value={activeQuestion.questionNumber || ''}
                       onChange={e => updateActiveQuestion('questionNumber', parseInt(e.target.value) || 0)}
-                      className="w-full p-2 rounded-md border border-input bg-background"
+                      className="w-full p-2 text-[13px] rounded-md border border-input bg-background"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-sm font-medium">Exam</label>
+                    <label className="text-[13px] font-medium">Exam</label>
                     <input 
                       type="text"
                       value={activeQuestion.exam || ''}
                       onChange={e => updateActiveQuestion('exam', e.target.value)}
-                      className="w-full p-2 rounded-md border border-input bg-background"
+                      className="w-full p-2 text-[13px] rounded-md border border-input bg-background"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium">Question Text (Preserve Tamil/English)</label>
+                  <label className="text-[13px] font-medium">Question Text (Preserve Tamil/English)</label>
                   <textarea 
                     rows={4}
                     value={activeQuestion.question || ''}
                     onChange={e => updateActiveQuestion('question', e.target.value)}
-                    className="w-full p-3 rounded-md border border-input bg-background resize-y"
+                    className="w-full p-3 text-[14px] rounded-md border border-input bg-background resize-y"
                   />
                 </div>
 
