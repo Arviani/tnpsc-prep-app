@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { ParsedQuestion } from '@/services/parser/schemas'
 import { ValidationError } from '@/services/validation/validation.service'
-import { AlertCircle, CheckCircle2, ChevronRight, DownloadCloud, FileText } from 'lucide-react'
+import { AlertCircle, CheckCircle2, ChevronRight, DownloadCloud, FileText, Search } from 'lucide-react'
 
 interface ReviewWorkspaceProps {
   questions: ParsedQuestion[]
@@ -27,6 +27,7 @@ export function ReviewWorkspace({
   importError
 }: ReviewWorkspaceProps) {
   const [selectedIdx, setSelectedIdx] = useState(0)
+  const [search, setSearch] = useState('')
 
   const activeQuestion = questions[selectedIdx]
 

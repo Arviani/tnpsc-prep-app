@@ -68,12 +68,10 @@ export function Topbar() {
 
       <div className="flex items-center justify-end gap-3 min-w-[200px]">
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-7 w-7 rounded-full p-0 overflow-hidden border border-[#E8E8E8]">
-              <Avatar className="h-7 w-7 rounded-full">
-                <AvatarFallback className="text-[11px] font-semibold text-[#6B6B6B]">{userName.charAt(0).toUpperCase()}</AvatarFallback>
-              </Avatar>
-            </Button>
+          <DropdownMenuTrigger className="relative h-7 w-7 rounded-full p-0 overflow-hidden border border-[#E8E8E8] hover:bg-accent hover:text-accent-foreground outline-none">
+            <Avatar className="h-7 w-7 rounded-full">
+              <AvatarFallback className="text-[11px] font-semibold text-[#6B6B6B]">{userName.charAt(0).toUpperCase()}</AvatarFallback>
+            </Avatar>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end">
             <DropdownMenuLabel className="font-normal">
