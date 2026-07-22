@@ -5,17 +5,87 @@ import { Lightbulb, AlertTriangle, Info, Calculator, FileText, HelpCircle } from
 
 interface LessonRendererProps {
   content: string;
+  title?: string;
 }
 
-export function LessonRenderer({ content }: LessonRendererProps) {
+export function LessonRenderer({ content, title }: LessonRendererProps) {
+  // Extract headings for Table of Contents
+  const extractHeadings = (markdown: string) => {
+    const regex = /^(#{1,3})\s+(.+)$/gm;
+    const headings = [];
+    let match;
+    while ((match = regex.exec(markdown)) !== null) {
+      const text = match[2].replace(/\*/g, '').trim();
+      headings.push({
+        level: match[1].length,
+        text,
+        id: text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+      });
+    }
+    return headings;
+  };
+
+  const headings = extractHeadings(content);
+  const showTOC = headings.length > 2;
+
+  // Function to slugify heading text exactly as above to match IDs
+  const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
   return (
-    <div className="prose prose-sm md:prose-base lg:prose-lg max-w-none text-slate-700">
-      <ReactMarkdown
+    <div className="flex flex-col w-full bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+      {/* Top Header */}
+      {title && (
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-white">
+          <h1 className="text-xl font-bold text-slate-800">{title}</h1>
+          <span className="text-sm font-medium text-slate-500">18 min</span>
+        </div>
+      )}
+
+      {/* Main Content Area */}
+      <div className="flex flex-col lg:flex-row items-stretch relative w-full h-full min-h-[500px]">
+        {showTOC && (
+          <div className="w-full lg:w-[280px] shrink-0 border-r border-border bg-slate-50/50">
+            <div className="sticky top-0 p-6 overflow-y-auto max-h-full">
+              <h3 className="text-[13px] font-bold text-slate-900 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                <FileText className="w-4 h-4 text-slate-400" />
+                Table of Contents
+              </h3>
+              <ul className="space-y-1.5 mb-0 list-none ml-0 pl-0">
+                {headings.map((heading, idx) => (
+                  <li 
+                    key={idx} 
+                    style={{ paddingLeft: `${(heading.level - 1) * 0.75}rem` }}
+                  >
+                    <a 
+                      href={`#${heading.id}`}
+                      className="text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-md px-2 text-[14px] font-medium no-underline transition-colors block py-1.5"
+                    >
+                      {heading.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
+        
+        <div className="flex-1 min-w-0 p-8 lg:p-12 prose prose-sm md:prose-base max-w-none text-slate-700 bg-white">
+        {title && <h1 className="text-3xl font-extrabold text-slate-900 mb-8 border-b border-slate-200 pb-4">{title}</h1>}
+        <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: ({ node, ...props }) => <h1 className="text-3xl font-extrabold text-slate-900 mt-10 mb-6 pb-2 border-b border-slate-200" {...props} />,
-          h2: ({ node, ...props }) => <h2 className="text-2xl font-bold text-slate-800 mt-8 mb-4" {...props} />,
-          h3: ({ node, ...props }) => <h3 className="text-xl font-semibold text-slate-800 mt-6 mb-3" {...props} />,
+          h1: ({ node, children, ...props }) => {
+            const text = React.Children.toArray(children).join('').trim();
+            return <h1 id={slugify(text)} className="text-3xl font-extrabold text-slate-900 mt-10 mb-6 pb-2 border-b border-slate-200 scroll-mt-20" {...props}>{children}</h1>;
+          },
+          h2: ({ node, children, ...props }) => {
+            const text = React.Children.toArray(children).join('').trim();
+            return <h2 id={slugify(text)} className="text-2xl font-bold text-slate-800 mt-8 mb-4 scroll-mt-20" {...props}>{children}</h2>;
+          },
+          h3: ({ node, children, ...props }) => {
+            const text = React.Children.toArray(children).join('').trim();
+            return <h3 id={slugify(text)} className="text-xl font-semibold text-slate-800 mt-6 mb-3 scroll-mt-20" {...props}>{children}</h3>;
+          },
           p: ({ node, ...props }) => <p className="mb-4 leading-relaxed" {...props} />,
           ul: ({ node, ...props }) => <ul className="list-disc list-outside ml-6 mb-6 space-y-2 marker:text-indigo-500" {...props} />,
           ol: ({ node, ...props }) => <ol className="list-decimal list-outside ml-6 mb-6 space-y-2 marker:text-indigo-500 marker:font-semibold" {...props} />,
@@ -138,6 +208,8 @@ export function LessonRenderer({ content }: LessonRendererProps) {
       >
         {content}
       </ReactMarkdown>
+        </div>
+      </div>
     </div>
   );
 }

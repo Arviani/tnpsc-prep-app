@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import { buildExamplesPrompt } from '@/lib/ai/prompts/examples';
+import { AIGenerationService } from '@/lib/ai/generation.service';
 import { TopicContext } from '@/lib/ai/context';
+
 export async function POST(request: Request) {
   try {
     const { subjectId, topicId, subjectName, topicTitle } = await request.json();
@@ -35,56 +37,26 @@ export async function POST(request: Request) {
     };
 
     const prompt = buildExamplesPrompt(context);
-    console.log('[EXAMPLES GENERATE] Generated Prompt Length:', prompt.length);
-
-    const openRouterApiKey = process.env.OPENROUTER_API_KEY;
-    if (!openRouterApiKey) {
-      console.error('[EXAMPLES GENERATE] Missing OPENROUTER_API_KEY');
-      return NextResponse.json({ error: 'Configuration Error: Missing OpenRouter API Key.' }, { status: 500 });
-    }
-
-    console.log('[EXAMPLES GENERATE] Calling OpenRouter API...');
-    const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openRouterApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.0-flash-exp:free',
-        messages: [{ role: 'user', content: prompt }],
-      }),
+    
+    const aiResponse = await AIGenerationService.generateContent({
+      prompt,
+      context,
+      requestId: crypto.randomUUID()
     });
 
-    if (!aiResponse.ok) {
-      const errorData = await aiResponse.text();
-      console.error('[EXAMPLES GENERATE] OpenRouter API Error:', aiResponse.status, errorData);
-      return NextResponse.json({ error: `OpenRouter API Error: Status ${aiResponse.status}` }, { status: aiResponse.status });
-    }
-
-    const aiData = await aiResponse.json();
-    let content = aiData.choices?.[0]?.message?.content;
-    
-    if (!content) {
-      console.error('[EXAMPLES GENERATE] Empty response from OpenRouter API:', aiData);
-      return NextResponse.json({ error: 'Invalid Response Format: Received empty content from AI.' }, { status: 500 });
-    }
-    
-    console.log('[EXAMPLES GENERATE] AI Response received successfully. Raw length:', content.length);
-
-    // Clean up markdown wrapping if present
-    if (content.startsWith('```json')) {
-      content = content.replace(/```json/g, '').replace(/```/g, '').trim();
-    } else if (content.startsWith('```')) {
-      content = content.replace(/```/g, '').trim();
+    if (!aiResponse.success || !aiResponse.content) {
+      return NextResponse.json(
+        { error: aiResponse.error || 'Failed to generate content' }, 
+        { status: aiResponse.status || 500 }
+      );
     }
 
     let generatedExamples;
     try {
-      generatedExamples = JSON.parse(content);
+      generatedExamples = JSON.parse(aiResponse.content);
     } catch (parseError) {
       console.error('[EXAMPLES GENERATE] JSON Parse Error:', parseError);
-      console.error('[EXAMPLES GENERATE] Raw AI Content that failed to parse:', content);
+      console.error('[EXAMPLES GENERATE] Raw AI Content that failed to parse:', aiResponse.content);
       return NextResponse.json({ error: 'Invalid Response Format: AI did not return a valid JSON object.' }, { status: 500 });
     }
 

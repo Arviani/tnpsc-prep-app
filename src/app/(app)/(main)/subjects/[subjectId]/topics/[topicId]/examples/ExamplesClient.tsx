@@ -1,20 +1,28 @@
 "use client"
 
-import React, { useState } from 'react';
-import { useAI } from '@/hooks/useAI';
-import { AIChatPanel } from '@/components/ai/AIChatPanel';
+import React, { useState, useEffect } from 'react';
+import { useGlobalAIStore } from '@/hooks/useGlobalAIStore';
 import { TopicContext } from '@/lib/ai/context';
 import { buildExampleActionPrompt } from '@/lib/ai/prompts/examples';
 import { Lightbulb, List, Sparkles, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useWorkspace } from '@/contexts/WorkspaceContext';
+import { CMSActionBar } from '@/components/admin/CMSActionBar';
+import { ExamplesEditor } from '@/components/admin/editors/ExamplesEditor';
+import { ImportModal } from '@/components/admin/ImportModal';
+import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useWorkspace } from '@/contexts/WorkspaceContext';
 
 interface Example {
   id: string;
-  question_text: string;
-  step_by_step_solution: string;
+  question_text?: string;
+  problem_statement?: string;
+  step_by_step_solution?: string;
+  solution_steps?: string;
   explanation?: string | null;
+  shortcut?: string | null;
+  exam_tip?: string | null;
+  common_mistake?: string | null;
 }
 
 interface ExamplesClientProps {
@@ -36,9 +44,14 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
     userRole: isAdmin ? 'admin' : 'student'
   };
 
-  const { askAI, answer, isLoading, isError, error, reset, retry } = useAI(context);
   const [activeAction, setActiveAction] = useState<string | null>(null);
   const [showSolution, setShowSolution] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const store = useGlobalAIStore.getState();
+    store.setContext(context);
+    store.setActions([]);
+  }, [chapter.title]);
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -84,11 +97,50 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
     }
   };
 
-  const handleSave = async () => {
-    if (!generatedExamples) return;
+  const [isEditing, setIsEditing] = useState(false);
+  const [editorExamples, setEditorExamples] = useState<any[]>(examples || []);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+
+  const handleImportComplete = (content: any, type: 'markdown' | 'json') => {
+    if (type === 'json') {
+      const formattedExamples = (content as any[]).map(row => ({
+        id: crypto.randomUUID(),
+        title: row.Title || row.title || '',
+        problem_statement: row.Problem || row.Question || row.body || row.problem_statement || row.question_text || '',
+        solution_steps: row.Solution || row.Steps || row.solution_steps || row.step_by_step_solution || row.explanation || '',
+        explanation: row.Explanation || row.explanation || '',
+        concept: row.Concept || row.concept || '',
+        shortcut: row.Shortcut || row.shortcut || '',
+        common_mistake: row.Mistake || row.common_mistake || '',
+        exam_tip: row.Tip || row.exam_tip || '',
+        difficulty: row.Difficulty || row.difficulty || 'Medium'
+      }));
+      setEditorExamples([...editorExamples, ...formattedExamples]);
+      setIsEditing(true);
+    }
+  };
+
+  // Update editor if examples prop changes
+  React.useEffect(() => {
+    if (!isEditing) {
+      setEditorExamples(examples || []);
+    }
+  }, [examples, isEditing]);
+
+  const handleSaveDraft = async () => {
+    await saveContent('draft');
+  };
+
+  const handlePublish = async () => {
+    await saveContent('published');
+  };
+
+  const saveContent = async (status: 'draft' | 'published') => {
+    if (!editorExamples || editorExamples.length === 0) return;
+    
     setIsSaving(true);
     try {
-      const response = await fetch('/api/admin/examples/save', {
+      const response = await fetch('/api/admin/content/save', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +148,10 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
         body: JSON.stringify({
           subjectId: subject.id,
           topicId: chapter.id,
-          examples: generatedExamples,
+          contentType: 'examples',
+          title: chapter.title,
+          content: editorExamples,
+          status
         }),
       });
 
@@ -106,11 +161,13 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
         throw new Error(data.error || 'Failed to save examples');
       }
 
+      toast.success(status === 'published' ? 'Examples published successfully!' : 'Draft saved!');
+      setIsEditing(false);
       setGeneratedExamples(null);
       router.refresh();
     } catch (err: any) {
       console.error('Error saving examples:', err);
-      alert(err.message || 'An error occurred while saving examples');
+      toast.error(err.message || 'An error occurred while saving examples');
     } finally {
       setIsSaving(false);
     }
@@ -118,8 +175,11 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
 
   const handleAIAction = (action: 'explain_simply' | 'similar_example' | 'identify_tricks', example: Example) => {
     setActiveAction(action);
-    const prompt = buildExampleActionPrompt(context, example.question_text, example.step_by_step_solution, action);
-    askAI(prompt);
+    const qText = example.problem_statement || example.question_text || '';
+    const sText = example.solution_steps || example.step_by_step_solution || '';
+    const prompt = buildExampleActionPrompt(context, qText, sText, action);
+    useGlobalAIStore.getState().setCurrentPrompt(prompt);
+    useGlobalAIStore.getState().openChat();
   };
 
   const toggleSolution = (id: string) => {
@@ -130,13 +190,40 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
   const displayExamples = generatedExamples || examples;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 h-[calc(100vh-220px)] min-h-[500px]">
+    <div className="flex flex-col gap-6 max-w-4xl mx-auto pb-12">
       {/* Main Content Area */}
-      <div className="flex-1 bg-white rounded-xl border border-border flex flex-col shadow-sm h-full overflow-hidden">
+      <div className="flex-1 w-full min-h-[500px] border border-border flex flex-col shadow-sm h-full overflow-hidden">
+        {isAdmin && (
+          <CMSActionBar
+            hasContent={hasContent}
+            isEditing={isEditing}
+            isSaving={isSaving}
+            onManualCreate={() => setIsEditing(true)}
+            onAIGenerate={() => {
+              setIsEditing(true);
+              handleGenerate();
+            }}
+            onImport={() => setIsImportModalOpen(true)}
+            onEdit={() => setIsEditing(true)}
+            onPreview={() => setIsEditing(false)}
+            onSaveDraft={handleSaveDraft}
+            onPublish={handlePublish}
+            onArchive={() => toast.info('Archiving...')}
+            onDelete={() => toast.info('Deleting...')}
+            onViewHistory={() => toast.info('Opening version history...')}
+            className="rounded-none border-x-0 border-t-0 mb-0"
+          />
+        )}
+        
         <div className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-8">
           <h1 className="text-2xl font-bold text-foreground">{chapter.title} - Worked Examples</h1>
           
-          {displayExamples && displayExamples.length > 0 ? (
+          {isEditing ? (
+            <ExamplesEditor 
+              content={generatedExamples || editorExamples} 
+              onChange={setEditorExamples} 
+            />
+          ) : displayExamples && displayExamples.length > 0 ? (
             <div className="space-y-8 pb-20">
               {displayExamples.map((example, index) => (
                 <div key={example.id} className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
@@ -144,17 +231,55 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                     <div className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center shrink-0">
                       {index + 1}
                     </div>
-                    <div className="pt-1">{example.question_text}</div>
+                    <div className="pt-1">{example.problem_statement || example.question_text}</div>
                   </div>
                   
                   {showSolution[example.id] ? (
                     <div className="p-5 bg-white">
-                      <div className="prose prose-sm max-w-none text-slate-600 mb-4 whitespace-pre-wrap">
-                        <strong className="text-slate-800">Step-by-Step Solution:</strong><br/>
-                        {example.step_by_step_solution}
-                        {example.explanation && (
-                          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-blue-800 border border-blue-100">
-                            <strong>Explanation:</strong> {example.explanation}
+                      <div className="prose prose-sm max-w-none text-slate-600 mb-6">
+                        <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                          <strong className="text-slate-800 text-base mb-2 block">Step-by-Step Solution</strong>
+                          <div className="space-y-2">
+                            {(example.solution_steps || example.step_by_step_solution || '')
+                              .split(/(?=Step \d+:)/)
+                              .map((step, i) => (
+                                <p key={i} className="mb-0 leading-relaxed text-slate-700">{step.trim()}</p>
+                              ))}
+                          </div>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                          {example.shortcut && (
+                            <div className="p-3 bg-indigo-50/50 rounded-lg text-indigo-900 border border-indigo-100/50">
+                              <strong className="flex items-center gap-1.5 text-indigo-700 mb-1">
+                                <Sparkles className="w-4 h-4" /> Shortcut
+                              </strong> 
+                              {example.shortcut.replace(/Exam tip:.*$/i, '').trim()}
+                            </div>
+                          )}
+                          
+                          {(example.exam_tip || (example.shortcut && example.shortcut.match(/Exam tip:(.*)$/i))) && (
+                            <div className="p-3 bg-emerald-50/50 rounded-lg text-emerald-900 border border-emerald-100/50">
+                              <strong className="flex items-center gap-1.5 text-emerald-700 mb-1">
+                                <span className="text-lg leading-none">💡</span> Exam Tip
+                              </strong> 
+                              {example.exam_tip || (example.shortcut?.match(/Exam tip:(.*)$/i)?.[1]?.trim())}
+                            </div>
+                          )}
+
+                          {example.common_mistake && (
+                            <div className="p-3 bg-red-50/50 rounded-lg text-red-900 border border-red-100/50 md:col-span-2">
+                              <strong className="flex items-center gap-1.5 text-red-700 mb-1">
+                                <span className="text-lg leading-none">⚠️</span> Common Mistake
+                              </strong> 
+                              {example.common_mistake}
+                            </div>
+                          )}
+                        </div>
+
+                        {example.explanation && example.explanation !== (example.solution_steps || example.step_by_step_solution) && (
+                          <div className="mt-4 p-3 bg-slate-50 rounded-lg text-slate-700 border border-slate-200">
+                            <strong>Note:</strong> {example.explanation}
                           </div>
                         )}
                       </div>
@@ -203,27 +328,22 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
           )}
         </div>
       </div>
-
-      {/* AI Assistant Sidebar */}
-      <div className="w-full lg:w-[380px] shrink-0 h-full flex flex-col">
-        <AIChatPanel 
-          context={context}
-          actions={[]}
-        />
+      
+      <div className="flex justify-center mt-4">
+        <Button variant="outline" onClick={() => useGlobalAIStore.getState().openChat()}>
+          <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />
+          Open AI Assistant
+        </Button>
       </div>
 
-      {/* Admin Review & Save Sticky Bar */}
-      {isAdmin && generatedExamples && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 shadow-lg z-50 flex justify-center items-center gap-4">
-          <p className="text-sm font-medium text-slate-700 mr-4">Previewing {generatedExamples.length} AI-generated examples</p>
-          <Button variant="outline" onClick={() => setGeneratedExamples(null)}>
-            Discard
-          </Button>
-          <Button onClick={handleSave} disabled={isSaving} className="bg-indigo-600 hover:bg-indigo-700">
-            {isSaving ? 'Saving...' : 'Approve & Save Examples'}
-          </Button>
-        </div>
-      )}
+
+
+      <ImportModal 
+        isOpen={isImportModalOpen} 
+        onClose={() => setIsImportModalOpen(false)} 
+        onImportComplete={handleImportComplete} 
+        contentType="examples" 
+      />
     </div>
   );
 }

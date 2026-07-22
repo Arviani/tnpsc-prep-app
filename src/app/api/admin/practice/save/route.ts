@@ -20,43 +20,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Role check (assume admin for now or check user metadata)
+    // Insert practice questions into DB as a single row in topic_contents
+    const { data: practiceData, error: pError } = await supabase
+      .from('topic_contents')
+      .insert({
+        subject_id: subjectId,
+        topic_id: topicId,
+        content_type: 'practice',
+        content: questions, // JSON array of questions
+        status: 'published',
+        created_by: user.id
+      })
+      .select()
+      .single();
     
-    // Insert questions into DB
-    const insertedQuestions = [];
-    for (const q of questions) {
-      const { data: questionData, error: qError } = await supabase
-        .from('questions')
-        .insert({
-          subject_id: subjectId,
-          chapter_id: topicId,
-          topic: topicTitle,
-          body: q.body,
-          is_pyq: false,
-          exam_type: 'practice'
-        })
-        .select()
-        .single();
-      
-      if (qError) throw qError;
+    if (pError) throw pError;
 
-      const optionsToInsert = q.options.map((opt: any) => ({
-        question_id: questionData.id,
-        body: opt.body,
-        label: 'opt', // Just a dummy label if required
-        is_correct: opt.is_correct
-      }));
-
-      const { error: oError } = await supabase
-        .from('options')
-        .insert(optionsToInsert);
-
-      if (oError) throw oError;
-
-      insertedQuestions.push(questionData);
-    }
-
-    return NextResponse.json({ success: true, count: insertedQuestions.length });
+    return NextResponse.json({ success: true, count: questions.length });
   } catch (error: any) {
     console.error('Error saving practice questions:', error);
     return NextResponse.json(

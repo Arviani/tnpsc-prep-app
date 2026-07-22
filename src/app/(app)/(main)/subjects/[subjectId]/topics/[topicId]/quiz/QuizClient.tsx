@@ -1,12 +1,11 @@
 "use client"
 
-import React, { useState } from 'react';
-import { useAI } from '@/hooks/useAI';
+import React, { useState, useEffect } from 'react';
+import { useGlobalAIStore } from '@/hooks/useGlobalAIStore';
 import { buildQuizPrompt, QuizAction, QuizData } from '@/lib/ai/prompts/quiz';
 import { TopicContext } from '@/lib/ai/context';
-import { AIChatPanel } from '@/components/ai/AIChatPanel';
 import { AIError } from '@/components/ai/AIError';
-import { Trophy, Clock, Target, Calendar, BarChart2, Zap, RotateCcw, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Trophy, Clock, Target, Calendar, BarChart2, Zap, RotateCcw, ArrowRight, AlertTriangle, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface QuizClientProps {
@@ -25,24 +24,7 @@ export default function QuizClient({ topicTitle, hasQuestions }: QuizClientProps
     userRole: 'student'
   };
 
-  const { askAI, answer, isLoading, isError, error, retry } = useAI(context);
   const [activeAction, setActiveAction] = useState<QuizAction | null>(null);
-
-  if (!hasQuestions) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-8 pb-12 h-[calc(100vh-220px)] min-h-[500px]">
-        <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
-            <AlertTriangle className="w-8 h-8 text-slate-400" />
-          </div>
-          <h3 className="text-xl font-bold text-slate-800">No quiz available.</h3>
-          <p className="text-sm text-slate-500 mt-2 max-w-md">
-            There is no quiz available for this topic right now. Please check back later.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   const MOCK_QUIZ_DATA: QuizData = {
     score: 6,
@@ -53,11 +35,34 @@ export default function QuizClient({ topicTitle, hasQuestions }: QuizClientProps
     incorrectTopics: ["Trade & Commerce", "Religious Practices", "Decline of IVC"]
   };
 
-  const handleAIAction = (action: QuizAction) => {
-    setActiveAction(action);
-    const prompt = buildQuizPrompt(context, MOCK_QUIZ_DATA, action);
-    askAI(prompt);
-  };
+  useEffect(() => {
+    const store = useGlobalAIStore.getState();
+    store.setContext(context);
+    store.setActions([
+      { label: 'My Strengths', icon: Trophy, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'strengths') },
+      { label: 'Weak Areas', icon: Target, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'weak_areas') },
+      { label: 'Speed Analysis', icon: Clock, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'speed') },
+      { label: 'Topic Breakdown', icon: BarChart2, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'topic_analysis') },
+      { label: '7-Day Study Plan', icon: Calendar, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'study_plan') },
+    ]);
+  }, [topicTitle]);
+
+  if (!hasQuestions) {
+    return (
+      <div className="flex flex-col gap-8 max-w-4xl mx-auto pb-12">
+        <div className="flex-1 text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
+            <AlertTriangle className="w-8 h-8 text-slate-400" />
+          </div>
+          <h3 className="text-xl font-bold text-slate-800">No quiz available.</h3>
+          <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
+            There is no quiz available for this topic right now. Please check back later.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
 
   const scorePercentage = (MOCK_QUIZ_DATA.score / MOCK_QUIZ_DATA.totalQuestions) * 100;
   
@@ -133,19 +138,12 @@ export default function QuizClient({ topicTitle, hasQuestions }: QuizClientProps
           </div>
         </div>
       </div>
-
-      {/* AI Quiz Analysis */}
-      <div className="scroll-m-20">
-        <AIChatPanel 
-          context={context}
-          actions={[
-            { label: 'My Strengths', icon: Trophy, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'strengths') },
-            { label: 'Weak Areas', icon: Target, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'weak_areas') },
-            { label: 'Speed Analysis', icon: Clock, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'speed') },
-            { label: 'Topic Breakdown', icon: BarChart2, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'topic_analysis') },
-            { label: '7-Day Study Plan', icon: Calendar, prompt: buildQuizPrompt(context, MOCK_QUIZ_DATA, 'study_plan') },
-          ]}
-        />
+      
+      <div className="flex justify-center mt-4">
+        <Button variant="outline" onClick={() => useGlobalAIStore.getState().openChat()}>
+          <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />
+          Open AI Assistant
+        </Button>
       </div>
     </div>
   );

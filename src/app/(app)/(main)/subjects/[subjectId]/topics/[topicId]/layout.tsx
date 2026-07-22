@@ -31,26 +31,28 @@ export default async function TopicLayout({
   }
 
   const breadcrumbs = (
-    <div className="flex items-center gap-2 text-sm text-muted-foreground mb-4">
-      <Link href="/subjects" className="hover:text-foreground transition-colors">Subjects</Link>
+    <div className="flex items-center gap-2 text-[13px] text-slate-400 font-medium">
+      <Link href="/subjects" className="hover:text-slate-700 transition-colors">Subjects</Link>
       <span>/</span>
-      <Link href={`/subjects/${subject.id}`} className="hover:text-foreground transition-colors">{subject.name}</Link>
+      <Link href={`/subjects/${subject.id}`} className="hover:text-slate-700 transition-colors">{subject.name}</Link>
       <span>/</span>
-      <span className="text-foreground font-medium">{topic.title}</span>
+      <span className="text-slate-900 font-bold">{topic.title}</span>
     </div>
   )
 
   return (
     <ContentArea>
-      <div className="flex flex-col gap-2 p-4 bg-white rounded-xl border border-border shadow-sm mb-4">
-        {breadcrumbs}
-        <ContentHeader 
-          title={topic.title} 
-          description="Master this topic with guided study, examples, and practice." 
-        />
-        <TopicTabs subjectId={subject.id} topicId={topic.id} />
+      <div className="flex flex-col shrink-0 sticky top-[-12px] z-20 bg-[#F9F9F9] -mx-3 -mt-3 pt-3 border-b border-slate-200 mb-6">
+        <div className="px-5 mb-3 mt-1">
+          {breadcrumbs}
+        </div>
+        
+        <div className="px-5">
+          <TopicTabs subjectId={subject.id} topicId={topic.id} />
+        </div>
       </div>
-      <div className="pt-2 pb-8 h-full">
+      
+      <div className="pt-3 pb-8 pr-2 pl-0">
         {children}
       </div>
     </ContentArea>

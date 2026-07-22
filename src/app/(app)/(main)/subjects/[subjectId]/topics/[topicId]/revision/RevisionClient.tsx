@@ -41,7 +41,7 @@ export default function RevisionClient({ topicTitle, hasRevisionNotes }: Revisio
 
   if (!hasRevisionNotes) {
     return (
-      <div className="max-w-5xl mx-auto space-y-8 pb-12 h-[calc(100vh-220px)] min-h-[500px]">
+      <div className="max-w-5xl mx-auto space-y-8 pb-12 min-h-[500px]">
         {isAdmin ? (
           <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">

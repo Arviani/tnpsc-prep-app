@@ -121,6 +121,104 @@ export type Database = {
           }
         ]
       }
+      topic_contents: {
+        Row: {
+          id: string
+          topic_id: string
+          subject_id: string
+          content_type: string
+          title: string | null
+          content: Json
+          status: string
+          version: number
+          created_at: string
+          updated_at: string
+          created_by: string | null
+          published_at: string | null
+        }
+        Insert: {
+          id?: string
+          topic_id: string
+          subject_id: string
+          content_type: string
+          title?: string | null
+          content: Json
+          status?: string
+          version?: number
+          created_at?: string
+          updated_at?: string
+          created_by?: string | null
+          published_at?: string | null
+        }
+        Update: {
+          id?: string
+          topic_id?: string
+          subject_id?: string
+          content_type?: string
+          title?: string | null
+          content?: Json
+          status?: string
+          version?: number
+          created_at?: string
+          updated_at?: string
+          created_by?: string | null
+          published_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_contents_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topic_contents_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      topic_content_versions: {
+        Row: {
+          id: string
+          topic_content_id: string
+          version_number: number
+          content: Json
+          title: string | null
+          created_at: string
+          created_by: string | null
+        }
+        Insert: {
+          id?: string
+          topic_content_id: string
+          version_number: number
+          content: Json
+          title?: string | null
+          created_at?: string
+          created_by?: string | null
+        }
+        Update: {
+          id?: string
+          topic_content_id?: string
+          version_number?: number
+          content?: Json
+          title?: string | null
+          created_at?: string
+          created_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_content_versions_topic_content_id_fkey"
+            columns: ["topic_content_id"]
+            isOneToOne: false
+            referencedRelation: "topic_contents"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       topic_progress: {
         Row: {
           id: string

@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react'
 
 import { useWorkspace } from '@/contexts/WorkspaceContext'
 import { ChevronDown, Shield, GraduationCap } from 'lucide-react'
+import { useGlobalAIStore } from '@/hooks/useGlobalAIStore'
 
 export function Topbar() {
   const router = useRouter()
@@ -98,9 +99,14 @@ export function Topbar() {
               <span className="text-[#BBB] text-[12px] font-medium">⌘ K</span>
             </div>
           </div>
-          <button className="flex items-center justify-center gap-1 pl-2 pr-1 bg-white border border-[#E8E8E8] rounded-full text-[12px] font-medium text-[#606060] hover:bg-gray-50 transition-colors h-[20px] w-[90px] shrink-0">
-            AI Chats
-            <Sparkles className="h-3 w-3 text-purple-500 fill-purple-400" />
+          <button 
+            onClick={() => useGlobalAIStore.getState().openChat()}
+            className="ai-chip-animated flex items-center justify-center gap-1 pl-2 pr-1 rounded-full text-[12px] font-medium text-[#606060] h-[20px] w-[90px] shrink-0 border border-[#E8E8E8]"
+          >
+            <span className="relative z-10 flex items-center gap-1">
+              AI Chats
+              <Sparkles className="h-3 w-3 text-purple-500 fill-purple-400" />
+            </span>
           </button>
         </div>
       </div>

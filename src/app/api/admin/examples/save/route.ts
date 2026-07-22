@@ -20,27 +20,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // Insert examples into DB
-    const insertedExamples = [];
-    for (let i = 0; i < examples.length; i++) {
-      const ex = examples[i];
-      const { data: exampleData, error: eError } = await supabase
-        .from('examples')
-        .insert({
-          chapter_id: topicId,
-          question_text: ex.question_text,
-          step_by_step_solution: ex.step_by_step_solution,
-          explanation: ex.explanation,
-          order_index: i
-        })
-        .select()
-        .single();
-      
-      if (eError) throw eError;
-      insertedExamples.push(exampleData);
-    }
+    // Insert examples into DB as a single row in topic_contents
+    const { data: exampleData, error: eError } = await supabase
+      .from('topic_contents')
+      .insert({
+        subject_id: subjectId,
+        topic_id: topicId,
+        content_type: 'examples',
+        content: examples, // This is the JSON array of examples
+        status: 'published',
+        created_by: user.id
+      })
+      .select()
+      .single();
+    
+    if (eError) throw eError;
 
-    return NextResponse.json({ success: true, count: insertedExamples.length });
+    return NextResponse.json({ success: true, count: examples.length });
   } catch (error: any) {
     console.error('Error saving examples:', error);
     return NextResponse.json(

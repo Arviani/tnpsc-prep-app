@@ -35,31 +35,20 @@ export default async function PracticePage({ params }: PracticePageProps) {
     notFound();
   }
 
-  // 3. Fetch Questions for this specific chapter (not pyq, just normal practice)
+  // 3. Fetch Practice Questions for this specific chapter from topic_contents
   const { data: questionsData, error: questionsError } = await supabase
-    .from('questions')
-    .select(`
-      id, 
-      body, 
-      options (
-        id,
-        body,
-        is_correct
-      )
-    `)
-    .eq('chapter_id', topicId)
-    .eq('is_pyq', false);
+    .from('topic_contents')
+    .select('content')
+    .eq('topic_id', topicId)
+    .eq('content_type', 'practice')
+    .single();
 
-  if (questionsError) {
+  if (questionsError && questionsError.code !== 'PGRST116') {
     console.error('Error fetching questions:', questionsError);
   }
 
-  // Transform data format if needed
-  const questions = questionsData?.map(q => ({
-    id: q.id,
-    body: q.body,
-    options: q.options || []
-  })) || [];
+  // Extract the JSON array from content, default to empty array
+  const questions = questionsData?.content as any[] || [];
 
   return (
     <PracticeClient 

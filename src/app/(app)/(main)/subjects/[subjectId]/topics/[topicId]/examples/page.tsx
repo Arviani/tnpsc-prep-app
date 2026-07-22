@@ -35,16 +35,20 @@ export default async function ExamplesPage({ params }: ExamplesPageProps) {
     notFound();
   }
 
-  // 3. Fetch Examples for this specific chapter
-  const { data: examples, error: examplesError } = await supabase
-    .from('examples')
-    .select('*')
-    .eq('chapter_id', topicId)
-    .order('order_index', { ascending: true });
+  // 3. Fetch Examples for this specific chapter from topic_contents
+  const { data: examplesData, error: examplesError } = await supabase
+    .from('topic_contents')
+    .select('content')
+    .eq('topic_id', topicId)
+    .eq('content_type', 'examples')
+    .single();
 
-  if (examplesError) {
+  if (examplesError && examplesError.code !== 'PGRST116') {
     console.error('Error fetching examples:', examplesError);
   }
+
+  // Extract the JSON array from content, default to empty array
+  const examples = examplesData?.content as any[] || [];
 
   return (
     <ExamplesClient 

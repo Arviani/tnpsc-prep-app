@@ -42,9 +42,10 @@ export async function POST(request: Request) {
 
     // 4. Fetch existing lesson for this chapter to prevent duplicates
     const { data: existingLesson, error: fetchError } = await supabaseAdmin
-      .from('lessons')
+      .from('topic_contents')
       .select('id')
       .eq('topic_id', topicId)
+      .eq('content_type', 'study')
       .single()
 
     if (fetchError && fetchError.code !== 'PGRST116') {
@@ -58,13 +59,13 @@ export async function POST(request: Request) {
 
     // 5. Insert new lesson
     const { data: insertedData, error: dbError } = await supabaseAdmin
-      .from('lessons')
+      .from('topic_contents')
       .insert({
         subject_id: subjectId,
         topic_id: topicId,
         title: title,
-        content: content,
-        content_type: 'study_material',
+        content: { markdown: content },
+        content_type: 'study',
         status: 'published',
         created_by: user.id
       })

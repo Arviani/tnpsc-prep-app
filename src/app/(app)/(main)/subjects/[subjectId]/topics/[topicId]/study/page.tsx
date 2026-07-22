@@ -43,19 +43,21 @@ export default async function StudyPage({ params }: StudyPageProps) {
     notFound();
   }
 
-  // 3. Fetch Lesson content for this specific chapter
-  const { data: lesson, error: lessonError } = await supabase
-    .from('lessons')
-    .select('id, content')
+  // 3. Fetch Lesson (Study Material) for this specific chapter from topic_contents
+  const { data: lessonData, error: lessonError } = await supabase
+    .from('topic_contents')
+    .select('content')
     .eq('topic_id', topicId)
-    .eq('content_type', 'study_material')
-    .limit(1)
+    .eq('content_type', 'study')
     .single();
 
-  // It's okay if lesson is missing (it will just be null), as AI can generate it
-  if (lessonError && lessonError.code !== 'PGRST116') { // PGRST116 is the code for "no rows returned"
+  if (lessonError && lessonError.code !== 'PGRST116') {
     console.error('Error fetching lesson:', lessonError);
   }
+
+  // It's okay if lesson is missing (it will just be null), as AI can generate it
+  // Content is stored as { markdown: "..." }
+  const lesson = lessonData ? { content: typeof lessonData.content === 'string' ? lessonData.content : ((lessonData.content as any)?.markdown || '') } : null;
 
   return (
     <StudyClient 

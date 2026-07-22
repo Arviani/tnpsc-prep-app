@@ -7,7 +7,7 @@ export function ContentArea({ header, children }: { header?: React.ReactNode, ch
         </div>
       )}
       <div className="flex-1 overflow-y-auto p-3">
-        <div className="w-full h-full">
+        <div className="w-full">
           {children}
         </div>
       </div>
