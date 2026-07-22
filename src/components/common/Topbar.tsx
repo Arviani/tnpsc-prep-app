@@ -1,6 +1,6 @@
 'use client'
 
-import { Search, LogOut, User } from 'lucide-react'
+import { Search, LogOut, User, Sparkles } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,10 +16,14 @@ import { createClient } from '@/lib/supabase/client'
 import { useRouter, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
+import { useWorkspace } from '@/contexts/WorkspaceContext'
+import { ChevronDown, Shield, GraduationCap } from 'lucide-react'
+
 export function Topbar() {
   const router = useRouter()
   const pathname = usePathname()
   const [userName, setUserName] = useState<string>('User')
+  const { workspace, setWorkspace, userRole } = useWorkspace()
   
   useEffect(() => {
     const fetchUser = async () => {
@@ -41,28 +45,63 @@ export function Topbar() {
     router.refresh()
   }
 
-  // Derive title from pathname, e.g. /subjects -> Subjects
-  const getPageTitle = () => {
-    const parts = pathname.split('/').filter(Boolean)
-    if (parts.length === 0) return 'Dashboard'
-    return parts[0].charAt(0).toUpperCase() + parts[0].slice(1)
-  }
-
   return (
-    <header className="flex h-12 items-center justify-between border-b border-[#E8E8E8] bg-white px-4 shrink-0 w-full z-30">
+    <header className="flex h-[42px] items-center justify-between bg-white px-4 shrink-0 w-full z-30">
       <div className="flex items-center gap-3 min-w-[200px]">
-        <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white text-[10px] font-bold">T</div>
-        <span className="font-semibold text-[14px] text-[#202020]">TNPSC Prep</span>
+        <div className="flex items-center gap-2 pr-3 border-r border-slate-200">
+          <div className="w-6 h-6 bg-red-600 rounded flex items-center justify-center text-white text-[10px] font-bold">T</div>
+          <span className="font-semibold text-[14px] text-[#202020]">TNPSC Prep</span>
+        </div>
+        
+        {/* Workspace Switcher */}
+        <DropdownMenu>
+          <DropdownMenuTrigger className="inline-flex h-7 px-2 text-xs font-medium text-slate-600 hover:text-slate-900 border border-transparent hover:border-slate-200 bg-transparent hover:bg-slate-50 transition-all rounded-md gap-1 items-center justify-center">
+            {workspace === 'student' ? (
+              <><GraduationCap className="w-3.5 h-3.5 mr-1" /> Student</>
+            ) : (
+              <><Shield className="w-3.5 h-3.5 mr-1 text-indigo-500" /> Admin</>
+            )}
+            <ChevronDown className="w-3 h-3 text-slate-400" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-40">
+            <DropdownMenuItem 
+              onClick={() => setWorkspace('student')}
+              className={workspace === 'student' ? 'bg-slate-100 font-medium' : ''}
+            >
+              <GraduationCap className="w-4 h-4 mr-2" />
+              Student View
+            </DropdownMenuItem>
+            
+            <DropdownMenuItem 
+              onClick={() => setWorkspace('admin')}
+              className={workspace === 'admin' ? 'bg-slate-100 font-medium' : ''}
+            >
+              <Shield className="w-4 h-4 mr-2 text-indigo-500" />
+              Admin View
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
-      <div className="flex-1 max-w-md hidden md:block">
-        <div className="relative flex items-center justify-center">
-          <Search className="absolute left-3 top-2 h-4 w-4 text-[#909090]" />
-          <Input
-            type="search"
-            placeholder="Search..."
-            className="w-full bg-[#F9F9F9] pl-9 h-8 text-[13px] border-none rounded-md"
-          />
+      <div className="hidden md:block w-[300px]">
+        <div className="relative flex items-center w-full h-[28px] bg-white border border-transparent rounded-full pl-[7px] pr-1 gap-1 shadow-[0_0_1px_0_rgba(0,0,0,0.27),0_1px_2px_0_rgba(0,0,0,0.05)] transition-all hover:shadow-md hover:border-[#D0D0D0] focus-within:shadow-md focus-within:border-[#D0D0D0]">
+          <Search className="h-4 w-4 text-[#909090] shrink-0" />
+          <div className="relative flex-1 h-full flex items-center">
+            <input
+              type="search"
+              placeholder="Search"
+              className="absolute inset-0 w-full h-full bg-transparent border-none outline-none focus:outline-none focus:ring-0 text-[14px] font-medium tracking-[-0.15px] placeholder:text-[#8D8D8D] text-[#202020] peer"
+            />
+            {/* Custom Placeholder with different styling for K */}
+            <div className="pointer-events-none flex items-center gap-1 peer-focus:hidden peer-valid:hidden h-full">
+              <span className="text-[#8D8D8D] text-[14px] font-medium tracking-[-0.15px]">Search</span>
+              <span className="text-[#BBB] text-[12px] font-medium">⌘ K</span>
+            </div>
+          </div>
+          <button className="flex items-center justify-center gap-1 pl-2 pr-1 bg-white border border-[#E8E8E8] rounded-full text-[12px] font-medium text-[#606060] hover:bg-gray-50 transition-colors h-[20px] w-[90px] shrink-0">
+            AI Chats
+            <Sparkles className="h-3 w-3 text-purple-500 fill-purple-400" />
+          </button>
         </div>
       </div>
 

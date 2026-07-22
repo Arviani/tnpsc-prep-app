@@ -8,7 +8,7 @@ export function SecondarySidebar({ children, className, ...props }: SecondarySid
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col w-[280px] border-r border-[#E8E8E8] bg-white h-full shrink-0 overflow-y-auto",
+        "hidden md:flex flex-col w-[280px] border-r border-[#E8E8E8] bg-[#F9F9F9] h-full shrink-0 overflow-y-auto",
         className
       )}
       {...props}

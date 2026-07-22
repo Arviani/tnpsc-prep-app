@@ -8,12 +8,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Topbar />
       
       {/* Main Layout Below Topbar */}
-      <div className="flex flex-1 overflow-hidden w-full h-full bg-[#F9F9F9] p-3 gap-3">
+      <div className="flex flex-1 overflow-hidden w-full h-full bg-white px-[6px] pb-[6px] pt-0 gap-[6px]">
         {/* Navigation Rail */}
         <Sidebar />
         
         {/* Main Content Area */}
-        <div className="flex flex-1 w-full h-full bg-white border border-[#E8E8E8] rounded-xl overflow-hidden shadow-sm">
+        <div className="flex flex-1 w-full h-full bg-white border border-[#E8E8E8] rounded-lg overflow-hidden shadow-sm">
           {children}
         </div>
       </div>

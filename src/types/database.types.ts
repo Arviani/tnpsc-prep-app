@@ -14,6 +14,167 @@ export type Database = {
   }
   public: {
     Tables: {
+      lessons: {
+        Row: {
+          id: string
+          subject_id: string
+          topic_id: string
+          title: string
+          content: string
+          content_type: string
+          status: string
+          created_by: string | null
+          published_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          subject_id: string
+          topic_id: string
+          title: string
+          content: string
+          content_type?: string
+          status?: string
+          created_by?: string | null
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          subject_id?: string
+          topic_id?: string
+          title?: string
+          content?: string
+          content_type?: string
+          status?: string
+          created_by?: string | null
+          published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lessons_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      examples: {
+        Row: {
+          id: string
+          chapter_id: string
+          question_text: string
+          approach_text: string | null
+          step_by_step_solution: string
+          final_answer: string | null
+          explanation: string | null
+          order_index: number
+          difficulty: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          chapter_id: string
+          question_text: string
+          approach_text?: string | null
+          step_by_step_solution: string
+          final_answer?: string | null
+          explanation?: string | null
+          order_index: number
+          difficulty?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          chapter_id?: string
+          question_text?: string
+          approach_text?: string | null
+          step_by_step_solution?: string
+          final_answer?: string | null
+          explanation?: string | null
+          order_index?: number
+          difficulty?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "examples_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      topic_progress: {
+        Row: {
+          id: string
+          user_id: string
+          chapter_id: string
+          study_completed: boolean
+          examples_completed: boolean
+          practice_completed: boolean
+          quiz_completed: boolean
+          pyq_completed: boolean
+          revision_completed: boolean
+          last_activity: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          chapter_id: string
+          study_completed?: boolean
+          examples_completed?: boolean
+          practice_completed?: boolean
+          quiz_completed?: boolean
+          pyq_completed?: boolean
+          revision_completed?: boolean
+          last_activity?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          chapter_id?: string
+          study_completed?: boolean
+          examples_completed?: boolean
+          practice_completed?: boolean
+          quiz_completed?: boolean
+          pyq_completed?: boolean
+          revision_completed?: boolean
+          last_activity?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_progress_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "topic_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       pyq_papers: {
         Row: {
           created_at: string
