@@ -136,7 +136,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
   const hasContent = !!(lesson && lesson.content);
 
   return (
-    <div className="flex flex-col gap-6 max-w-6xl mx-auto pb-12">
+    <div className="flex flex-col gap-4 max-w-6xl mx-auto pb-12">
       {isAdmin && (
         <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
           <CMSActionBar

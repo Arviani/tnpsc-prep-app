@@ -8,14 +8,14 @@ interface StudyLayoutProps {
 
 export function StudyLayout({ hero, sidebar, content }: StudyLayoutProps) {
   return (
-    <div className="flex flex-col gap-8 w-full max-w-[1400px] mx-auto pb-24">
+    <div className="flex flex-col gap-5 w-full max-w-[1400px] mx-auto pb-24">
       {/* Top Hero Section */}
       <div className="w-full">
         {hero}
       </div>
 
       {/* Two Column Layout */}
-      <div className="flex flex-col lg:flex-row items-start gap-8 relative w-full">
+      <div className="flex flex-col lg:flex-row items-start gap-5 relative w-full">
         {/* Left Sidebar (Sticky on Desktop, Collapsible Drawer on Mobile could be added here later) */}
         <div className="w-full lg:w-1/4 xl:w-[300px] shrink-0 lg:sticky lg:top-[24px] lg:max-h-[calc(100vh-120px)] hidden lg:block overflow-y-auto custom-scrollbar">
           {sidebar}
