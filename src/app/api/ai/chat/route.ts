@@ -106,7 +106,7 @@ export async function POST(request: Request) {
         console.error("AI Route Error:", error);
 
         return NextResponse.json(
-            { error: "Failed to generate AI response" },
+            { error: error instanceof Error ? error.message : "Failed to generate AI response" },
             { status: 500 }
         );
     }
