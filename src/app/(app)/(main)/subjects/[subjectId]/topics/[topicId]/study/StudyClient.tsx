@@ -10,9 +10,9 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
-import { LessonRenderer } from '@/components/ui/LessonRenderer';
 import { CMSActionBar } from '@/components/admin/CMSActionBar';
 import { RichTextEditor } from '@/components/admin/editors/RichTextEditor';
+import { StudyContent } from '@/components/ui/study/StudyContent';
 import { ImportModal } from '@/components/admin/ImportModal';
 
 interface StudyClientProps {
@@ -150,7 +150,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
             />
           </div>
         ) : hasContent ? (
-          <LessonRenderer content={lesson.content} title={chapter.title} />
+          <StudyContent content={lesson.content} topicTitle={chapter.title} subjectTitle="Reasoning" />
         ) : isAdmin ? (
           <div className="bg-white rounded-xl border border-border flex flex-col items-center justify-center h-[350px] text-center p-8 shadow-sm">
               <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">

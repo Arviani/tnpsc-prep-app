@@ -105,7 +105,7 @@ export function ImportModal({ isOpen, onClose, onImportComplete, contentType }: 
         const text = await file.text();
         Papa.parse(text, {
           header: true,
-          complete: (results) => {
+          complete: (results: any) => {
             onImportComplete(results.data, 'json');
             toast.success('CSV imported successfully');
             onClose();
