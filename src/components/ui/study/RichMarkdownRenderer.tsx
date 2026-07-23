@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 import { Callout } from './Callout';
 import { ExampleCard } from './ExampleCard';
 import { Calculator } from 'lucide-react';
@@ -16,6 +17,7 @@ export function RichMarkdownRenderer({ content }: RichMarkdownRendererProps) {
     <div className="prose prose-sm md:prose-base max-w-none text-slate-700">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
         components={{
           h1: ({ node, children, ...props }) => {
             const text = React.Children.toArray(children).join('').trim();

@@ -28,18 +28,18 @@ export function StudyContent({ content, topicTitle, subjectTitle }: StudyContent
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      const match = line.match(/^(#{1,3})\s+(.+)$/);
+      // Match markdown heading `## Title` OR HTML heading `<h2...>Title</h2>`
+      const mdMatch = line.match(/^(#{1,3})\s+(.+)$/);
+      const htmlMatch = line.match(/<h([1-3])[^>]*>(.*?)<\/h\1>/i);
       
-      if (match) {
-        const level = match[1].length;
-        const text = match[2].replace(/\*/g, '').trim();
+      if (mdMatch || htmlMatch) {
+        const level = mdMatch ? mdMatch[1].length : parseInt(htmlMatch![1], 10);
+        let text = mdMatch ? mdMatch[2].replace(/\*/g, '').trim() : htmlMatch![2].replace(/<[^>]+>/g, '').trim();
         const id = slugify(text);
 
         // Record heading for TOC
         parsedHeadings.push({ id, text, level });
 
-        // If it's an H2 (level 2), we start a new section card
-        // Some content might use H1 as the first heading. We'll treat H1 and H2 as section breakers.
         if (level === 1 || level === 2) {
           // Save previous section if it has content
           if (currentSectionLines.join('\n').trim() !== '') {
