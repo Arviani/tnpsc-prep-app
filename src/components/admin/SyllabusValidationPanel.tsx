@@ -28,7 +28,7 @@ export function SyllabusValidationPanel({
   const isAllGood = report.outOfSyllabusSections === 0 && report.reviewSections === 0;
 
   return (
-    <div className={cn("bg-white border rounded-xl overflow-hidden mb-6 shadow-sm", 
+    <div className={cn("bg-card border rounded-xl overflow-hidden mb-6 shadow-sm", 
       report.outOfSyllabusSections > 0 ? "border-red-200" : 
       report.reviewSections > 0 ? "border-amber-200" : "border-green-200", 
       className
@@ -43,49 +43,49 @@ export function SyllabusValidationPanel({
             report.reviewSections > 0 ? "text-amber-600" : "text-green-600"
           )} />
           <div>
-            <h3 className="font-bold text-slate-900 leading-tight">Syllabus Validation Report</h3>
-            <p className="text-sm text-slate-600 mt-0.5">
+            <h3 className="font-bold text-foreground leading-tight">Syllabus Validation Report</h3>
+            <p className="text-sm text-muted-foreground mt-0.5">
               Strict compliance check against official TNPSC Group IV Syllabus
             </p>
           </div>
         </div>
         
         <div className="text-right">
-          <div className="text-2xl font-black text-slate-900">{report.overallCoverageScore}%</div>
-          <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Coverage</div>
+          <div className="text-2xl font-black text-foreground">{report.overallCoverageScore}%</div>
+          <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Coverage</div>
         </div>
       </div>
 
       <div className="p-5">
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="flex items-center gap-2 text-sm bg-slate-50 p-3 rounded-lg border border-slate-100">
+          <div className="flex items-center gap-2 text-sm bg-secondary p-3 rounded-lg border border-border-subtle">
             <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
-            <span className="font-medium text-slate-700">{report.matchingSections} Sections Match</span>
+            <span className="font-medium text-foreground">{report.matchingSections} Sections Match</span>
           </div>
-          <div className="flex items-center gap-2 text-sm bg-slate-50 p-3 rounded-lg border border-slate-100">
+          <div className="flex items-center gap-2 text-sm bg-secondary p-3 rounded-lg border border-border-subtle">
             <AlertTriangle className={cn("w-5 h-5 shrink-0", report.reviewSections > 0 ? "text-amber-500" : "text-slate-300")} />
-            <span className={cn("font-medium", report.reviewSections > 0 ? "text-amber-700" : "text-slate-500")}>
+            <span className={cn("font-medium", report.reviewSections > 0 ? "text-amber-700" : "text-muted-foreground")}>
               {report.reviewSections} Need Review
             </span>
           </div>
-          <div className="flex items-center gap-2 text-sm bg-slate-50 p-3 rounded-lg border border-slate-100">
+          <div className="flex items-center gap-2 text-sm bg-secondary p-3 rounded-lg border border-border-subtle">
             <XCircle className={cn("w-5 h-5 shrink-0", report.outOfSyllabusSections > 0 ? "text-red-500" : "text-slate-300")} />
-            <span className={cn("font-medium", report.outOfSyllabusSections > 0 ? "text-red-700" : "text-slate-500")}>
+            <span className={cn("font-medium", report.outOfSyllabusSections > 0 ? "text-red-700" : "text-muted-foreground")}>
               {report.outOfSyllabusSections} Outside Syllabus
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-6 mb-6 pb-6 border-b border-slate-100">
+        <div className="flex items-center gap-6 mb-6 pb-6 border-b border-border-subtle">
           <div>
-            <span className="text-xs text-slate-500 block mb-1">Difficulty Level</span>
+            <span className="text-xs text-muted-foreground block mb-1">Difficulty Level</span>
             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 text-blue-700 rounded-md text-sm font-semibold border border-blue-100">
               {report.difficulty}
             </span>
           </div>
           <div>
-            <span className="text-xs text-slate-500 block mb-1">Standard Compliance</span>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-slate-100 text-slate-700 rounded-md text-sm font-medium border border-slate-200">
+            <span className="text-xs text-muted-foreground block mb-1">Standard Compliance</span>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-accent text-foreground rounded-md text-sm font-medium border border-border">
               <BookOpen className="w-4 h-4" /> {report.standardCompliance}
             </span>
           </div>
@@ -93,9 +93,9 @@ export function SyllabusValidationPanel({
 
         {report.flags.length > 0 && (
           <div className="space-y-4">
-            <h4 className="font-bold text-slate-800 flex items-center gap-2">
+            <h4 className="font-bold text-foreground flex items-center gap-2">
               Actionable Flags 
-              <span className="bg-slate-100 text-slate-600 py-0.5 px-2 rounded-full text-xs">{report.flags.length}</span>
+              <span className="bg-accent text-muted-foreground py-0.5 px-2 rounded-full text-xs">{report.flags.length}</span>
             </h4>
             
             {report.flags.map((flag, idx) => (
@@ -110,14 +110,14 @@ export function SyllabusValidationPanel({
                       )}>
                         {flag.status}
                       </span>
-                      <strong className="text-slate-800">{flag.sectionTitle}</strong>
+                      <strong className="text-foreground">{flag.sectionTitle}</strong>
                     </div>
                     
-                    <p className="text-sm text-slate-600 mb-2">{flag.reason}</p>
+                    <p className="text-sm text-muted-foreground mb-2">{flag.reason}</p>
                     
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-slate-500 bg-white px-3 py-1.5 rounded-lg border border-slate-100 w-fit">
-                      <span className="text-slate-400">Recommendation:</span>
-                      <span className="text-slate-700">{flag.recommendation}</span>
+                    <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-card px-3 py-1.5 rounded-lg border border-border-subtle w-fit">
+                      <span className="text-muted-foreground">Recommendation:</span>
+                      <span className="text-foreground">{flag.recommendation}</span>
                     </div>
                   </div>
                   
@@ -133,7 +133,7 @@ export function SyllabusValidationPanel({
                       </Button>
                     )}
                     {onIgnoreFlag && (
-                      <Button size="sm" variant="ghost" onClick={() => onIgnoreFlag(flag.sectionTitle)} className="h-8 text-slate-500 hover:text-slate-700">
+                      <Button size="sm" variant="ghost" onClick={() => onIgnoreFlag(flag.sectionTitle)} className="h-8 text-muted-foreground hover:text-foreground">
                         Ignore
                       </Button>
                     )}
@@ -158,7 +158,7 @@ export function SyllabusValidationPanel({
       </div>
       
       {onRevalidate && (
-        <div className="bg-slate-50 border-t p-3 flex justify-end">
+        <div className="bg-secondary border-t p-3 flex justify-end">
           <Button size="sm" variant="outline" onClick={onRevalidate}>
             Re-run Validation
           </Button>

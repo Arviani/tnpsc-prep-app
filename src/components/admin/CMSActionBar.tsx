@@ -64,7 +64,7 @@ export function CMSActionBar({
 }: CMSActionBarProps) {
 
   return (
-    <div className={cn("flex flex-wrap items-center justify-between gap-3 p-3 bg-white border border-border rounded-lg shadow-sm mb-4", className)}>
+    <div className={cn("flex flex-wrap items-center justify-between gap-3 p-3 bg-card border border-border rounded-lg shadow-sm mb-4", className)}>
       
       <div className="flex items-center gap-2">
         {status && (
@@ -73,7 +73,7 @@ export function CMSActionBar({
             status === 'published' ? "bg-green-50 text-green-700 border-green-200" :
             status === 'draft' ? "bg-amber-50 text-amber-700 border-amber-200" :
             status === 'review' ? "bg-blue-50 text-blue-700 border-blue-200" :
-            "bg-slate-100 text-slate-700 border-slate-200"
+            "bg-accent text-foreground border-border"
           )}>
             {status.toUpperCase()}
           </span>
@@ -101,7 +101,7 @@ export function CMSActionBar({
         ) : (
           <>
             {isEditing ? (
-              <Button size="sm" onClick={onPreview} variant="outline" className="text-slate-600 hover:text-slate-900 bg-slate-50 hover:bg-slate-100">
+              <Button size="sm" onClick={onPreview} variant="outline" className="text-muted-foreground hover:text-foreground bg-secondary hover:bg-accent">
                 <span className="font-bold mr-2 text-lg leading-none">&times;</span> Cancel / View
               </Button>
             ) : (
@@ -111,7 +111,7 @@ export function CMSActionBar({
             )}
             
             {onViewHistory && (
-              <Button size="sm" onClick={onViewHistory} variant="ghost" className="text-slate-600">
+              <Button size="sm" onClick={onViewHistory} variant="ghost" className="text-muted-foreground">
                 <History className="w-4 h-4 mr-2" /> History
               </Button>
             )}
@@ -137,7 +137,7 @@ export function CMSActionBar({
         {(hasContent || isEditing) && (
             
             <DropdownMenu>
-              <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-slate-100 hover:text-slate-900 h-8 w-8 ml-1">
+              <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-foreground h-8 w-8 ml-1">
                 <MoreVertical className="h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">

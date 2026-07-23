@@ -28,7 +28,7 @@ export function TopicActions({ subjectId, chapterId, chapterProgress, status = '
         return <Button variant="outline" size="sm" className="w-full rounded-lg h-8 text-xs col-span-1 border-yellow-200 text-yellow-700 bg-yellow-50/50 hover:bg-yellow-100"><Edit className="w-3.5 h-3.5 mr-1" /> Draft</Button>
       case 'empty':
       default:
-        return <Button variant="outline" size="sm" className="w-full rounded-lg h-8 text-xs col-span-1 border-slate-200 text-slate-500 bg-slate-50 hover:bg-slate-100 cursor-default">Empty</Button>
+        return <Button variant="outline" size="sm" className="w-full rounded-lg h-8 text-xs col-span-1 border-border text-muted-foreground bg-secondary hover:bg-accent cursor-default">Empty</Button>
     }
   }
 
@@ -40,7 +40,7 @@ export function TopicActions({ subjectId, chapterId, chapterProgress, status = '
             <Sparkles className="w-3.5 h-3.5 mr-1" /> Manage Content
           </Button>
         </Link>
-        <Button variant="outline" size="sm" className="w-full rounded-lg border-slate-200 hover:bg-slate-50 h-8 text-xs col-span-1">
+        <Button variant="outline" size="sm" className="w-full rounded-lg border-border hover:bg-secondary h-8 text-xs col-span-1">
           <Edit className="w-3.5 h-3.5 mr-1" /> Edit Info
         </Button>
         {getStatusBadge()}
@@ -54,17 +54,17 @@ export function TopicActions({ subjectId, chapterId, chapterProgress, status = '
   return (
     <div className="mt-auto grid grid-cols-3 gap-2">
       <Link href={`/subjects/${subjectId}/topics/${chapterId}/study`} className="col-span-1">
-        <Button variant={chapterProgress > 0 ? "outline" : "default"} size="sm" className={`w-full rounded-lg h-8 text-xs ${chapterProgress === 0 ? 'bg-indigo-600 hover:bg-indigo-700' : 'border-slate-200'}`}>
+        <Button variant={chapterProgress > 0 ? "outline" : "default"} size="sm" className={`w-full rounded-lg h-8 text-xs ${chapterProgress === 0 ? 'bg-indigo-600 hover:bg-indigo-700' : 'border-border'}`}>
           <BookMarked className="w-3.5 h-3.5 mr-1" /> Study
         </Button>
       </Link>
       <Link href={`/subjects/${subjectId}/topics/${chapterId}/practice`} className="col-span-1">
-        <Button variant="outline" size="sm" className="w-full rounded-lg border-slate-200 hover:bg-slate-50 hover:text-slate-900 h-8 text-xs">
+        <Button variant="outline" size="sm" className="w-full rounded-lg border-border hover:bg-secondary hover:text-foreground h-8 text-xs">
           <PenTool className="w-3.5 h-3.5 mr-1" /> Practice
         </Button>
       </Link>
       <Link href={`/subjects/${subjectId}/topics/${chapterId}/quiz`} className="col-span-1">
-        <Button variant="outline" size="sm" className="w-full rounded-lg border-slate-200 hover:bg-slate-50 hover:text-slate-900 h-8 text-xs">
+        <Button variant="outline" size="sm" className="w-full rounded-lg border-border hover:bg-secondary hover:text-foreground h-8 text-xs">
           <Target className="w-3.5 h-3.5 mr-1" /> Quiz
         </Button>
       </Link>

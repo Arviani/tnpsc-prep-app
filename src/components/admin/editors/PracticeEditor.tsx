@@ -96,16 +96,16 @@ export function PracticeEditor({ content, onChange }: PracticeEditorProps) {
       {questions.map((q, qIndex) => {
         const isExpanded = expandedIndex === qIndex;
         return (
-          <div key={q.id || qIndex} className="border border-border rounded-lg bg-white overflow-hidden shadow-sm">
+          <div key={q.id || qIndex} className="border border-border rounded-lg bg-card overflow-hidden shadow-sm">
             <div 
-              className="flex items-center justify-between p-4 bg-slate-50 cursor-pointer hover:bg-slate-100"
+              className="flex items-center justify-between p-4 bg-secondary cursor-pointer hover:bg-accent"
               onClick={() => setExpandedIndex(isExpanded ? null : qIndex)}
             >
               <div className="flex items-center gap-3">
                 <span className="flex items-center justify-center w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-medium text-sm">
                   {qIndex + 1}
                 </span>
-                <span className="font-medium text-slate-800 line-clamp-1 flex-1">
+                <span className="font-medium text-foreground line-clamp-1 flex-1">
                   {q.body ? q.body.replace(/<[^>]*>?/gm, '').substring(0, 80) + '...' : 'New Question'}
                 </span>
               </div>
@@ -113,7 +113,7 @@ export function PracticeEditor({ content, onChange }: PracticeEditorProps) {
                 <Button variant="ghost" size="icon" onClick={(e) => { e.stopPropagation(); removeQuestion(qIndex); }} className="text-red-500 hover:text-red-600 hover:bg-red-50">
                   <Trash2 className="w-4 h-4" />
                 </Button>
-                {isExpanded ? <ChevronUp className="w-5 h-5 text-slate-400" /> : <ChevronDown className="w-5 h-5 text-slate-400" />}
+                {isExpanded ? <ChevronUp className="w-5 h-5 text-muted-foreground" /> : <ChevronDown className="w-5 h-5 text-muted-foreground" />}
               </div>
             </div>
 
@@ -171,7 +171,7 @@ export function PracticeEditor({ content, onChange }: PracticeEditorProps) {
                   <Label>Options</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {q.options.map((opt, oIndex) => (
-                      <div key={opt.id || oIndex} className={`flex items-start gap-3 p-3 rounded-md border ${opt.is_correct ? 'border-green-300 bg-green-50/30' : 'border-slate-200 bg-slate-50'}`}>
+                      <div key={opt.id || oIndex} className={`flex items-start gap-3 p-3 rounded-md border ${opt.is_correct ? 'border-green-300 bg-green-50/30' : 'border-border bg-secondary'}`}>
                         <input 
                           type="radio" 
                           name={`q-${qIndex}-correct`} 
@@ -181,14 +181,14 @@ export function PracticeEditor({ content, onChange }: PracticeEditorProps) {
                         />
                         <div className="flex-1 space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="text-xs font-semibold text-slate-500 uppercase">Option {String.fromCharCode(65 + oIndex)}</span>
+                            <span className="text-xs font-semibold text-muted-foreground uppercase">Option {String.fromCharCode(65 + oIndex)}</span>
                             {opt.is_correct && <span className="text-[10px] bg-green-100 text-green-700 px-1.5 py-0.5 rounded">Correct</span>}
                           </div>
                           <Input 
                             value={opt.body}
                             onChange={(e) => updateOption(qIndex, oIndex, e.target.value)}
                             placeholder="Option text..."
-                            className="bg-white"
+                            className="bg-card"
                           />
                         </div>
                       </div>
@@ -197,7 +197,7 @@ export function PracticeEditor({ content, onChange }: PracticeEditorProps) {
                 </div>
 
                 {/* Explanations */}
-                <div className="space-y-4 pt-4 border-t border-slate-100">
+                <div className="space-y-4 pt-4 border-t border-border-subtle">
                   <div className="space-y-1.5">
                     <Label>Explanation</Label>
                     <Textarea 
@@ -232,7 +232,7 @@ export function PracticeEditor({ content, onChange }: PracticeEditorProps) {
         );
       })}
 
-      <Button onClick={addQuestion} variant="outline" className="w-full border-dashed border-2 py-8 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200">
+      <Button onClick={addQuestion} variant="outline" className="w-full border-dashed border-2 py-8 text-muted-foreground hover:text-indigo-600 hover:bg-indigo-50 hover:border-indigo-200">
         <Plus className="w-5 h-5 mr-2" /> Add Practice Question
       </Button>
     </div>

@@ -19,8 +19,8 @@ export default async function SubjectsLayout({
   return (
     <>
       <SecondarySidebar>
-        <div className="flex items-center h-12 px-4 border-b border-[#E8E8E8] shrink-0">
-          <h2 className="font-semibold text-[11px] text-[#909090] uppercase tracking-wider">Subjects</h2>
+        <div className="flex items-center h-12 px-4 border-b border-border shrink-0">
+          <h2 className="font-semibold text-[11px] text-muted-foreground uppercase tracking-wider">Subjects</h2>
         </div>
         <SecondarySidebarNav subjects={subjects || []} />
       </SecondarySidebar>

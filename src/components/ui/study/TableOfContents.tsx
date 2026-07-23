@@ -43,10 +43,10 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
   if (headings.length === 0) return null;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm max-h-[calc(100vh-8rem)] flex flex-col">
+    <div className="bg-card border border-border rounded-2xl p-5 shadow-sm max-h-[calc(100vh-8rem)] flex flex-col">
       <div className="mb-4">
-        <h3 className="text-[13px] font-bold text-slate-900 mb-3 flex items-center gap-2 uppercase tracking-wider">
-          <FileText className="w-4 h-4 text-slate-400" />
+        <h3 className="text-[13px] font-bold text-foreground mb-3 flex items-center gap-2 uppercase tracking-wider">
+          <FileText className="w-4 h-4 text-muted-foreground" />
           Table of Contents
         </h3>
       </div>
@@ -68,7 +68,7 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
                     "group flex items-center justify-between text-[14px] font-medium no-underline transition-all duration-200 block py-1.5 px-3 rounded-md mb-0.5",
                     isActive 
                       ? "text-indigo-700 bg-indigo-50 font-semibold" 
-                      : "text-slate-600 hover:text-indigo-600 hover:bg-slate-50"
+                      : "text-muted-foreground hover:text-indigo-600 hover:bg-secondary"
                   )}
                   aria-current={isActive ? 'true' : undefined}
                 >

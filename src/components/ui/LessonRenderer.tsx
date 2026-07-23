@@ -32,22 +32,22 @@ export function LessonRenderer({ content, title }: LessonRendererProps) {
   const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
   return (
-    <div className="flex flex-col w-full bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+    <div className="flex flex-col w-full bg-card rounded-xl border border-border shadow-sm overflow-hidden">
       {/* Top Header */}
       {title && (
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-white">
-          <h1 className="text-xl font-bold text-slate-800">{title}</h1>
-          <span className="text-sm font-medium text-slate-500">18 min</span>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-card">
+          <h1 className="text-xl font-bold text-foreground">{title}</h1>
+          <span className="text-sm font-medium text-muted-foreground">18 min</span>
         </div>
       )}
 
       {/* Main Content Area */}
       <div className="flex flex-col lg:flex-row items-stretch relative w-full h-full min-h-[500px]">
         {showTOC && (
-          <div className="w-full lg:w-[280px] shrink-0 border-r border-border bg-slate-50/50">
+          <div className="w-full lg:w-[280px] shrink-0 border-r border-border bg-secondary/50">
             <div className="sticky top-0 p-6 overflow-y-auto max-h-full">
-              <h3 className="text-[13px] font-bold text-slate-900 mb-4 flex items-center gap-2 uppercase tracking-wider">
-                <FileText className="w-4 h-4 text-slate-400" />
+              <h3 className="text-[13px] font-bold text-foreground mb-4 flex items-center gap-2 uppercase tracking-wider">
+                <FileText className="w-4 h-4 text-muted-foreground" />
                 Table of Contents
               </h3>
               <ul className="space-y-1.5 mb-0 list-none ml-0 pl-0">
@@ -58,7 +58,7 @@ export function LessonRenderer({ content, title }: LessonRendererProps) {
                   >
                     <a 
                       href={`#${heading.id}`}
-                      className="text-slate-500 hover:text-emerald-600 hover:bg-emerald-50 rounded-md px-2 text-[14px] font-medium no-underline transition-colors block py-1.5"
+                      className="text-muted-foreground hover:text-emerald-600 hover:bg-emerald-50 rounded-md px-2 text-[14px] font-medium no-underline transition-colors block py-1.5"
                     >
                       {heading.text}
                     </a>
@@ -69,37 +69,37 @@ export function LessonRenderer({ content, title }: LessonRendererProps) {
           </div>
         )}
         
-        <div className="flex-1 min-w-0 p-8 lg:p-12 prose prose-sm md:prose-base max-w-none text-slate-700 bg-white">
-        {title && <h1 className="text-3xl font-extrabold text-slate-900 mb-8 border-b border-slate-200 pb-4">{title}</h1>}
+        <div className="flex-1 min-w-0 p-8 lg:p-12 prose prose-sm md:prose-base max-w-none text-foreground bg-card">
+        {title && <h1 className="text-3xl font-extrabold text-foreground mb-8 border-b border-border pb-4">{title}</h1>}
         <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ node, children, ...props }) => {
             const text = React.Children.toArray(children).join('').trim();
-            return <h1 id={slugify(text)} className="text-3xl font-extrabold text-slate-900 mt-10 mb-6 pb-2 border-b border-slate-200 scroll-mt-20" {...props}>{children}</h1>;
+            return <h1 id={slugify(text)} className="text-3xl font-extrabold text-foreground mt-10 mb-6 pb-2 border-b border-border scroll-mt-20" {...props}>{children}</h1>;
           },
           h2: ({ node, children, ...props }) => {
             const text = React.Children.toArray(children).join('').trim();
-            return <h2 id={slugify(text)} className="text-2xl font-bold text-slate-800 mt-8 mb-4 scroll-mt-20" {...props}>{children}</h2>;
+            return <h2 id={slugify(text)} className="text-2xl font-bold text-foreground mt-8 mb-4 scroll-mt-20" {...props}>{children}</h2>;
           },
           h3: ({ node, children, ...props }) => {
             const text = React.Children.toArray(children).join('').trim();
-            return <h3 id={slugify(text)} className="text-xl font-semibold text-slate-800 mt-6 mb-3 scroll-mt-20" {...props}>{children}</h3>;
+            return <h3 id={slugify(text)} className="text-xl font-semibold text-foreground mt-6 mb-3 scroll-mt-20" {...props}>{children}</h3>;
           },
           p: ({ node, ...props }) => <p className="mb-4 leading-relaxed" {...props} />,
           ul: ({ node, ...props }) => <ul className="list-disc list-outside ml-6 mb-6 space-y-2 marker:text-indigo-500" {...props} />,
           ol: ({ node, ...props }) => <ol className="list-decimal list-outside ml-6 mb-6 space-y-2 marker:text-indigo-500 marker:font-semibold" {...props} />,
           li: ({ node, ...props }) => <li className="pl-2" {...props} />,
           a: ({ node, ...props }) => <a className="text-indigo-600 hover:text-indigo-800 underline decoration-indigo-200 underline-offset-4" {...props} />,
-          strong: ({ node, ...props }) => <strong className="font-semibold text-slate-900" {...props} />,
-          hr: ({ node, ...props }) => <hr className="my-10 border-slate-200 border-t-2" {...props} />,
+          strong: ({ node, ...props }) => <strong className="font-semibold text-foreground" {...props} />,
+          hr: ({ node, ...props }) => <hr className="my-10 border-border border-t-2" {...props} />,
           table: ({ node, ...props }) => (
-            <div className="overflow-x-auto my-8 rounded-xl border border-slate-200 shadow-sm">
+            <div className="overflow-x-auto my-8 rounded-xl border border-border shadow-sm">
               <table className="w-full text-left border-collapse" {...props} />
             </div>
           ),
-          th: ({ node, ...props }) => <th className="bg-slate-50 font-semibold text-slate-700 p-4 border-b border-slate-200" {...props} />,
-          td: ({ node, ...props }) => <td className="p-4 border-b border-slate-100 last:border-b-0 align-top" {...props} />,
+          th: ({ node, ...props }) => <th className="bg-secondary font-semibold text-foreground p-4 border-b border-border" {...props} />,
+          td: ({ node, ...props }) => <td className="p-4 border-b border-border-subtle last:border-b-0 align-top" {...props} />,
           blockquote: ({ node, children, ...props }) => {
             const rawText = React.Children.toArray(children).join('').trim();
             
@@ -169,14 +169,14 @@ export function LessonRenderer({ content, title }: LessonRendererProps) {
               // Since children are passed as elements, getting rawText loses formatting.
               // Let's render the original children but style the blockquote as a card.
               return (
-                <div className="my-8 bg-white border border-indigo-100 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+                <div className="my-8 bg-card border border-indigo-100 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
                   <div className="bg-indigo-50/50 border-b border-indigo-100 px-6 py-4 flex items-center gap-3">
                     <div className="bg-indigo-100 p-1.5 rounded text-indigo-600">
                       <FileText className="w-4 h-4" />
                     </div>
                     <h4 className="font-bold text-indigo-900 m-0">Worked Example</h4>
                   </div>
-                  <div className="p-6 space-y-4 text-slate-700 example-content">
+                  <div className="p-6 space-y-4 text-foreground example-content">
                     {children}
                   </div>
                 </div>
@@ -186,11 +186,11 @@ export function LessonRenderer({ content, title }: LessonRendererProps) {
             if (rawText.startsWith('❓ **QUESTION:**') || rawText.startsWith('❓ QUESTION:')) {
               const content = rawText.replace(/^❓\s*(?:\*\*QUESTION:\*\*|QUESTION:)\s*/, '');
               return (
-                <div className="my-4 bg-slate-50 border-l-4 border-indigo-500 rounded-r-xl p-5 flex items-start gap-4">
+                <div className="my-4 bg-secondary border-l-4 border-indigo-500 rounded-r-xl p-5 flex items-start gap-4">
                   <div className="text-indigo-500 shrink-0 mt-0.5">
                     <HelpCircle className="w-5 h-5" />
                   </div>
-                  <div className="flex-1 font-medium text-slate-800">
+                  <div className="flex-1 font-medium text-foreground">
                     {content}
                   </div>
                 </div>
@@ -199,7 +199,7 @@ export function LessonRenderer({ content, title }: LessonRendererProps) {
 
             // Default blockquote
             return (
-              <blockquote className="my-6 border-l-4 border-slate-300 pl-4 italic text-slate-600" {...props}>
+              <blockquote className="my-6 border-l-4 border-slate-300 pl-4 italic text-muted-foreground" {...props}>
                 {children}
               </blockquote>
             );

@@ -2,7 +2,7 @@ export function ContentArea({ header, children }: { header?: React.ReactNode, ch
   return (
     <div className="flex-1 flex flex-col h-full bg-transparent overflow-hidden w-full">
       {header && (
-        <div className="bg-transparent px-3 h-12 flex items-center border-b border-[#E8E8E8] shrink-0">
+        <div className="bg-transparent px-3 h-12 flex items-center border-b border-border shrink-0">
           <div className="w-full">{header}</div>
         </div>
       )}

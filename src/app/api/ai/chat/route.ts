@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { openrouter } from "@/lib/ai/openrouter";
 import { buildChatSystemPrompt } from "@/lib/ai/prompts/chat";
 import { TopicContext } from "@/lib/ai/context";
+import { ModelManager } from "@/lib/ai/ModelManager";
 
 export async function POST(request: Request) {
     try {
@@ -10,6 +10,8 @@ export async function POST(request: Request) {
         
         let messages = body.messages || [];
         const context: TopicContext | undefined = body.context;
+        const requestedModelId = body.modelId;
+        const stream = body.stream || false;
 
         // Backward compatibility for old `prompt` style
         if (body.prompt && messages.length === 0) {
@@ -39,19 +41,67 @@ export async function POST(request: Request) {
         }
         
         console.log('\n================ AI GENERATION REQUEST ================');
-        console.log(`[API/AI] Sending ${messages.length} messages to OpenRouter.`);
+        console.log(`[API/AI] Sending ${messages.length} messages to ModelManager. Starting model: ${requestedModelId || 'Default'}`);
 
-        const completion = await openrouter.chat.completions.create({
-            model: "google/gemma-4-26b-a4b-it:free",
-            messages: messages
-        });
+        const modelManager = ModelManager.getInstance();
+        const { response, fallbackInfo, model } = await modelManager.generateChatWithFallback(messages, requestedModelId, stream);
     
-        const answer = completion.choices[0]?.message?.content ?? "No response";
-        
-        console.log('\n[API/AI] Received response from OpenRouter.');
+        console.log('\n[API/AI] Received response from ModelManager.');
+        if (fallbackInfo.wasFallback) {
+            console.log(`[API/AI] Fallback triggered! Original: ${fallbackInfo.originalModelId}, New: ${fallbackInfo.newModelId}, Reason: ${fallbackInfo.fallbackReason}`);
+        }
         console.log('=======================================================\n');
 
-        return NextResponse.json({ answer });
+        if (stream) {
+            // Create a TransformStream to parse SSE from OpenRouter and yield raw text
+            const encoder = new TextEncoder();
+            const decoder = new TextDecoder();
+            
+            let buffer = '';
+            const transformStream = new TransformStream({
+              async transform(chunk, controller) {
+                buffer += decoder.decode(chunk, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
+                
+                for (const line of lines) {
+                  const trimmedLine = line.trim();
+                  if (trimmedLine.startsWith('data: ') && trimmedLine !== 'data: [DONE]') {
+                    try {
+                      const data = JSON.parse(trimmedLine.slice(6));
+                      const content = data.choices?.[0]?.delta?.content;
+                      if (content) {
+                        controller.enqueue(encoder.encode(content));
+                      }
+                    } catch (e) {
+                      // ignore parse errors for incomplete chunks
+                    }
+                  }
+                }
+              }
+            });
+
+            const readable = (response as ReadableStream).pipeThrough(transformStream);
+
+            return new Response(readable, {
+                headers: {
+                    'Content-Type': 'text/plain; charset=utf-8',
+                    'Cache-Control': 'no-cache',
+                    'Connection': 'keep-alive',
+                    'x-fallback-occurred': fallbackInfo.wasFallback ? 'true' : 'false',
+                    'x-fallback-reason': fallbackInfo.fallbackReason || '',
+                    'x-model-used': model.id
+                },
+            });
+        }
+
+        const answer = (response as any).content ?? "No response";
+
+        return NextResponse.json({ 
+            answer, 
+            model: model.id,
+            fallbackInfo 
+        });
     } catch (error) {
         console.error("AI Route Error:", error);
 

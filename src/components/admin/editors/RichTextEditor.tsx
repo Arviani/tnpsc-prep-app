@@ -42,7 +42,7 @@ const MenuBar = ({ editor }: { editor: Editor | null }) => {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-1 p-2 bg-slate-50 border-b border-border rounded-t-md">
+    <div className="flex flex-wrap items-center gap-1 p-2 bg-secondary border-b border-border rounded-t-md">
       <Button
         type="button"
         variant="ghost"
@@ -243,7 +243,7 @@ export function RichTextEditor({ content, onChange, className, disabled }: RichT
   }, [content, editor]);
 
   return (
-    <div className={cn("border border-border rounded-md bg-white overflow-hidden flex flex-col", className, disabled && "opacity-60 cursor-not-allowed")}>
+    <div className={cn("border border-border rounded-md bg-card overflow-hidden flex flex-col", className, disabled && "opacity-60 cursor-not-allowed")}>
       <MenuBar editor={editor} />
       <div className="flex-1 overflow-y-auto">
         <EditorContent editor={editor} className="h-full" />

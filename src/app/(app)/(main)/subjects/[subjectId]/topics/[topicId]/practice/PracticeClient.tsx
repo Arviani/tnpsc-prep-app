@@ -213,7 +213,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
   // If we have generated questions, display them as the current content
   const displayQuestions = generatedQuestions || shuffledQuestions;
   const currentQuestion = displayQuestions && displayQuestions.length > 0 ? displayQuestions[currentIndex] : null;
-  const correctOption = currentQuestion?.options.find(o => o.is_correct);
+  const correctOption = currentQuestion?.options.find((o: any) => o.is_correct);
   const isCorrect = selectedAnswerId === correctOption?.id;
 
   useEffect(() => {
@@ -228,8 +228,8 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
           prompt: buildPracticePrompt(
             context,
             currentQuestion.body || "",
-            currentQuestion.options.map(o => o.body) || [],
-            currentQuestion.options.find(o => o.id === selectedAnswerId)?.body || "",
+            currentQuestion.options.map((o: any) => o.body) || [],
+            currentQuestion.options.find((o: any) => o.id === selectedAnswerId)?.body || "",
             correctOption?.body || "",
             'why_wrong'
           ) 
@@ -240,8 +240,8 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
           prompt: buildPracticePrompt(
             context,
             currentQuestion.body || "",
-            currentQuestion.options.map(o => o.body) || [],
-            currentQuestion.options.find(o => o.id === selectedAnswerId)?.body || "",
+            currentQuestion.options.map((o: any) => o.body) || [],
+            currentQuestion.options.find((o: any) => o.id === selectedAnswerId)?.body || "",
             correctOption?.body || "",
             'explain_concept'
           ) 
@@ -252,8 +252,8 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
           prompt: buildPracticePrompt(
             context,
             currentQuestion.body || "",
-            currentQuestion.options.map(o => o.body) || [],
-            currentQuestion.options.find(o => o.id === selectedAnswerId)?.body || "",
+            currentQuestion.options.map((o: any) => o.body) || [],
+            currentQuestion.options.find((o: any) => o.id === selectedAnswerId)?.body || "",
             correctOption?.body || "",
             'shortcut'
           ) 
@@ -264,8 +264,8 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
           prompt: buildPracticePrompt(
             context,
             currentQuestion.body || "",
-            currentQuestion.options.map(o => o.body) || [],
-            currentQuestion.options.find(o => o.id === selectedAnswerId)?.body || "",
+            currentQuestion.options.map((o: any) => o.body) || [],
+            currentQuestion.options.find((o: any) => o.id === selectedAnswerId)?.body || "",
             correctOption?.body || "",
             'common_mistakes'
           ) 
@@ -360,12 +360,12 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
       ) : isEmpty ? (
         <div className="max-w-3xl mx-auto space-y-6 pb-12 h-[400px]">
           {isAdmin ? (
-            <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
+            <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed border-border rounded-xl bg-secondary/50 p-8">
+              <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm border border-border-subtle">
                 <PenTool className="w-8 h-8 text-blue-400" />
               </div>
-              <h3 className="text-xl font-bold text-slate-800">No practice questions available.</h3>
-              <p className="text-sm text-slate-500 mt-2 max-w-md mb-6">
+              <h3 className="text-xl font-bold text-foreground">No practice questions available.</h3>
+              <p className="text-sm text-muted-foreground mt-2 max-w-md mb-6">
                 There are no practice questions for this topic yet. Generate them using AI or import them.
               </p>
               <Button onClick={() => setIsImportModalOpen(true)} className="bg-blue-600 hover:bg-blue-700 shadow-sm">
@@ -373,12 +373,12 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
               </Button>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
-                <AlertTriangle className="w-8 h-8 text-slate-400" />
+            <div className="flex flex-col items-center justify-center h-full text-center border-2 border-dashed border-border rounded-xl bg-secondary/50 p-8">
+              <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm border border-border-subtle">
+                <AlertTriangle className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold text-slate-800">No practice questions available.</h3>
-              <p className="text-sm text-slate-500 mt-2 max-w-md">
+              <h3 className="text-xl font-bold text-foreground">No practice questions available.</h3>
+              <p className="text-sm text-muted-foreground mt-2 max-w-md">
                 There are no practice questions available for this topic right now. Please check back later.
               </p>
             </div>
@@ -387,31 +387,31 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
       ) : (
         <div className="max-w-3xl mx-auto">
           {/* Question Card */}
-          <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm h-fit">
+          <div className="bg-card p-8 rounded-2xl border border-border shadow-sm h-fit">
         <div className="flex items-center justify-between mb-6">
           <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full uppercase tracking-wider">
             Question {currentIndex + 1} of {displayQuestions.length}
           </span>
-          <span className="text-sm font-semibold text-slate-400 flex items-center gap-1"><HelpCircle className="w-4 h-4" /> Need Hint?</span>
+          <span className="text-sm font-semibold text-muted-foreground flex items-center gap-1"><HelpCircle className="w-4 h-4" /> Need Hint?</span>
         </div>
         
-        <h2 className="text-xl font-bold text-slate-900 mb-8 leading-snug">{currentQuestion?.body}</h2>
+        <h2 className="text-xl font-bold text-foreground mb-8 leading-snug">{currentQuestion?.body}</h2>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-          {currentQuestion?.options.map((option) => {
+          {currentQuestion?.options.map((option: any) => {
             const isSelected = selectedAnswerId === option.id;
             const isCorrectOption = option.is_correct;
             
             let buttonClass = "w-full justify-start text-left h-auto py-4 px-5 text-base rounded-xl border-2 transition-all duration-200";
             if (!hasSubmitted) {
-              buttonClass = cn(buttonClass, isSelected ? "border-indigo-600 bg-indigo-50 text-indigo-900 font-semibold shadow-sm" : "border-slate-200 hover:border-indigo-300 hover:bg-slate-50 text-slate-700");
+              buttonClass = cn(buttonClass, isSelected ? "border-indigo-600 bg-indigo-50 text-indigo-900 font-semibold shadow-sm" : "border-border hover:border-indigo-300 hover:bg-secondary text-foreground");
             } else {
               if (isCorrectOption) {
                 buttonClass = cn(buttonClass, "border-green-500 bg-green-50 text-green-900 font-bold shadow-sm");
               } else if (isSelected && !isCorrectOption) {
                 buttonClass = cn(buttonClass, "border-red-400 bg-red-50 text-red-900 font-semibold");
               } else {
-                buttonClass = cn(buttonClass, "border-slate-100 bg-slate-50 text-slate-400 opacity-60");
+                buttonClass = cn(buttonClass, "border-border-subtle bg-secondary text-muted-foreground opacity-60");
               }
             }
 
@@ -453,13 +453,13 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
             
             {/* Display Explanation & Metadata */}
             {currentQuestion?.explanation && (
-              <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 mt-4">
-                <strong className="text-slate-800 text-base mb-2 block">Explanation</strong>
+              <div className="bg-secondary p-5 rounded-xl border border-border-subtle mt-4">
+                <strong className="text-foreground text-base mb-2 block">Explanation</strong>
                 <div className="space-y-2 mt-2">
                   {currentQuestion.explanation
                     .split(/(?=Step \d+:)/)
-                    .map((step, i) => (
-                      <p key={i} className="mb-0 text-slate-600 text-sm leading-relaxed">{step.trim()}</p>
+                    .map((step: string, i: number) => (
+                      <p key={i} className="mb-0 text-muted-foreground text-sm leading-relaxed">{step.trim()}</p>
                     ))}
                 </div>
                 

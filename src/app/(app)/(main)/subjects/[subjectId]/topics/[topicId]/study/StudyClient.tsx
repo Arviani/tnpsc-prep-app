@@ -164,7 +164,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
   return (
     <div className="flex flex-col gap-4 max-w-6xl mx-auto pb-12">
       {isAdmin && (
-        <div className="bg-white rounded-xl border border-border shadow-sm overflow-hidden">
+        <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
           <CMSActionBar
             status={lesson?.status as any || (isEditing ? 'draft' : undefined)}
             hasContent={hasContent}
@@ -226,7 +226,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
 
       <div className="w-full">
         {isEditing ? (
-          <div className="bg-white rounded-xl border border-border p-6 lg:p-8 shadow-sm">
+          <div className="bg-card rounded-xl border border-border p-6 lg:p-8 shadow-sm">
             <h1 className="text-2xl font-bold text-foreground mb-4">{chapter.title}</h1>
             <RichTextEditor
               content={editorContent}
@@ -236,12 +236,12 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
         ) : hasContent ? (
           <StudyContent content={lesson.content} topicTitle={chapter.title} subjectTitle="Reasoning" />
         ) : isAdmin ? (
-          <div className="bg-white rounded-xl border border-border flex flex-col items-center justify-center h-[350px] text-center p-8 shadow-sm">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
+          <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center h-[350px] text-center p-8 shadow-sm">
+            <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm border border-border-subtle">
               <Sparkles className="w-8 h-8 text-indigo-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-800">No lesson available.</h3>
-            <p className="text-sm text-slate-500 mt-2 max-w-md mb-6">
+            <h3 className="text-xl font-bold text-foreground">No lesson available.</h3>
+            <p className="text-sm text-muted-foreground mt-2 max-w-md mb-6">
               There is currently no pre-written lesson content for this topic in the database. Generate or import content to get started.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
@@ -249,20 +249,20 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
                 <Sparkles className="w-4 h-4 mr-2" /> Generate with AI
               </Button>
               <Button onClick={() => setIsEditing(true)} variant="outline" className="shadow-sm">
-                <PenTool className="w-4 h-4 mr-2 text-slate-500" /> Write Manually
+                <PenTool className="w-4 h-4 mr-2 text-muted-foreground" /> Write Manually
               </Button>
               <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="shadow-sm">
-                <UploadCloud className="w-4 h-4 mr-2 text-slate-500" /> Import Lesson
+                <UploadCloud className="w-4 h-4 mr-2 text-muted-foreground" /> Import Lesson
               </Button>
             </div>
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-border flex flex-col items-center justify-center h-[350px] text-center p-8 shadow-sm">
-            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
+          <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center h-[350px] text-center p-8 shadow-sm">
+            <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm border border-border-subtle">
               <Sparkles className="w-8 h-8 text-indigo-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-800">No lesson available.</h3>
-            <p className="text-sm text-slate-500 mt-2 max-w-md">
+            <h3 className="text-xl font-bold text-foreground">No lesson available.</h3>
+            <p className="text-sm text-muted-foreground mt-2 max-w-md">
               There is currently no pre-written lesson content for this topic in the database.
             </p>
             <p className="text-xs font-medium text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full mt-4">

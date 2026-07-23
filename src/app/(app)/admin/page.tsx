@@ -50,7 +50,7 @@ export default async function AdminDashboard() {
       
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-br from-slate-900 to-indigo-950 p-6 rounded-2xl text-white shadow-md relative overflow-hidden">
-        <div className="absolute -right-20 -top-20 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute -right-20 -top-20 w-64 h-64 bg-card opacity-5 rounded-full blur-3xl pointer-events-none"></div>
         <div className="relative z-10">
           <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
             Admin Workspace
@@ -61,7 +61,7 @@ export default async function AdminDashboard() {
         </div>
         <div className="relative z-10 flex gap-3">
           <Link href="/subjects">
-            <Button className="bg-white text-indigo-950 hover:bg-indigo-50 font-semibold shadow-sm">
+            <Button className="bg-card text-indigo-950 hover:bg-indigo-50 font-semibold shadow-sm">
               <BookOpen className="w-4 h-4 mr-2" /> Content Manager
             </Button>
           </Link>
@@ -76,7 +76,7 @@ export default async function AdminDashboard() {
           
           {/* Key Metrics */}
           <div>
-            <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Platform Overview</h2>
+            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-3">Platform Overview</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {stats.map((stat, i) => (
                 <Card key={i} className="border-border shadow-sm">
@@ -96,7 +96,7 @@ export default async function AdminDashboard() {
 
           {/* Quick Actions */}
           <div>
-            <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Quick Actions</h2>
+            <h2 className="text-sm font-bold text-muted-foreground uppercase tracking-wider mb-3">Quick Actions</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
               {quickActions.map((action, i) => (
                 <Link key={i} href={action.href} className="block group">
@@ -118,7 +118,7 @@ export default async function AdminDashboard() {
           {/* Content Pipeline */}
           <Card className="shadow-sm border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-slate-500 uppercase tracking-wider">Content Pipeline</CardTitle>
+              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Content Pipeline</CardTitle>
             </CardHeader>
             <CardContent className="space-y-5">
               {contentStatus.map((status, i) => (
@@ -127,7 +127,7 @@ export default async function AdminDashboard() {
                     <span>{status.label}</span>
                     <span className="font-bold">{status.value}</span>
                   </div>
-                  <Progress value={(status.value / status.max) * 100} className={`h-2 bg-slate-100 [&_[data-slot=progress-indicator]]:${status.color}`} />
+                  <Progress value={(status.value / status.max) * 100} className={`h-2 bg-accent [&_[data-slot=progress-indicator]]:${status.color}`} />
                 </div>
               ))}
               <Button variant="outline" className="w-full mt-4 text-xs h-8">View Pipeline Report</Button>
@@ -137,20 +137,20 @@ export default async function AdminDashboard() {
           {/* Recent Activity */}
           <Card className="shadow-sm border-border">
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-bold text-slate-500 uppercase tracking-wider">Recent Activity</CardTitle>
+              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-wider">Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 {recentActivity.map((activity, i) => (
                   <div key={i} className="flex gap-3 items-start relative">
                     {i !== recentActivity.length - 1 && (
-                      <div className="absolute left-2.5 top-6 bottom-[-16px] w-[2px] bg-slate-100"></div>
+                      <div className="absolute left-2.5 top-6 bottom-[-16px] w-[2px] bg-accent"></div>
                     )}
-                    <div className="w-5 h-5 rounded-full bg-slate-100 border-2 border-white shadow-sm flex-shrink-0 z-10 flex items-center justify-center mt-0.5">
+                    <div className="w-5 h-5 rounded-full bg-accent border-2 border-white shadow-sm flex-shrink-0 z-10 flex items-center justify-center mt-0.5">
                       {activity.type === 'ai' && <Zap className="w-2.5 h-2.5 text-amber-500" />}
                       {activity.type === 'publish' && <CheckCircle className="w-2.5 h-2.5 text-green-500" />}
                       {activity.type === 'import' && <UploadCloud className="w-2.5 h-2.5 text-blue-500" />}
-                      {activity.type === 'draft' && <FileText className="w-2.5 h-2.5 text-slate-500" />}
+                      {activity.type === 'draft' && <FileText className="w-2.5 h-2.5 text-muted-foreground" />}
                     </div>
                     <div>
                       <p className="text-sm text-foreground font-medium leading-tight">{activity.action}</p>

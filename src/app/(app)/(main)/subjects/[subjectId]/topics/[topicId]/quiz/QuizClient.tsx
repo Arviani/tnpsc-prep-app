@@ -50,12 +50,12 @@ export default function QuizClient({ topicTitle, hasQuestions }: QuizClientProps
   if (!hasQuestions) {
     return (
       <div className="flex flex-col gap-8 max-w-4xl mx-auto pb-12">
-        <div className="flex-1 text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
-          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
-            <AlertTriangle className="w-8 h-8 text-slate-400" />
+        <div className="flex-1 text-center border-2 border-dashed border-border rounded-xl bg-secondary/50 p-8">
+          <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm border border-border-subtle">
+            <AlertTriangle className="w-8 h-8 text-muted-foreground" />
           </div>
-          <h3 className="text-xl font-bold text-slate-800">No quiz available.</h3>
-          <p className="text-sm text-slate-500 mt-2 max-w-md mx-auto">
+          <h3 className="text-xl font-bold text-foreground">No quiz available.</h3>
+          <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
             There is no quiz available for this topic right now. Please check back later.
           </p>
         </div>
@@ -84,13 +84,13 @@ export default function QuizClient({ topicTitle, hasQuestions }: QuizClientProps
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       {/* Quiz Results Header */}
-      <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden relative">
+      <div className="bg-card rounded-3xl border border-border shadow-sm overflow-hidden relative">
         <div className="absolute top-0 left-0 w-full h-32 bg-slate-900"></div>
         
         <div className="relative pt-16 px-8 pb-8 flex flex-col items-center">
           
           {/* Circular Score */}
-          <div className="relative w-40 h-40 bg-white rounded-full flex items-center justify-center shadow-lg border-4 border-white mb-6">
+          <div className="relative w-40 h-40 bg-card rounded-full flex items-center justify-center shadow-lg border-4 border-white mb-6">
             <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
               <circle className="stroke-slate-100" strokeWidth="8" cx="50" cy="50" r="42" fill="transparent" />
               <circle 
@@ -104,30 +104,30 @@ export default function QuizClient({ topicTitle, hasQuestions }: QuizClientProps
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <span className={`text-4xl font-bold ${scoreColor}`}>{MOCK_QUIZ_DATA.score}</span>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Out of {MOCK_QUIZ_DATA.totalQuestions}</span>
+              <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest mt-1">Out of {MOCK_QUIZ_DATA.totalQuestions}</span>
             </div>
           </div>
 
-          <h2 className="text-3xl font-bold text-slate-900 mb-2">{feedbackText}</h2>
-          <p className="text-slate-500 mb-8 max-w-md text-center">You have completed the quiz on <strong>{topicTitle}</strong>. Review your performance metrics below.</p>
+          <h2 className="text-3xl font-bold text-foreground mb-2">{feedbackText}</h2>
+          <p className="text-muted-foreground mb-8 max-w-md text-center">You have completed the quiz on <strong>{topicTitle}</strong>. Review your performance metrics below.</p>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
-            <div className="bg-slate-50 rounded-2xl p-4 text-center border border-slate-100">
+            <div className="bg-secondary rounded-2xl p-4 text-center border border-border-subtle">
               <Target className="w-6 h-6 text-indigo-500 mx-auto mb-2" />
-              <div className="text-sm font-semibold text-slate-500 mb-1">Accuracy</div>
-              <div className="text-2xl font-bold text-slate-900">{MOCK_QUIZ_DATA.accuracyPercentage}%</div>
+              <div className="text-sm font-semibold text-muted-foreground mb-1">Accuracy</div>
+              <div className="text-2xl font-bold text-foreground">{MOCK_QUIZ_DATA.accuracyPercentage}%</div>
             </div>
-            <div className="bg-slate-50 rounded-2xl p-4 text-center border border-slate-100">
+            <div className="bg-secondary rounded-2xl p-4 text-center border border-border-subtle">
               <Clock className="w-6 h-6 text-blue-500 mx-auto mb-2" />
-              <div className="text-sm font-semibold text-slate-500 mb-1">Time Taken</div>
-              <div className="text-2xl font-bold text-slate-900">{Math.floor(MOCK_QUIZ_DATA.timeSpentSeconds / 60)}m {MOCK_QUIZ_DATA.timeSpentSeconds % 60}s</div>
+              <div className="text-sm font-semibold text-muted-foreground mb-1">Time Taken</div>
+              <div className="text-2xl font-bold text-foreground">{Math.floor(MOCK_QUIZ_DATA.timeSpentSeconds / 60)}m {MOCK_QUIZ_DATA.timeSpentSeconds % 60}s</div>
             </div>
-            <div className="bg-slate-50 rounded-2xl p-4 text-center border border-slate-100">
+            <div className="bg-secondary rounded-2xl p-4 text-center border border-border-subtle">
               <Trophy className="w-6 h-6 text-amber-500 mx-auto mb-2" />
-              <div className="text-sm font-semibold text-slate-500 mb-1">XP Earned</div>
-              <div className="text-2xl font-bold text-slate-900">+450</div>
+              <div className="text-sm font-semibold text-muted-foreground mb-1">XP Earned</div>
+              <div className="text-2xl font-bold text-foreground">+450</div>
             </div>
-            <div className="bg-slate-50 rounded-2xl p-4 text-center border border-slate-100 flex flex-col justify-center gap-2">
+            <div className="bg-secondary rounded-2xl p-4 text-center border border-border-subtle flex flex-col justify-center gap-2">
               <Button variant="outline" className="w-full text-xs font-bold h-9">
                 <RotateCcw className="w-3.5 h-3.5 mr-1" /> Retake
               </Button>

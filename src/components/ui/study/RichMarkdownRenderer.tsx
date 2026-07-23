@@ -14,41 +14,41 @@ export function RichMarkdownRenderer({ content }: RichMarkdownRendererProps) {
   const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
   return (
-    <div className="prose prose-sm md:prose-base max-w-none text-slate-700">
+    <div className="prose prose-sm md:prose-base max-w-none text-foreground">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         rehypePlugins={[rehypeRaw]}
         components={{
           h1: ({ node, children, ...props }) => {
             const text = React.Children.toArray(children).join('').trim();
-            return <h1 id={slugify(text)} className="text-3xl font-extrabold text-slate-900 mt-10 mb-6 pb-2 border-b border-slate-200" {...props}>{children}</h1>;
+            return <h1 id={slugify(text)} className="text-3xl font-extrabold text-foreground mt-10 mb-6 pb-2 border-b border-border" {...props}>{children}</h1>;
           },
           h2: ({ node, children, ...props }) => {
             const text = React.Children.toArray(children).join('').trim();
-            return <h2 id={slugify(text)} className="text-2xl font-bold text-slate-800 mt-8 mb-4" {...props}>{children}</h2>;
+            return <h2 id={slugify(text)} className="text-2xl font-bold text-foreground mt-8 mb-4" {...props}>{children}</h2>;
           },
           h3: ({ node, children, ...props }) => {
             const text = React.Children.toArray(children).join('').trim();
-            return <h3 id={slugify(text)} className="text-xl font-semibold text-slate-800 mt-6 mb-3" {...props}>{children}</h3>;
+            return <h3 id={slugify(text)} className="text-xl font-semibold text-foreground mt-6 mb-3" {...props}>{children}</h3>;
           },
           h4: ({ node, children, ...props }) => {
             const text = React.Children.toArray(children).join('').trim();
-            return <h4 id={slugify(text)} className="text-lg font-medium text-slate-800 mt-5 mb-2" {...props}>{children}</h4>;
+            return <h4 id={slugify(text)} className="text-lg font-medium text-foreground mt-5 mb-2" {...props}>{children}</h4>;
           },
           p: ({ node, ...props }) => <p className="mb-5 leading-relaxed max-w-[75ch]" {...props} />,
           ul: ({ node, ...props }) => <ul className="list-disc list-outside ml-6 mb-6 space-y-2 marker:text-indigo-500" {...props} />,
           ol: ({ node, ...props }) => <ol className="list-decimal list-outside ml-6 mb-6 space-y-2 marker:text-indigo-500 marker:font-semibold" {...props} />,
           li: ({ node, ...props }) => <li className="pl-2" {...props} />,
           a: ({ node, ...props }) => <a className="text-indigo-600 hover:text-indigo-800 font-medium underline decoration-indigo-200 underline-offset-4 transition-colors" {...props} />,
-          strong: ({ node, ...props }) => <strong className="font-semibold text-slate-900" {...props} />,
-          hr: ({ node, ...props }) => <hr className="my-10 border-slate-200 border-t-2" {...props} />,
+          strong: ({ node, ...props }) => <strong className="font-semibold text-foreground" {...props} />,
+          hr: ({ node, ...props }) => <hr className="my-10 border-border border-t-2" {...props} />,
           table: ({ node, ...props }) => (
-            <div className="overflow-x-auto my-8 rounded-xl border border-slate-200 shadow-sm">
-              <table className="w-full text-left border-collapse bg-white" {...props} />
+            <div className="overflow-x-auto my-8 rounded-xl border border-border shadow-sm">
+              <table className="w-full text-left border-collapse bg-card" {...props} />
             </div>
           ),
-          th: ({ node, ...props }) => <th className="bg-slate-50 font-semibold text-slate-900 p-4 border-b border-slate-200 uppercase tracking-wider text-[13px]" {...props} />,
-          td: ({ node, ...props }) => <td className="p-4 border-b border-slate-100 last:border-b-0 align-top text-slate-600" {...props} />,
+          th: ({ node, ...props }) => <th className="bg-secondary font-semibold text-foreground p-4 border-b border-border uppercase tracking-wider text-[13px]" {...props} />,
+          td: ({ node, ...props }) => <td className="p-4 border-b border-border-subtle last:border-b-0 align-top text-muted-foreground" {...props} />,
           blockquote: ({ node, children, ...props }) => {
             const rawText = React.Children.toArray(children).join('').trim();
             
@@ -92,7 +92,7 @@ export function RichMarkdownRenderer({ content }: RichMarkdownRendererProps) {
 
             // Default blockquote
             return (
-              <blockquote className="my-8 border-l-4 border-indigo-200 bg-indigo-50/30 rounded-r-xl p-6 italic text-slate-700" {...props}>
+              <blockquote className="my-8 border-l-4 border-indigo-200 bg-indigo-50/30 rounded-r-xl p-6 italic text-foreground" {...props}>
                 {children}
               </blockquote>
             );

@@ -13,55 +13,55 @@
   --font-heading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   
   /* Semantic Surfaces */
-  --color-app-background: #F9F9F9;
-  --color-workspace-background: #F9F9F9;
-  --color-sidebar-background: #000000;
+  --color-app-background: var(--background);
+  --color-workspace-background: var(--background);
+  --color-sidebar-background: var(--sidebar);
   
-  --color-surface-subtle: #F3F3F3;
-  --color-surface-muted: #EFEFEF;
-  --color-surface-selected: #EFEFEF;
-  --color-surface-elevated: #ffffff;
+  --color-surface-subtle: var(--surface-subtle);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-selected: var(--surface-selected);
+  --color-surface-elevated: var(--surface-elevated);
   
   /* Shadcn standard mappings */
-  --color-card: #ffffff;
-  --color-card-foreground: #202020;
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
   
-  --color-popover: #ffffff;
-  --color-popover-foreground: #202020;
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   
-  --color-primary: #202020;
-  --color-primary-foreground: #ffffff;
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   
-  --color-secondary: #ffffff;
-  --color-secondary-foreground: #202020;
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
   
-  --color-muted: #F3F3F3;
-  --color-muted-foreground: #909090;
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
   
-  --color-accent: #EFEFEF;
-  --color-accent-foreground: #202020;
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
   
-  --color-destructive: #e5484d;
-  --color-destructive-foreground: #ffffff;
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
   
-  --color-success: #30a46c;
-  --color-success-foreground: #ffffff;
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
   
-  --color-warning: #ffc53d;
-  --color-warning-foreground: #202020;
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
   
   /* Borders */
-  --color-border: #E8E8E8;
-  --color-border-subtle: #E8E8E8;
-  --color-border-strong: #E8E8E8;
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-strong: var(--border-strong);
   
-  --color-input: #E8E8E8;
-  --color-ring: #E8E8E8;
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   
   /* Text */
-  --color-text-primary: #202020;
-  --color-text-secondary: #6B6B6B;
-  --color-text-tertiary: #909090;
+  --color-text-primary: var(--foreground);
+  --color-text-secondary: var(--muted-foreground);
+  --color-text-tertiary: var(--muted-foreground);
   
   /* Border Radius */
   --radius-xs: 4px;
@@ -82,20 +82,104 @@
   --animate-fast: 200ms;
 }
 
-:root {
-  --background: #F9F9F9;
-  --foreground: #202020;
-}
+@layer base {
+  :root {
+    --background: #F9F9F9;
+    --foreground: #202020;
+    
+    --sidebar: #000000;
+    
+    --surface-subtle: #F3F3F3;
+    --surface-muted: #EFEFEF;
+    --surface-selected: #EFEFEF;
+    --surface-elevated: #ffffff;
+    
+    --card: #ffffff;
+    --card-foreground: #202020;
+    
+    --popover: #ffffff;
+    --popover-foreground: #202020;
+    
+    --primary: #202020;
+    --primary-foreground: #ffffff;
+    
+    --secondary: #ffffff;
+    --secondary-foreground: #202020;
+    
+    --muted: #F3F3F3;
+    --muted-foreground: #909090;
+    
+    --accent: #EFEFEF;
+    --accent-foreground: #202020;
+    
+    --destructive: #e5484d;
+    --destructive-foreground: #ffffff;
+    
+    --success: #30a46c;
+    --success-foreground: #ffffff;
+    
+    --warning: #ffc53d;
+    --warning-foreground: #202020;
+    
+    --border: #E8E8E8;
+    --border-subtle: #E8E8E8;
+    --border-strong: #E8E8E8;
+    
+    --input: #E8E8E8;
+    --ring: #E8E8E8;
+  }
 
-.dark {
-  /* Prevent dark mode overriding */
-  --background: #F9F9F9;
-  --foreground: #202020;
+  .dark {
+    --background: #111111;
+    --foreground: #f3f4f6;
+    
+    --sidebar: #09090b;
+    
+    --surface-subtle: #1f2022;
+    --surface-muted: #282a2e;
+    --surface-selected: #2d3035;
+    --surface-elevated: #18191a;
+    
+    --card: #18191a;
+    --card-foreground: #f3f4f6;
+    
+    --popover: #18191a;
+    --popover-foreground: #f3f4f6;
+    
+    --primary: #ffffff;
+    --primary-foreground: #000000;
+    
+    --secondary: #1f2022;
+    --secondary-foreground: #f3f4f6;
+    
+    --muted: #282a2e;
+    --muted-foreground: #9ca3af;
+    
+    --accent: #2d3035;
+    --accent-foreground: #f3f4f6;
+    
+    --destructive: #f87171;
+    --destructive-foreground: #000000;
+    
+    --success: #34d399;
+    --success-foreground: #000000;
+    
+    --warning: #fbbf24;
+    --warning-foreground: #000000;
+    
+    --border: #282a2e;
+    --border-subtle: #1f2022;
+    --border-strong: #374151;
+    
+    --input: #282a2e;
+    --ring: #374151;
+  }
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
   }
   body {
     @apply bg-background text-foreground font-sans;

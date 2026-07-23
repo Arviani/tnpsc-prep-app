@@ -74,10 +74,10 @@ Respond ONLY with the JSON. Do not include markdown code blocks (\`\`\`json).
 `;
 
     // We pass a dummy context for the generation service since it requires one
-    const context = {
+    const context: any = {
       subject: subjectId,
       topic: topicName,
-      currentTab: contentType,
+      currentTab: contentType as any,
       learningGoals: [],
       userDifficulty: 'Medium'
     };

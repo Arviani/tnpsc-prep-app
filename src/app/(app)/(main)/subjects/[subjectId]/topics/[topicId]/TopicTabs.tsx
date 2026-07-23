@@ -43,11 +43,11 @@ export function TopicTabs({ subjectId, topicId }: TopicTabsProps) {
             className={cn(
               "flex items-center gap-2 pb-1.5 text-xs font-semibold whitespace-nowrap transition-colors border-b-2",
               isActive 
-                ? "border-slate-900 text-slate-900" 
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                ? "border-indigo-600 dark:border-indigo-500 text-indigo-700 dark:text-indigo-400" 
+                : "border-transparent text-muted-foreground hover:text-foreground"
             )}
           >
-            <Icon className={cn("w-4 h-4", isActive ? "text-indigo-600" : "text-slate-400")} />
+            <Icon className={cn("w-4 h-4", isActive ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground")} />
             {tab.label}
           </Link>
         )

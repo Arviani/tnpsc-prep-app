@@ -37,7 +37,7 @@ export function StudyHero({
           <div className="flex items-center gap-4 bg-slate-800/50 px-4 py-3 rounded-xl border border-slate-700/50 min-w-[200px]">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">Progress</span>
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Progress</span>
                 <span className="text-xs font-bold text-indigo-400">{progress}%</span>
               </div>
               <div className="h-1.5 w-full bg-slate-700 rounded-full overflow-hidden">

@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/lib/react-query/QueryProvider";
 import { WorkspaceProvider } from "@/contexts/WorkspaceContext";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { Toaster } from "@/components/ui/sonner";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -34,12 +35,19 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col font-sans" suppressHydrationWarning>
-        <QueryProvider>
-          <WorkspaceProvider>
-            {children}
-            <Toaster position="top-center" richColors />
-          </WorkspaceProvider>
-        </QueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <QueryProvider>
+            <WorkspaceProvider>
+              {children}
+              <Toaster position="top-center" richColors />
+            </WorkspaceProvider>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

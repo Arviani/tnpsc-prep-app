@@ -57,7 +57,7 @@ export function Sidebar() {
 
   return (
     <aside className="h-full shrink-0">
-      <div className="h-full w-[60px] bg-[#1A1A1A] rounded-lg flex flex-col items-center py-4">
+      <div className="h-full w-[60px] bg-sidebar rounded-lg flex flex-col items-center py-4">
         <nav className="flex-1 overflow-y-auto w-full px-1.5 space-y-1.5 flex flex-col items-center scrollbar-none">
           {menuItems.map((item) => {
             const isActive = item.exact 
@@ -73,12 +73,12 @@ export function Sidebar() {
                 className={cn(
                   'flex flex-col items-center justify-center gap-0.5 rounded-lg w-full py-2.5 transition-all duration-200 group relative',
                   isActive
-                    ? 'bg-white/15 shadow-[0_0_15px_rgba(255,255,255,0.1)] text-white'
-                    : 'text-[#888888] hover:bg-white/5 hover:text-white'
+                    ? 'bg-indigo-500/15 text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.1)]'
+                    : 'text-white/50 hover:bg-white/5 hover:text-white'
                 )}
                 title={item.name}
               >
-                <Icon size={20} className={cn("transition-transform group-hover:scale-110", isActive ? "text-white" : "")} />
+                <Icon size={20} className={cn("transition-transform group-hover:scale-110", isActive ? "text-indigo-400" : "")} />
                 <span className="text-[10px] font-medium tracking-tight text-center leading-none mt-0.5 truncate w-full px-0.5" style={{ fontSize: item.name.length > 7 ? '9px' : '10px' }}>{item.name}</span>
               </Link>
             )

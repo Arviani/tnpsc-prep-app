@@ -147,12 +147,12 @@ export function ImportModal({ isOpen, onClose, onImportComplete, contentType }: 
         </DialogHeader>
         
         <div 
-          className="mt-4 border-2 border-dashed border-slate-300 rounded-xl p-10 flex flex-col items-center justify-center bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer"
+          className="mt-4 border-2 border-dashed border-slate-300 rounded-xl p-10 flex flex-col items-center justify-center bg-secondary hover:bg-accent transition-colors cursor-pointer"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
         >
-          <p className="text-sm text-slate-500 mt-2 text-center">
+          <p className="text-sm text-muted-foreground mt-2 text-center">
             Click to select or drag and drop a file here<br/>
             {contentType === 'study' ? 'Supported: .md, .txt, .html, .docx' : 'Supported: .json, .csv, .xlsx'}
           </p>
@@ -167,13 +167,13 @@ export function ImportModal({ isOpen, onClose, onImportComplete, contentType }: 
           {isProcessing ? (
             <>
               <Loader2 className="w-10 h-10 text-indigo-500 animate-spin mb-4" />
-              <p className="text-sm font-medium text-slate-700">Processing file...</p>
+              <p className="text-sm font-medium text-foreground">Processing file...</p>
             </>
           ) : (
             <>
-              <UploadCloud className="w-10 h-10 text-slate-400 mb-4" />
-              <p className="text-sm font-medium text-slate-700 mb-1">Click or drag and drop</p>
-              <p className="text-xs text-slate-500 text-center">
+              <UploadCloud className="w-10 h-10 text-muted-foreground mb-4" />
+              <p className="text-sm font-medium text-foreground mb-1">Click or drag and drop</p>
+              <p className="text-xs text-muted-foreground text-center">
                 {contentType === 'study' ? 'MD, TXT, DOCX' : 'JSON, CSV, XLSX'}
               </p>
             </>
@@ -181,11 +181,11 @@ export function ImportModal({ isOpen, onClose, onImportComplete, contentType }: 
         </div>
 
         <div className="flex gap-4 mt-6 justify-center">
-          <div className="flex flex-col items-center gap-1 text-slate-500">
+          <div className="flex flex-col items-center gap-1 text-muted-foreground">
             <FileText className="w-5 h-5" />
             <span className="text-[10px] uppercase font-bold">Documents</span>
           </div>
-          <div className="flex flex-col items-center gap-1 text-slate-500">
+          <div className="flex flex-col items-center gap-1 text-muted-foreground">
             <FileSpreadsheet className="w-5 h-5" />
             <span className="text-[10px] uppercase font-bold">Data Files</span>
           </div>

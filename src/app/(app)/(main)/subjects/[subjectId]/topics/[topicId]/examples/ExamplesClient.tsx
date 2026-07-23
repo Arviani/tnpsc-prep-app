@@ -335,7 +335,7 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                         "px-4 py-1.5 rounded-full text-sm font-medium transition-colors border",
                         activeDifficulty === diffLevel 
                           ? "bg-indigo-600 text-white border-indigo-600" 
-                          : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                          : "bg-card text-muted-foreground border-border hover:bg-secondary"
                       )}
                     >
                       {diffLevel} <span className="opacity-70 ml-1">({count})</span>
@@ -351,8 +351,8 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                   
                   // Compute actual index to keep numbering consistent or restart it? Let's just use map index.
                   return (
-                    <div key={example.id} className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                      <div className="bg-slate-50 border-b border-slate-200 p-4 font-semibold text-slate-800 flex flex-col gap-3">
+                    <div key={example.id} className="border border-border rounded-xl overflow-hidden bg-card shadow-sm">
+                      <div className="bg-secondary border-b border-border p-4 font-semibold text-foreground flex flex-col gap-3">
                         <div className="flex items-start gap-3">
                           <div className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center shrink-0">
                             {index + 1}
@@ -361,7 +361,7 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                         </div>
                         {example.options && example.options.length > 0 && (
                           <div className="pl-11 grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                            {example.options.map((opt, i) => {
+                            {example.options.map((opt: any, i: number) => {
                               const isShowingSolution = showSolution[example.id];
                               const isCorrect = opt.is_correct;
                               
@@ -372,20 +372,20 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                                     "flex items-center gap-3 p-3 rounded-lg border transition-colors",
                                     isShowingSolution && isCorrect 
                                       ? "border-emerald-500 bg-emerald-50/50" 
-                                      : "border-slate-200 bg-white"
+                                      : "border-border bg-card"
                                   )}
                                 >
                                   <span className={cn(
                                     "flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold shrink-0",
                                     isShowingSolution && isCorrect
                                       ? "bg-emerald-500 text-white"
-                                      : "bg-slate-100 text-slate-600"
+                                      : "bg-accent text-muted-foreground"
                                   )}>
                                     {opt.label}
                                   </span>
                                   <span className={cn(
                                     "text-sm font-medium",
-                                    isShowingSolution && isCorrect ? "text-emerald-900" : "text-slate-700"
+                                    isShowingSolution && isCorrect ? "text-emerald-900" : "text-foreground"
                                   )}>
                                     {opt.body}
                                   </span>
@@ -404,22 +404,22 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                       </div>
                       
                       {showSolution[example.id] ? (
-                        <div className="p-5 bg-white">
-                          <div className="prose prose-sm max-w-none text-slate-600 mb-6">
+                        <div className="p-5 bg-card">
+                          <div className="prose prose-sm max-w-none text-muted-foreground mb-6">
                             {/* Answer highlight if options exist */}
                             {example.options && example.options.length > 0 && (
                               <div className="mb-4 text-emerald-700 font-medium">
-                                Correct Answer: Option {example.options.find(o => o.is_correct)?.label}
+                                Correct Answer: Option {example.options.find((o: any) => o.is_correct)?.label}
                               </div>
                             )}
 
-                            <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                              <strong className="text-slate-800 text-base mb-2 block">Step-by-Step Solution</strong>
+                            <div className="bg-secondary p-4 rounded-lg border border-border-subtle">
+                              <strong className="text-foreground text-base mb-2 block">Step-by-Step Solution</strong>
                               <div className="space-y-2">
-                                {(example.solution_steps || example.step_by_step_solution || '')
+                                {(example.solution_steps || example.step_by_step_solution || example.solution || "")
                                   .split(/(?=Step \d+:)/)
-                                  .map((step, i) => (
-                                    <p key={i} className="mb-0 leading-relaxed text-slate-700">{step.trim()}</p>
+                                  .map((step: string, i: number) => (
+                                    <p key={i} className="mb-0 leading-relaxed text-foreground text-sm">{step.trim()}</p>
                                   ))}
                               </div>
                             </div>
@@ -454,12 +454,12 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                             </div>
 
                             {example.explanation && example.explanation !== (example.solution_steps || example.step_by_step_solution) && (
-                              <div className="mt-4 p-3 bg-slate-50 rounded-lg text-slate-700 border border-slate-200">
+                              <div className="mt-4 p-3 bg-secondary rounded-lg text-foreground border border-border">
                                 <strong>Note:</strong> {example.explanation}
                               </div>
                             )}
                           </div>
-                          <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+                          <div className="flex items-center gap-2 pt-3 border-t border-border-subtle">
                             <Button variant="outline" size="sm" onClick={() => toggleSolution(example.id)}>
                               <EyeOff className="w-4 h-4 mr-2" /> Hide Solution
                             </Button>
@@ -469,7 +469,7 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                           </div>
                         </div>
                       ) : (
-                        <div className="p-4 bg-white flex justify-center">
+                        <div className="p-4 bg-card flex justify-center">
                           <Button variant="outline" onClick={() => toggleSolution(example.id)} className="w-full max-w-xs">
                             <Eye className="w-4 h-4 mr-2" /> View Solution
                           </Button>
@@ -481,12 +481,12 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
               </div>
             </div>
           ) : isAdmin ? (
-            <div className="flex flex-col items-center justify-center h-[350px] text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
+            <div className="flex flex-col items-center justify-center h-[350px] text-center border-2 border-dashed border-border rounded-xl bg-secondary/50 p-8">
+              <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm border border-border-subtle">
                 <List className="w-8 h-8 text-indigo-400" />
               </div>
-              <h3 className="text-xl font-bold text-slate-800">No worked examples available.</h3>
-              <p className="text-sm text-slate-500 mt-2 max-w-md mb-6">
+              <h3 className="text-xl font-bold text-foreground">No worked examples available.</h3>
+              <p className="text-sm text-muted-foreground mt-2 max-w-md mb-6">
                 There are no examples created for this topic yet. Generate them using AI or add them manually.
               </p>
               <Button onClick={handleGenerate} disabled={isGenerating} className="bg-indigo-600 hover:bg-indigo-700 shadow-sm">
@@ -494,12 +494,12 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
               </Button>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-[350px] text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
-                <AlertCircle className="w-8 h-8 text-slate-400" />
+            <div className="flex flex-col items-center justify-center h-[350px] text-center border-2 border-dashed border-border rounded-xl bg-secondary/50 p-8">
+              <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm border border-border-subtle">
+                <AlertCircle className="w-8 h-8 text-muted-foreground" />
               </div>
-              <h3 className="text-xl font-bold text-slate-800">No worked examples available.</h3>
-              <p className="text-sm text-slate-500 mt-2 max-w-md">
+              <h3 className="text-xl font-bold text-foreground">No worked examples available.</h3>
+              <p className="text-sm text-muted-foreground mt-2 max-w-md">
                 There are no worked examples available for this topic right now. Please check back later.
               </p>
             </div>

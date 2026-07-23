@@ -153,10 +153,10 @@ export function GenerateTopicsDialog({ subjectId, subjectName }: GenerateTopicsD
           )}
 
           {topics.length === 0 && !isGenerating && (
-            <div className="flex flex-col items-center justify-center p-8 text-center bg-slate-50 rounded-xl border border-dashed border-slate-200">
+            <div className="flex flex-col items-center justify-center p-8 text-center bg-secondary rounded-xl border border-dashed border-border">
               <BrainCircuit className="w-12 h-12 text-indigo-300 mb-4" />
-              <h4 className="font-semibold text-slate-900 mb-2">Ready to generate topics?</h4>
-              <p className="text-sm text-slate-500 mb-6 max-w-sm">
+              <h4 className="font-semibold text-foreground mb-2">Ready to generate topics?</h4>
+              <p className="text-sm text-muted-foreground mb-6 max-w-sm">
                 Click the button below to generate a comprehensive list of topics tailored for the TNPSC {subjectName} syllabus.
               </p>
               <Button onClick={handleGenerate} className="bg-indigo-600 hover:bg-indigo-700">
@@ -168,26 +168,26 @@ export function GenerateTopicsDialog({ subjectId, subjectName }: GenerateTopicsD
           {isGenerating && (
             <div className="flex flex-col items-center justify-center p-12 text-center">
               <Loader2 className="w-8 h-8 text-indigo-500 animate-spin mb-4" />
-              <h4 className="font-semibold text-slate-900">Analyzing Syllabus...</h4>
-              <p className="text-sm text-slate-500 mt-1">Generating optimal topics for {subjectName}</p>
+              <h4 className="font-semibold text-foreground">Analyzing Syllabus...</h4>
+              <p className="text-sm text-muted-foreground mt-1">Generating optimal topics for {subjectName}</p>
             </div>
           )}
 
           {topics.length > 0 && !isGenerating && (
             <div className="space-y-3">
               <div className="flex items-center justify-between px-1 mb-2">
-                <h4 className="font-semibold text-sm text-slate-700">Generated Topics ({topics.length})</h4>
-                <span className="text-xs text-slate-500">Review and reorder before saving</span>
+                <h4 className="font-semibold text-sm text-foreground">Generated Topics ({topics.length})</h4>
+                <span className="text-xs text-muted-foreground">Review and reorder before saving</span>
               </div>
               
               <div className="space-y-2">
                 {topics.map((topic, index) => (
-                  <div key={index} className="flex items-center gap-2 bg-white border border-slate-200 p-2 rounded-lg group">
+                  <div key={index} className="flex items-center gap-2 bg-card border border-border p-2 rounded-lg group">
                     <div className="flex flex-col gap-1">
-                      <button onClick={() => moveUp(index)} disabled={index === 0} className="text-slate-300 hover:text-slate-600 disabled:opacity-30">
+                      <button onClick={() => moveUp(index)} disabled={index === 0} className="text-slate-300 hover:text-muted-foreground disabled:opacity-30">
                         <GripVertical className="w-3 h-3 rotate-90" />
                       </button>
-                      <button onClick={() => moveDown(index)} disabled={index === topics.length - 1} className="text-slate-300 hover:text-slate-600 disabled:opacity-30">
+                      <button onClick={() => moveDown(index)} disabled={index === topics.length - 1} className="text-slate-300 hover:text-muted-foreground disabled:opacity-30">
                         <GripVertical className="w-3 h-3 rotate-90" />
                       </button>
                     </div>
@@ -199,18 +199,18 @@ export function GenerateTopicsDialog({ subjectId, subjectName }: GenerateTopicsD
                       <Input 
                         value={topic.title} 
                         onChange={(e) => handleTitleChange(index, e.target.value)}
-                        className="h-8 text-sm font-medium border-transparent hover:border-slate-200 focus:border-indigo-300"
+                        className="h-8 text-sm font-medium border-transparent hover:border-border focus:border-indigo-300"
                       />
                     </div>
                     
                     <div className="shrink-0 flex items-center gap-2">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider
-                        ${topic.difficulty === 'Easy' ? 'bg-green-50 text-green-600 border border-green-100' : 
-                          topic.difficulty === 'Medium' ? 'bg-amber-50 text-amber-600 border border-amber-100' : 
-                          'bg-red-50 text-red-600 border border-red-100'}`}>
+                        ${topic.difficulty === 'Easy' ? 'bg-green-50 dark:bg-green-500/10 text-green-600 dark:text-green-400 border border-green-100 dark:border-green-500/20' : 
+                          topic.difficulty === 'Medium' ? 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-500/20' : 
+                          'bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 border border-red-100 dark:border-red-500/20'}`}>
                         {topic.difficulty}
                       </span>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-red-500 hover:bg-red-50" onClick={() => handleRemove(index)}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-50" onClick={() => handleRemove(index)}>
                         <X className="w-4 h-4" />
                       </Button>
                     </div>
@@ -225,7 +225,7 @@ export function GenerateTopicsDialog({ subjectId, subjectName }: GenerateTopicsD
           )}
         </div>
 
-        <DialogFooter className="mt-4 border-t border-slate-100 pt-4">
+        <DialogFooter className="mt-4 border-t border-border-subtle pt-4">
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
             Cancel
           </Button>

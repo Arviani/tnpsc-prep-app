@@ -31,18 +31,18 @@ export default async function TopicLayout({
   }
 
   const breadcrumbs = (
-    <div className="flex items-center gap-2 text-[13px] text-slate-400 font-medium">
-      <Link href="/subjects" className="hover:text-slate-700 transition-colors">Subjects</Link>
+    <div className="flex items-center gap-2 text-[13px] text-muted-foreground font-medium">
+      <Link href="/subjects" className="hover:text-foreground transition-colors">Subjects</Link>
       <span>/</span>
-      <Link href={`/subjects/${subject.id}`} className="hover:text-slate-700 transition-colors">{subject.name}</Link>
+      <Link href={`/subjects/${subject.id}`} className="hover:text-foreground transition-colors">{subject.name}</Link>
       <span>/</span>
-      <span className="text-slate-900 font-bold">{topic.title}</span>
+      <span className="text-foreground font-bold">{topic.title}</span>
     </div>
   )
 
   return (
     <ContentArea>
-      <div className="flex flex-col shrink-0 sticky top-[-12px] z-20 bg-white -mx-3 -mt-3 pt-3 border-b border-slate-200 mb-1">
+      <div className="flex flex-col shrink-0 sticky top-[-12px] z-20 bg-card -mx-3 -mt-3 pt-3 border-b border-border mb-1">
         <div className="px-5 mb-3 mt-1">
           {breadcrumbs}
         </div>
