@@ -75,7 +75,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
 
   const saveContent = async (status: 'draft' | 'published') => {
     if (!editorContent) return;
-    
+
     setIsSaving(true);
     try {
       const response = await fetch('/api/admin/content/save', {
@@ -113,7 +113,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
 
   const handleDelete = async () => {
     if (!confirm('Are you sure you want to delete this content? This action cannot be undone.')) return;
-    
+
     try {
       const response = await fetch(`/api/admin/content/delete?topicId=${chapter.id}&contentType=study`, {
         method: 'DELETE',
@@ -161,40 +161,40 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
           />
         </div>
       )}
-      
+
       <div className="w-full">
         {isEditing ? (
           <div className="bg-white rounded-xl border border-border p-6 lg:p-8 shadow-sm">
             <h1 className="text-2xl font-bold text-foreground mb-4">{chapter.title}</h1>
-            <RichTextEditor 
-              content={editorContent} 
-              onChange={setEditorContent} 
+            <RichTextEditor
+              content={editorContent}
+              onChange={setEditorContent}
             />
           </div>
         ) : hasContent ? (
           <StudyContent content={lesson.content} topicTitle={chapter.title} subjectTitle="Reasoning" />
         ) : isAdmin ? (
           <div className="bg-white rounded-xl border border-border flex flex-col items-center justify-center h-[350px] text-center p-8 shadow-sm">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
-                <Sparkles className="w-8 h-8 text-indigo-400" />
-              </div>
-              <h3 className="text-xl font-bold text-slate-800">No lesson available.</h3>
-              <p className="text-sm text-slate-500 mt-2 max-w-md mb-6">
-                There is currently no pre-written lesson content for this topic in the database. Generate or import content to get started.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button onClick={() => { setIsEditing(true); handleAIAction('explain_detail'); }} className="bg-indigo-600 hover:bg-indigo-700 shadow-sm">
-                  <Sparkles className="w-4 h-4 mr-2" /> Generate with AI
-                </Button>
-                <Button onClick={() => setIsEditing(true)} variant="outline" className="shadow-sm">
-                  <PenTool className="w-4 h-4 mr-2 text-slate-500" /> Write Manually
-                </Button>
-                <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="shadow-sm">
-                  <UploadCloud className="w-4 h-4 mr-2 text-slate-500" /> Import Lesson
-                </Button>
-              </div>
+            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
+              <Sparkles className="w-8 h-8 text-indigo-400" />
             </div>
-          ) : (
+            <h3 className="text-xl font-bold text-slate-800">No lesson available.</h3>
+            <p className="text-sm text-slate-500 mt-2 max-w-md mb-6">
+              There is currently no pre-written lesson content for this topic in the database. Generate or import content to get started.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <Button onClick={() => { setIsEditing(true); handleAIAction('explain_detail'); }} className="bg-indigo-600 hover:bg-indigo-700 shadow-sm">
+                <Sparkles className="w-4 h-4 mr-2" /> Generate with AI
+              </Button>
+              <Button onClick={() => setIsEditing(true)} variant="outline" className="shadow-sm">
+                <PenTool className="w-4 h-4 mr-2 text-slate-500" /> Write Manually
+              </Button>
+              <Button onClick={() => setIsImportModalOpen(true)} variant="outline" className="shadow-sm">
+                <UploadCloud className="w-4 h-4 mr-2 text-slate-500" /> Import Lesson
+              </Button>
+            </div>
+          </div>
+        ) : (
           <div className="bg-white rounded-xl border border-border flex flex-col items-center justify-center h-[350px] text-center p-8 shadow-sm">
             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100">
               <Sparkles className="w-8 h-8 text-indigo-400" />
@@ -209,7 +209,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
           </div>
         )}
       </div>
-      
+
       <div className="flex justify-center mt-4">
         <Button variant="outline" onClick={() => useGlobalAIStore.getState().openChat()}>
           <Sparkles className="w-4 h-4 mr-2 text-indigo-500" />
@@ -217,11 +217,11 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
         </Button>
       </div>
 
-      <ImportModal 
-        isOpen={isImportModalOpen} 
-        onClose={() => setIsImportModalOpen(false)} 
-        onImportComplete={handleImportComplete} 
-        contentType="study" 
+      <ImportModal
+        isOpen={isImportModalOpen}
+        onClose={() => setIsImportModalOpen(false)}
+        onImportComplete={handleImportComplete}
+        contentType="study"
       />
     </div>
   );

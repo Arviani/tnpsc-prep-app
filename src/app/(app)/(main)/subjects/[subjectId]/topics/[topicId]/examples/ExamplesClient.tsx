@@ -23,6 +23,8 @@ interface Example {
   shortcut?: string | null;
   exam_tip?: string | null;
   common_mistake?: string | null;
+  difficulty?: string;
+  options?: { label: string; body: string; is_correct: boolean }[];
 }
 
 interface ExamplesClientProps {
@@ -113,7 +115,8 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
         shortcut: row.Shortcut || row.shortcut || '',
         common_mistake: row.Mistake || row.common_mistake || '',
         exam_tip: row.Tip || row.exam_tip || '',
-        difficulty: row.Difficulty || row.difficulty || 'Medium'
+        difficulty: row.Difficulty || row.difficulty || 'Medium',
+        options: row.options || []
       }));
       setEditorExamples([...editorExamples, ...formattedExamples]);
       setIsEditing(true);
@@ -224,83 +227,119 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
               onChange={setEditorExamples} 
             />
           ) : displayExamples && displayExamples.length > 0 ? (
-            <div className="space-y-8 pb-20">
-              {displayExamples.map((example, index) => (
-                <div key={example.id} className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
-                  <div className="bg-slate-50 border-b border-slate-200 p-4 font-semibold text-slate-800 flex items-start gap-3">
-                    <div className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center shrink-0">
-                      {index + 1}
+            <div className="space-y-12 pb-20">
+              {['Easy', 'Medium', 'Hard'].map((diffLevel) => {
+                const groupExamples = displayExamples.filter(
+                  ex => (ex.difficulty || 'Medium').toLowerCase() === diffLevel.toLowerCase()
+                );
+                
+                if (groupExamples.length === 0) return null;
+
+                return (
+                  <div key={diffLevel} className="space-y-6">
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-xl font-bold text-slate-800">{diffLevel} Examples</h2>
+                      <div className="h-[1px] flex-1 bg-slate-200"></div>
                     </div>
-                    <div className="pt-1">{example.problem_statement || example.question_text}</div>
-                  </div>
-                  
-                  {showSolution[example.id] ? (
-                    <div className="p-5 bg-white">
-                      <div className="prose prose-sm max-w-none text-slate-600 mb-6">
-                        <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
-                          <strong className="text-slate-800 text-base mb-2 block">Step-by-Step Solution</strong>
-                          <div className="space-y-2">
-                            {(example.solution_steps || example.step_by_step_solution || '')
-                              .split(/(?=Step \d+:)/)
-                              .map((step, i) => (
-                                <p key={i} className="mb-0 leading-relaxed text-slate-700">{step.trim()}</p>
-                              ))}
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                          {example.shortcut && (
-                            <div className="p-3 bg-indigo-50/50 rounded-lg text-indigo-900 border border-indigo-100/50">
-                              <strong className="flex items-center gap-1.5 text-indigo-700 mb-1">
-                                <Sparkles className="w-4 h-4" /> Shortcut
-                              </strong> 
-                              {example.shortcut.replace(/Exam tip:.*$/i, '').trim()}
+                    
+                    <div className="space-y-8">
+                      {groupExamples.map((example, index) => (
+                        <div key={example.id} className="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-sm">
+                          <div className="bg-slate-50 border-b border-slate-200 p-4 font-semibold text-slate-800 flex flex-col gap-3">
+                            <div className="flex items-start gap-3">
+                              <div className="bg-indigo-100 text-indigo-700 w-8 h-8 rounded-full flex items-center justify-center shrink-0">
+                                {index + 1}
+                              </div>
+                              <div className="pt-1">{example.problem_statement || example.question_text}</div>
                             </div>
-                          )}
+                            {example.options && example.options.length > 0 && (
+                              <div className="pl-11 grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                                {example.options.map((opt, i) => (
+                                  <div 
+                                    key={i} 
+                                    className="flex items-center gap-3 p-3 rounded-lg border border-slate-200 bg-white"
+                                  >
+                                    <span className="flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-xs font-bold text-slate-600">
+                                      {opt.label}
+                                    </span>
+                                    <span className="text-sm font-medium text-slate-700">{opt.body}</span>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                           
-                          {(example.exam_tip || (example.shortcut && example.shortcut.match(/Exam tip:(.*)$/i))) && (
-                            <div className="p-3 bg-emerald-50/50 rounded-lg text-emerald-900 border border-emerald-100/50">
-                              <strong className="flex items-center gap-1.5 text-emerald-700 mb-1">
-                                <span className="text-lg leading-none">💡</span> Exam Tip
-                              </strong> 
-                              {example.exam_tip || (example.shortcut?.match(/Exam tip:(.*)$/i)?.[1]?.trim())}
-                            </div>
-                          )}
+                          {showSolution[example.id] ? (
+                            <div className="p-5 bg-white">
+                              <div className="prose prose-sm max-w-none text-slate-600 mb-6">
+                                <div className="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                                  <strong className="text-slate-800 text-base mb-2 block">Step-by-Step Solution</strong>
+                                  <div className="space-y-2">
+                                    {(example.solution_steps || example.step_by_step_solution || '')
+                                      .split(/(?=Step \d+:)/)
+                                      .map((step, i) => (
+                                        <p key={i} className="mb-0 leading-relaxed text-slate-700">{step.trim()}</p>
+                                      ))}
+                                  </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                  {example.shortcut && (
+                                    <div className="p-3 bg-indigo-50/50 rounded-lg text-indigo-900 border border-indigo-100/50">
+                                      <strong className="flex items-center gap-1.5 text-indigo-700 mb-1">
+                                        <Sparkles className="w-4 h-4" /> Shortcut
+                                      </strong> 
+                                      {example.shortcut.replace(/Exam tip:.*$/i, '').trim()}
+                                    </div>
+                                  )}
+                                  
+                                  {(example.exam_tip || (example.shortcut && example.shortcut.match(/Exam tip:(.*)$/i))) && (
+                                    <div className="p-3 bg-emerald-50/50 rounded-lg text-emerald-900 border border-emerald-100/50">
+                                      <strong className="flex items-center gap-1.5 text-emerald-700 mb-1">
+                                        <span className="text-lg leading-none">💡</span> Exam Tip
+                                      </strong> 
+                                      {example.exam_tip || (example.shortcut?.match(/Exam tip:(.*)$/i)?.[1]?.trim())}
+                                    </div>
+                                  )}
 
-                          {example.common_mistake && (
-                            <div className="p-3 bg-red-50/50 rounded-lg text-red-900 border border-red-100/50 md:col-span-2">
-                              <strong className="flex items-center gap-1.5 text-red-700 mb-1">
-                                <span className="text-lg leading-none">⚠️</span> Common Mistake
-                              </strong> 
-                              {example.common_mistake}
+                                  {example.common_mistake && (
+                                    <div className="p-3 bg-red-50/50 rounded-lg text-red-900 border border-red-100/50 md:col-span-2">
+                                      <strong className="flex items-center gap-1.5 text-red-700 mb-1">
+                                        <span className="text-lg leading-none">⚠️</span> Common Mistake
+                                      </strong> 
+                                      {example.common_mistake}
+                                    </div>
+                                  )}
+                                </div>
+
+                                {example.explanation && example.explanation !== (example.solution_steps || example.step_by_step_solution) && (
+                                  <div className="mt-4 p-3 bg-slate-50 rounded-lg text-slate-700 border border-slate-200">
+                                    <strong>Note:</strong> {example.explanation}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
+                                <Button variant="outline" size="sm" onClick={() => toggleSolution(example.id)}>
+                                  <EyeOff className="w-4 h-4 mr-2" /> Hide Solution
+                                </Button>
+                                <Button variant="ghost" size="sm" onClick={() => handleAIAction('explain_simply', example)} className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50">
+                                  <Sparkles className="w-4 h-4 mr-2" /> Explain Simply
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="p-4 bg-white flex justify-center">
+                              <Button variant="outline" onClick={() => toggleSolution(example.id)} className="w-full max-w-xs">
+                                <Eye className="w-4 h-4 mr-2" /> View Solution
+                              </Button>
                             </div>
                           )}
                         </div>
-
-                        {example.explanation && example.explanation !== (example.solution_steps || example.step_by_step_solution) && (
-                          <div className="mt-4 p-3 bg-slate-50 rounded-lg text-slate-700 border border-slate-200">
-                            <strong>Note:</strong> {example.explanation}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 pt-3 border-t border-slate-100">
-                        <Button variant="outline" size="sm" onClick={() => toggleSolution(example.id)}>
-                          <EyeOff className="w-4 h-4 mr-2" /> Hide Solution
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleAIAction('explain_simply', example)} className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50">
-                          <Sparkles className="w-4 h-4 mr-2" /> Explain Simply
-                        </Button>
-                      </div>
+                      ))}
                     </div>
-                  ) : (
-                    <div className="p-4 bg-white flex justify-center">
-                      <Button variant="outline" onClick={() => toggleSolution(example.id)} className="w-full max-w-xs">
-                        <Eye className="w-4 h-4 mr-2" /> View Solution
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           ) : isAdmin ? (
             <div className="flex flex-col items-center justify-center h-[350px] text-center border-2 border-dashed border-border rounded-xl bg-slate-50/50 p-8">
