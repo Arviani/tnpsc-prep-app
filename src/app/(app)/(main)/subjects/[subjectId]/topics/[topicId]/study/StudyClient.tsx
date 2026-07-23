@@ -111,6 +111,28 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
     }
   };
 
+  const handleDelete = async () => {
+    if (!confirm('Are you sure you want to delete this content? This action cannot be undone.')) return;
+    
+    try {
+      const response = await fetch(`/api/admin/content/delete?topicId=${chapter.id}&contentType=study`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete lesson');
+      }
+
+      toast.success('Lesson deleted successfully');
+      setEditorContent('');
+      router.refresh();
+    } catch (error: any) {
+      console.error('Delete error:', error);
+      toast.error(error.message || 'An error occurred while deleting');
+    }
+  };
+
   const hasContent = !!(lesson && lesson.content);
 
   return (
@@ -133,7 +155,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
             onSaveDraft={handleSaveDraft}
             onPublish={handlePublish}
             onArchive={() => toast.info('Archiving...')}
-            onDelete={() => toast.info('Deleting...')}
+            onDelete={handleDelete}
             onViewHistory={() => toast.info('Opening version history...')}
             className="rounded-none border-x-0 border-t-0 border-b-0 mb-0"
           />
