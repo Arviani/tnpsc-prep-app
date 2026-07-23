@@ -12,68 +12,79 @@ interface StudyContentProps {
 }
 
 export function StudyContent({ content, topicTitle, subjectTitle }: StudyContentProps) {
-  // Parse markdown into sections based on H2 (##)
   const { sections, headings } = useMemo(() => {
-    // We split by lines to correctly identify ## headings at the start of a line
-    const lines = content.split('\n');
     const parsedSections: { id: string; title: string; content: string }[] = [];
     const parsedHeadings: { id: string; text: string; level: number }[] = [];
-    
-    let currentSectionTitle = 'Overview'; // Default if no initial heading
-    let currentSectionId = 'overview';
-    let currentSectionLines: string[] = [];
-
-    // Helper to slugify
     const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      // Match markdown heading `## Title` OR HTML heading `<h2...>Title</h2>`
-      const mdMatch = line.match(/^(#{1,3})\s+(.+)$/);
-      const htmlMatch = line.match(/<h([1-3])[^>]*>(.*?)<\/h\1>/i);
-      
-      if (mdMatch || htmlMatch) {
-        const level = mdMatch ? mdMatch[1].length : parseInt(htmlMatch![1], 10);
-        let text = mdMatch ? mdMatch[2].replace(/\*/g, '').trim() : htmlMatch![2].replace(/<[^>]+>/g, '').trim();
+    // Match both Markdown headings (must be at start of a line or string) and HTML headings
+    const headingRegex = /(?:(?:^|\n)(#{1,4})\s+(.+)|<h([1-4])[^>]*>(.*?)<\/h\3>)/gi;
+    const matches = Array.from(content.matchAll(headingRegex));
+
+    if (matches.length === 0) {
+      // No headings found, whole content is one section
+      parsedSections.push({
+        id: 'overview',
+        title: 'Overview',
+        content: content.trim()
+      });
+    } else {
+      // Check if there is content before the first heading
+      const firstHeadingIndex = matches[0].index !== undefined ? matches[0].index : 0;
+      const initialContent = content.substring(0, firstHeadingIndex).trim();
+      if (initialContent) {
+        parsedSections.push({
+          id: 'overview',
+          title: 'Overview',
+          content: initialContent
+        });
+      }
+
+      let currentSectionTitle = '';
+      let currentSectionId = '';
+      let currentSectionStartIndex = 0;
+
+      for (let i = 0; i < matches.length; i++) {
+        const match = matches[i];
+        const isMarkdown = !!match[1];
+        const level = isMarkdown ? match[1].length : parseInt(match[3], 10);
+        const text = isMarkdown ? match[2].replace(/\*/g, '').trim() : match[4].replace(/<[^>]+>/g, '').trim();
         const id = slugify(text);
 
-        // Record heading for TOC
         parsedHeadings.push({ id, text, level });
 
         if (level === 1 || level === 2) {
-          // Save previous section if it has content
-          if (currentSectionLines.join('\n').trim() !== '') {
-            parsedSections.push({
-              id: currentSectionId,
-              title: currentSectionTitle,
-              content: currentSectionLines.join('\n')
-            });
+          // If we already have a section open, save it
+          if (currentSectionTitle) {
+            const sectionContent = content.substring(currentSectionStartIndex, match.index).trim();
+            if (sectionContent) {
+              parsedSections.push({
+                id: currentSectionId,
+                title: currentSectionTitle,
+                content: sectionContent
+              });
+            }
           }
-          
+
           // Start new section
           currentSectionTitle = text;
           currentSectionId = id;
-          currentSectionLines = [`## ${text}`]; // Keep the heading in the content so the renderer can render the H2, or we strip it and let ContentSection render the title.
-          // Wait, the user said: "Every section should have Title, Optional Icon, Divider, Content".
-          // If ContentSection renders the title, we shouldn't pass the raw H2 to the markdown renderer, or we just let ReactMarkdown render it normally.
-          // Let's strip the H1/H2 line from the markdown content so we can render it manually in ContentSection.
-          currentSectionLines = []; 
-        } else {
-          // If it's an H3, just add it to current section content
-          currentSectionLines.push(line);
+          // Start content AFTER this heading
+          currentSectionStartIndex = (match.index || 0) + match[0].length;
         }
-      } else {
-        currentSectionLines.push(line);
       }
-    }
 
-    // Push the final section
-    if (currentSectionLines.join('\n').trim() !== '') {
-      parsedSections.push({
-        id: currentSectionId,
-        title: currentSectionTitle,
-        content: currentSectionLines.join('\n')
-      });
+      // Push the final section
+      if (currentSectionTitle) {
+        const finalContent = content.substring(currentSectionStartIndex).trim();
+        if (finalContent) {
+          parsedSections.push({
+            id: currentSectionId,
+            title: currentSectionTitle,
+            content: finalContent
+          });
+        }
+      }
     }
 
     return { sections: parsedSections, headings: parsedHeadings };

@@ -31,6 +31,10 @@ export function RichMarkdownRenderer({ content }: RichMarkdownRendererProps) {
             const text = React.Children.toArray(children).join('').trim();
             return <h3 id={slugify(text)} className="text-xl font-semibold text-slate-800 mt-6 mb-3" {...props}>{children}</h3>;
           },
+          h4: ({ node, children, ...props }) => {
+            const text = React.Children.toArray(children).join('').trim();
+            return <h4 id={slugify(text)} className="text-lg font-medium text-slate-800 mt-5 mb-2" {...props}>{children}</h4>;
+          },
           p: ({ node, ...props }) => <p className="mb-5 leading-relaxed max-w-[75ch]" {...props} />,
           ul: ({ node, ...props }) => <ul className="list-disc list-outside ml-6 mb-6 space-y-2 marker:text-indigo-500" {...props} />,
           ol: ({ node, ...props }) => <ol className="list-decimal list-outside ml-6 mb-6 space-y-2 marker:text-indigo-500 marker:font-semibold" {...props} />,
