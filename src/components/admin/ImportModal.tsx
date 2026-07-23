@@ -51,10 +51,10 @@ export function ImportModal({ isOpen, onClose, onImportComplete, contentType }: 
     try {
       const ext = file.name.split('.').pop()?.toLowerCase();
       
-      if (ext === 'md' || ext === 'txt') {
+      if (ext === 'md' || ext === 'txt' || ext === 'html') {
         const text = await file.text();
-        onImportComplete(text, 'markdown');
-        toast.success('Text file imported successfully');
+        onImportComplete(text, 'markdown'); // The rich text editor will parse HTML correctly
+        toast.success(`${ext.toUpperCase()} file imported successfully`);
         onClose();
       } 
       else if (ext === 'docx') {
@@ -123,7 +123,7 @@ export function ImportModal({ isOpen, onClose, onImportComplete, contentType }: 
         onClose();
       }
       else {
-        toast.error('Unsupported file format. Please upload .md, .txt, .docx, .json, .csv, or .xlsx');
+        toast.error('Unsupported file format. Please upload .md, .txt, .html, .docx, .json, .csv, or .xlsx');
       }
     } catch (error: any) {
       console.error('Import error:', error);
@@ -152,12 +152,16 @@ export function ImportModal({ isOpen, onClose, onImportComplete, contentType }: 
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
         >
+          <p className="text-sm text-slate-500 mt-2 text-center">
+            Click to select or drag and drop a file here<br/>
+            {contentType === 'study' ? 'Supported: .md, .txt, .html, .docx' : 'Supported: .json, .csv, .xlsx'}
+          </p>
           <input 
             type="file" 
             ref={fileInputRef} 
             className="hidden" 
+            accept={contentType === 'study' ? '.md,.txt,.html,.docx' : '.json,.csv,.xlsx'}
             onChange={handleFileChange}
-            accept=".md,.txt,.docx,.json,.csv,.xlsx"
           />
           
           {isProcessing ? (
