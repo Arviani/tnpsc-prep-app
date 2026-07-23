@@ -14,6 +14,8 @@ import { CMSActionBar } from '@/components/admin/CMSActionBar';
 import { RichTextEditor } from '@/components/admin/editors/RichTextEditor';
 import { StudyContent } from '@/components/ui/study/StudyContent';
 import { ImportModal } from '@/components/admin/ImportModal';
+import { SyllabusValidator, ValidationReport } from '@/lib/curriculum/validator';
+import { SyllabusValidationPanel } from '@/components/admin/SyllabusValidationPanel';
 
 interface StudyClientProps {
   subject: { id: string, name: string };
@@ -49,6 +51,8 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
 
   const [activeAction, setActiveAction] = useState<StudyAction | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationReport, setValidationReport] = useState<ValidationReport | null>(null);
 
   const handleAIAction = (action: StudyAction) => {
     setActiveAction(action);
@@ -70,6 +74,28 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
   };
 
   const handlePublish = async () => {
+    if (!editorContent) return;
+    
+    // Check syllabus validation
+    if (!validationReport || validationReport.outOfSyllabusSections > 0) {
+      setIsValidating(true);
+      try {
+        const report = await SyllabusValidator.validateContent(subject.id, chapter.title, editorContent, 'study');
+        setValidationReport(report);
+        
+        if (!report.isPublishable) {
+          toast.error('Validation failed: Content is out of syllabus. Please review.');
+          return;
+        }
+      } catch (err: any) {
+        console.error('Validation error:', err);
+        toast.error(err.message || 'Validation failed');
+        return;
+      } finally {
+        setIsValidating(false);
+      }
+    }
+    
     await saveContent('published');
   };
 
@@ -144,6 +170,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
             hasContent={hasContent}
             isEditing={isEditing}
             isSaving={isSaving}
+            isValidating={isValidating}
             onManualCreate={() => setIsEditing(true)}
             onAIGenerate={() => {
               setIsEditing(true);
@@ -157,8 +184,43 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
             onArchive={() => toast.info('Archiving...')}
             onDelete={handleDelete}
             onViewHistory={() => toast.info('Opening version history...')}
-            className="rounded-none border-x-0 border-t-0 border-b-0 mb-0"
+            className="rounded-none border-x-0 border-t-0 mb-0"
           />
+          
+          {validationReport && (
+            <div className="px-6 pt-6">
+              <SyllabusValidationPanel 
+                report={validationReport}
+                onRemoveFlagged={(title) => {
+                  toast.info(`Please manually remove "${title}" from the editor.`);
+                }}
+                onIgnoreFlag={(title) => {
+                  setValidationReport(prev => {
+                    if (!prev) return prev;
+                    const newFlags = prev.flags.filter(f => f.sectionTitle !== title);
+                    const newOutOfSyllabus = newFlags.filter(f => f.status === 'OUT OF SYLLABUS').length;
+                    return {
+                      ...prev,
+                      flags: newFlags,
+                      outOfSyllabusSections: newOutOfSyllabus,
+                      isPublishable: newOutOfSyllabus === 0
+                    };
+                  });
+                }}
+                onRevalidate={async () => {
+                  setIsValidating(true);
+                  try {
+                    const report = await SyllabusValidator.validateContent(subject.id, chapter.title, editorContent, 'study');
+                    setValidationReport(report);
+                  } catch (e: any) {
+                    toast.error(e.message || 'Validation failed');
+                  } finally {
+                    setIsValidating(false);
+                  }
+                }}
+              />
+            </div>
+          )}
         </div>
       )}
 

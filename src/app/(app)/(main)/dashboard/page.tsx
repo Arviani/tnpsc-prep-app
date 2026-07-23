@@ -75,6 +75,50 @@ export default async function DashboardPage() {
           )
         })}
       </div>
+
+      <div className="mt-8 border-t border-border pt-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-slate-800">Curriculum Analytics</h2>
+          <span className="text-sm font-semibold bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-100">
+            TNPSC Group IV Syllabus
+          </span>
+        </div>
+        
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="p-5 border border-slate-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-sm font-semibold text-slate-500 mb-1">Total Lessons</h3>
+            <p className="text-3xl font-black text-slate-900">124</p>
+            <div className="mt-3 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded w-fit">
+              +12 this week
+            </div>
+          </div>
+          
+          <div className="p-5 border border-slate-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-sm font-semibold text-slate-500 mb-1">Syllabus Coverage</h3>
+            <p className="text-3xl font-black text-slate-900">96%</p>
+            <div className="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+              <div className="bg-indigo-600 w-[96%] h-full rounded-full"></div>
+            </div>
+          </div>
+          
+          <div className="p-5 border border-slate-200 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-sm font-semibold text-slate-500 mb-1">Topics Missing</h3>
+            <p className="text-3xl font-black text-slate-900">3</p>
+            <div className="mt-3 flex gap-2">
+              <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">Compound Interest</span>
+              <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">+2 more</span>
+            </div>
+          </div>
+          
+          <div className="p-5 border border-amber-200 rounded-xl bg-amber-50 shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-sm font-semibold text-amber-700 mb-1">Needs Review</h3>
+            <p className="text-3xl font-black text-amber-900">5</p>
+            <div className="mt-3 text-xs font-medium text-amber-700">
+              Lessons flagged as out-of-syllabus
+            </div>
+          </div>
+        </div>
+      </div>
     </ContentArea>
   )
 }

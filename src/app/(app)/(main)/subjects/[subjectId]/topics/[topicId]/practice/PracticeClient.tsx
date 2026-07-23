@@ -10,6 +10,8 @@ import { cn } from '@/lib/utils';
 import { CMSActionBar } from '@/components/admin/CMSActionBar';
 import { PracticeEditor } from '@/components/admin/editors/PracticeEditor';
 import { ImportModal } from '@/components/admin/ImportModal';
+import { SyllabusValidator, ValidationReport } from '@/lib/curriculum/validator';
+import { SyllabusValidationPanel } from '@/components/admin/SyllabusValidationPanel';
 import { toast } from 'sonner';
 import { useWorkspace } from '@/contexts/WorkspaceContext';
 
@@ -61,6 +63,8 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isValidating, setIsValidating] = useState(false);
+  const [validationReport, setValidationReport] = useState<ValidationReport | null>(null);
   const [generatedQuestions, setGeneratedQuestions] = useState<Question[] | null>(null);
   const router = require('next/navigation').useRouter();
 
@@ -98,6 +102,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
 
   const [isEditing, setIsEditing] = useState(false);
   const [editorQuestions, setEditorQuestions] = useState<any[]>(questions || []);
+  const [shuffledQuestions, setShuffledQuestions] = useState<any[]>(questions || []);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   const handleImportComplete = (content: any, type: 'markdown' | 'json') => {
@@ -129,6 +134,11 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
     if (!isEditing) {
       setEditorQuestions(questions || []);
     }
+    
+    // Shuffle questions on client-side for Student view
+    if (questions && questions.length > 0) {
+      setShuffledQuestions([...questions].sort(() => Math.random() - 0.5));
+    }
   }, [questions, isEditing]);
 
   const handleSaveDraft = async () => {
@@ -136,6 +146,28 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
   };
 
   const handlePublish = async () => {
+    if (!editorQuestions || editorQuestions.length === 0) return;
+    
+    // Check syllabus validation
+    if (!validationReport || validationReport.outOfSyllabusSections > 0) {
+      setIsValidating(true);
+      try {
+        const report = await SyllabusValidator.validateContent(subject.id, chapter.title, editorQuestions, 'practice');
+        setValidationReport(report);
+        
+        if (!report.isPublishable) {
+          toast.error('Validation failed: Practice questions are out of syllabus. Please review.');
+          return;
+        }
+      } catch (err: any) {
+        console.error('Validation error:', err);
+        toast.error(err.message || 'Validation failed');
+        return;
+      } finally {
+        setIsValidating(false);
+      }
+    }
+    
     await saveContent('published');
   };
 
@@ -179,7 +211,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
 
   const hasContent = questions && questions.length > 0;
   // If we have generated questions, display them as the current content
-  const displayQuestions = generatedQuestions || questions;
+  const displayQuestions = generatedQuestions || shuffledQuestions;
   const currentQuestion = displayQuestions && displayQuestions.length > 0 ? displayQuestions[currentIndex] : null;
   const correctOption = currentQuestion?.options.find(o => o.is_correct);
   const isCorrect = selectedAnswerId === correctOption?.id;
@@ -265,6 +297,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
           hasContent={hasContent}
           isEditing={isEditing}
           isSaving={isSaving}
+          isValidating={isValidating}
           onManualCreate={() => setIsEditing(true)}
           onAIGenerate={() => {
             setIsEditing(true);
@@ -280,6 +313,41 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
           onViewHistory={() => toast.info('Opening version history...')}
           className="mb-6 max-w-3xl mx-auto"
         />
+      )}
+      
+      {validationReport && (
+        <div className="max-w-3xl mx-auto mb-6">
+          <SyllabusValidationPanel 
+            report={validationReport}
+            onRemoveFlagged={(title) => {
+              toast.info(`Please manually remove or replace "${title}" from the editor.`);
+            }}
+            onIgnoreFlag={(title) => {
+              setValidationReport(prev => {
+                if (!prev) return prev;
+                const newFlags = prev.flags.filter(f => f.sectionTitle !== title);
+                const newOutOfSyllabus = newFlags.filter(f => f.status === 'OUT OF SYLLABUS').length;
+                return {
+                  ...prev,
+                  flags: newFlags,
+                  outOfSyllabusSections: newOutOfSyllabus,
+                  isPublishable: newOutOfSyllabus === 0
+                };
+              });
+            }}
+            onRevalidate={async () => {
+              setIsValidating(true);
+              try {
+                const report = await SyllabusValidator.validateContent(subject.id, chapter.title, editorQuestions, 'practice');
+                setValidationReport(report);
+              } catch (e: any) {
+                toast.error(e.message || 'Validation failed');
+              } finally {
+                setIsValidating(false);
+              }
+            }}
+          />
+        </div>
       )}
 
       {isEditing ? (
@@ -317,7 +385,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
           )}
         </div>
       ) : (
-        <div className={cn("grid gap-6 transition-all duration-500", hasSubmitted && !isCorrect ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1 max-w-3xl mx-auto")}>
+        <div className="max-w-3xl mx-auto">
           {/* Question Card */}
           <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm h-fit">
         <div className="flex items-center justify-between mb-6">
@@ -329,7 +397,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
         
         <h2 className="text-xl font-bold text-slate-900 mb-8 leading-snug">{currentQuestion?.body}</h2>
         
-        <div className="space-y-3 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
           {currentQuestion?.options.map((option) => {
             const isSelected = selectedAnswerId === option.id;
             const isCorrectOption = option.is_correct;

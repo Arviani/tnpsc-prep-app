@@ -38,6 +38,7 @@ interface CMSActionBarProps {
   onViewHistory?: () => void;
   isEditing?: boolean;
   isSaving?: boolean;
+  isValidating?: boolean;
   hasContent?: boolean;
   className?: string;
 }
@@ -57,6 +58,7 @@ export function CMSActionBar({
   onViewHistory,
   isEditing = false,
   isSaving = false,
+  isValidating = false,
   hasContent = false,
   className
 }: CMSActionBarProps) {
@@ -126,8 +128,8 @@ export function CMSActionBar({
               </Button>
             )}
             {onPublish && (
-              <Button size="sm" onClick={onPublish} className="bg-green-600 hover:bg-green-700 text-white" disabled={isSaving}>
-                <Send className="w-4 h-4 mr-2" /> Publish
+              <Button size="sm" onClick={onPublish} className="bg-green-600 hover:bg-green-700 text-white" disabled={isSaving || isValidating}>
+                <Send className="w-4 h-4 mr-2" /> {isValidating ? 'Validating...' : 'Publish'}
               </Button>
             )}
           </>
@@ -139,6 +141,11 @@ export function CMSActionBar({
                 <MoreVertical className="h-4 w-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
+                {onImport && (
+                  <DropdownMenuItem onClick={onImport}>
+                    <UploadCloud className="w-4 h-4 mr-2" /> Import Additional
+                  </DropdownMenuItem>
+                )}
                 {onDuplicate && (
                   <DropdownMenuItem onClick={onDuplicate}>
                     <Copy className="w-4 h-4 mr-2" /> Duplicate
