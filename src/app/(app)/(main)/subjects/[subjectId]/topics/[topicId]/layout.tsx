@@ -42,7 +42,7 @@ export default async function TopicLayout({
 
   return (
     <ContentArea>
-      <div className="flex flex-col shrink-0 sticky top-[-12px] z-20 bg-[#F9F9F9] -mx-3 -mt-3 pt-3 border-b border-slate-200 mb-6">
+      <div className="flex flex-col shrink-0 sticky top-[-12px] z-20 bg-white -mx-3 -mt-3 pt-3 border-b border-slate-200 mb-6">
         <div className="px-5 mb-3 mt-1">
           {breadcrumbs}
         </div>
