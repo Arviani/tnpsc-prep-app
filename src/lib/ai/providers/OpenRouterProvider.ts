@@ -13,14 +13,31 @@ export class OpenRouterProvider implements AIProvider {
     const error = new Error(data?.error?.message || `API Error: ${response.status}`) as ProviderError;
     error.statusCode = response.status;
     
-    // Determine if it's a rate limit or quota issue
-    if (response.status === 429 || data?.error?.message?.toLowerCase().includes('rate limit')) {
+    const msg = data?.error?.message?.toLowerCase() || '';
+    
+    // Determine if it's a rate limit issue
+    if (response.status === 429 || msg.includes('rate limit')) {
       error.isRateLimit = true;
     }
     
     // Determine if provider is busy
-    if (response.status >= 500 || data?.error?.message?.toLowerCase().includes('provider busy')) {
+    if (response.status >= 500 || msg.includes('provider busy')) {
       error.isProviderBusy = true;
+    }
+
+    // Determine if it's a quota or credits issue
+    if (response.status === 402 || msg.includes('credits') || msg.includes('quota')) {
+      error.isQuotaExceeded = true;
+    }
+
+    // Determine if context window exceeded
+    if (response.status === 413 || msg.includes('context') || msg.includes('prompt is too long')) {
+      error.isContextTooLarge = true;
+    }
+
+    // Determine if max_tokens was too high
+    if (msg.includes('max_tokens') || msg.includes('output limit')) {
+      error.isOutputLimitExceeded = true;
     }
     
     throw error;
@@ -36,7 +53,8 @@ export class OpenRouterProvider implements AIProvider {
       body: JSON.stringify({
         model: request.model.providerModelId,
         messages: request.messages,
-        stream: false
+        stream: false,
+        ...(request.maxTokens && { max_tokens: request.maxTokens })
       })
     });
 
@@ -63,7 +81,8 @@ export class OpenRouterProvider implements AIProvider {
       body: JSON.stringify({
         model: request.model.providerModelId,
         messages: request.messages,
-        stream: true
+        stream: true,
+        ...(request.maxTokens && { max_tokens: request.maxTokens })
       })
     });
 

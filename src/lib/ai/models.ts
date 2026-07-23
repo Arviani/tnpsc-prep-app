@@ -11,6 +11,7 @@ export interface AIModel {
   supportsStreaming: boolean;
   supportsReasoning: boolean;
   contextLength: number;
+  recommendedMaxOutputTokens: number;
   isEnabled: boolean;
   priority: number;
 }
@@ -25,6 +26,7 @@ export const DEFAULT_MODELS: AIModel[] = [
     supportsStreaming: true,
     supportsReasoning: false,
     contextLength: 8192,
+    recommendedMaxOutputTokens: 4096,
     isEnabled: true,
     priority: 1
   },
@@ -37,6 +39,7 @@ export const DEFAULT_MODELS: AIModel[] = [
     supportsStreaming: true,
     supportsReasoning: true,
     contextLength: 4096,
+    recommendedMaxOutputTokens: 4096,
     isEnabled: true,
     priority: 2
   },
@@ -49,6 +52,7 @@ export const DEFAULT_MODELS: AIModel[] = [
     supportsStreaming: true,
     supportsReasoning: true,
     contextLength: 8192,
+    recommendedMaxOutputTokens: 4096,
     isEnabled: true,
     priority: 3
   },
@@ -61,6 +65,7 @@ export const DEFAULT_MODELS: AIModel[] = [
     supportsStreaming: true,
     supportsReasoning: true,
     contextLength: 8192,
+    recommendedMaxOutputTokens: 4096,
     isEnabled: true,
     priority: 4
   }

@@ -9,6 +9,7 @@ export interface ChatRequest {
   messages: ChatMessage[];
   model: AIModel;
   stream?: boolean;
+  maxTokens?: number;
 }
 
 export interface ChatResponse {
@@ -25,6 +26,9 @@ export interface ProviderError extends Error {
   statusCode?: number;
   isRateLimit?: boolean;
   isProviderBusy?: boolean;
+  isQuotaExceeded?: boolean;
+  isContextTooLarge?: boolean;
+  isOutputLimitExceeded?: boolean;
 }
 
 export interface AIProvider {

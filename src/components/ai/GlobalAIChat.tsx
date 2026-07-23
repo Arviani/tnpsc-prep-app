@@ -55,6 +55,7 @@ export function GlobalAIChat() {
   const [inputValue, setInputValue] = useState('');
   const [isPending, setIsPending] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [lastDiagnostics, setLastDiagnostics] = useState<any>(null);
 
   useEffect(() => {
     // Reset session messages on mount
@@ -129,12 +130,26 @@ export function GlobalAIChat() {
       if (!response.ok) {
         const errText = await response.text();
         console.error('API Error Response:', response.status, errText);
-        throw new Error('Failed to connect to the AI Assistant.');
+        let errorMsg = 'Failed to connect to the AI Assistant.';
+        try {
+          const parsed = JSON.parse(errText);
+          if (parsed.error) errorMsg = parsed.error;
+        } catch(e) {}
+        throw new Error(errorMsg);
       }
       
       const fallbackOccurred = response.headers.get('x-fallback-occurred') === 'true';
       const fallbackReason = response.headers.get('x-fallback-reason') || '';
       const modelUsed = response.headers.get('x-model-used') || currentModel?.id || 'unknown';
+      
+      // Save diagnostics
+      setLastDiagnostics({
+        inputTokens: response.headers.get('x-input-tokens'),
+        outputTokens: response.headers.get('x-output-tokens-requested'),
+        retries: response.headers.get('x-retries'),
+        modelUsed,
+        fallbackOccurred
+      });
       
       const msg: ChatMessage = { 
         role: 'assistant', 
@@ -174,12 +189,17 @@ export function GlobalAIChat() {
           }
         }
       }
-    } catch (error) {
-      console.error(error);
-      if (currentModel) {
-        setModelStatus(currentModel.id, 'available');
-      }
-    } finally {
+    } catch (error: any) {
+        console.error(error);
+        if (currentModel) {
+          setModelStatus(currentModel.id, 'available');
+        }
+        addMessage({ 
+          role: 'assistant', 
+          content: `⚠️ **Error**: ${error.message || 'An unexpected error occurred. Please try again.'}`, 
+          modelId: currentModel?.id || 'system'
+        });
+      } finally {
       setIsPending(false);
     }
   };
@@ -312,6 +332,23 @@ export function GlobalAIChat() {
           </div>
         )}
       </div>
+      
+      {/* Developer Diagnostics Panel */}
+      {process.env.NODE_ENV === 'development' && lastDiagnostics && (
+        <div className="mx-4 mb-3 p-3 rounded-lg bg-slate-900 dark:bg-black border border-slate-800 text-[10px] font-mono text-slate-300">
+          <div className="flex justify-between items-center mb-1 text-slate-400 font-bold uppercase tracking-wider text-[9px] border-b border-slate-800 pb-1">
+            <span>Dev Diagnostics</span>
+            <Button variant="ghost" size="sm" className="h-4 px-1 text-slate-500 hover:text-slate-300" onClick={() => setLastDiagnostics(null)}>x</Button>
+          </div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-2">
+            <div><span className="opacity-50">Model:</span> <span className="text-emerald-400">{lastDiagnostics.modelUsed}</span></div>
+            <div><span className="opacity-50">Est. Input:</span> <span className="text-amber-300">{lastDiagnostics.inputTokens}</span> tok</div>
+            <div><span className="opacity-50">Output Req:</span> <span className="text-amber-300">{lastDiagnostics.outputTokens}</span> tok</div>
+            <div><span className="opacity-50">Retries:</span> <span className={lastDiagnostics.retries > 0 ? "text-rose-400" : ""}>{lastDiagnostics.retries}</span></div>
+            <div><span className="opacity-50">Fallback:</span> <span className={lastDiagnostics.fallbackOccurred ? "text-rose-400" : "text-emerald-400"}>{lastDiagnostics.fallbackOccurred ? 'Yes' : 'No'}</span></div>
+          </div>
+        </div>
+      )}
 
       {/* Input Area */}
       <div className="p-4 pt-0 flex flex-col gap-3 relative">

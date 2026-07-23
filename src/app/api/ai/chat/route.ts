@@ -90,7 +90,10 @@ export async function POST(request: Request) {
                     'Connection': 'keep-alive',
                     'x-fallback-occurred': fallbackInfo.wasFallback ? 'true' : 'false',
                     'x-fallback-reason': fallbackInfo.fallbackReason || '',
-                    'x-model-used': model.id
+                    'x-model-used': model.id,
+                    'x-input-tokens': String(fallbackInfo.diagnostics?.estimatedInputTokens || 0),
+                    'x-output-tokens-requested': String(fallbackInfo.diagnostics?.requestedOutputTokens || 0),
+                    'x-retries': String(fallbackInfo.diagnostics?.retries || 0)
                 },
             });
         }
@@ -102,11 +105,25 @@ export async function POST(request: Request) {
             model: model.id,
             fallbackInfo 
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("AI Route Error:", error);
 
+        let errorCode = "UNKNOWN_ERROR";
+        let message = error instanceof Error ? error.message : "Failed to generate AI response";
+
+        if (error.isQuotaExceeded) {
+            errorCode = "CREDITS_EXHAUSTED";
+            message = "This request requires more credits or quota.";
+        } else if (error.isOutputLimitExceeded) {
+            errorCode = "LIMIT_EXCEEDED";
+            message = "The model's output limit was exceeded.";
+        } else if (error.isContextTooLarge) {
+            errorCode = "CONTEXT_TOO_LARGE";
+            message = "The conversation history is too large for this model.";
+        }
+
         return NextResponse.json(
-            { error: error instanceof Error ? error.message : "Failed to generate AI response" },
+            { error: message, code: errorCode },
             { status: 500 }
         );
     }
