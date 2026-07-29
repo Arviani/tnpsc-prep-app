@@ -371,7 +371,7 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                                   className={cn(
                                     "flex items-center gap-3 p-3 rounded-lg border transition-colors",
                                     isShowingSolution && isCorrect 
-                                      ? "border-emerald-500 bg-emerald-50/50" 
+                                      ? "border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/30" 
                                       : "border-border bg-card"
                                   )}
                                 >
@@ -385,7 +385,7 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                                   </span>
                                   <span className={cn(
                                     "text-sm font-medium",
-                                    isShowingSolution && isCorrect ? "text-emerald-900" : "text-foreground"
+                                    isShowingSolution && isCorrect ? "text-emerald-900 dark:text-emerald-300" : "text-foreground"
                                   )}>
                                     {opt.body}
                                   </span>
@@ -426,7 +426,7 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                               {example.shortcut && (
-                                <div className="p-3 bg-indigo-50/50 rounded-lg text-indigo-900 border border-indigo-100/50">
+                                <div className="p-3 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-lg text-indigo-900 dark:text-indigo-200 border border-indigo-100/50 dark:border-indigo-900/50">
                                   <strong className="flex items-center gap-1.5 text-indigo-700 mb-1">
                                     <Sparkles className="w-4 h-4" /> Shortcut
                                   </strong> 
@@ -435,7 +435,7 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                               )}
                               
                               {(example.exam_tip || (example.shortcut && example.shortcut.match(/Exam tip:(.*)$/i))) && (
-                                <div className="p-3 bg-emerald-50/50 rounded-lg text-emerald-900 border border-emerald-100/50">
+                                <div className="p-3 bg-emerald-50/50 dark:bg-emerald-950/30 rounded-lg text-emerald-900 dark:text-emerald-200 border border-emerald-100/50 dark:border-emerald-900/50">
                                   <strong className="flex items-center gap-1.5 text-emerald-700 mb-1">
                                     <span className="text-lg leading-none">💡</span> Exam Tip
                                   </strong> 
@@ -444,7 +444,7 @@ export default function ExamplesClient({ subject, chapter, examples }: ExamplesC
                               )}
 
                               {example.common_mistake && (
-                                <div className="p-3 bg-red-50/50 rounded-lg text-red-900 border border-red-100/50 md:col-span-2">
+                                <div className="p-3 bg-red-50/50 dark:bg-red-950/30 rounded-lg text-red-900 dark:text-red-200 border border-red-100/50 dark:border-red-900/50 md:col-span-2">
                                   <strong className="flex items-center gap-1.5 text-red-700 mb-1">
                                     <span className="text-lg leading-none">⚠️</span> Common Mistake
                                   </strong> 

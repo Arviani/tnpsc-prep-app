@@ -52,7 +52,7 @@ export function TopicActions({ subjectId, chapterId, chapterProgress, status = '
   }
 
   return (
-    <div className="mt-auto grid grid-cols-3 gap-2">
+    <div className="mt-auto grid grid-cols-2 gap-2">
       <Link href={`/subjects/${subjectId}/topics/${chapterId}/study`} className="col-span-1">
         <Button variant={chapterProgress > 0 ? "outline" : "default"} size="sm" className={`w-full rounded-lg h-8 text-xs ${chapterProgress === 0 ? 'bg-indigo-600 hover:bg-indigo-700' : 'border-border'}`}>
           <BookMarked className="w-3.5 h-3.5 mr-1" /> Study
@@ -61,11 +61,6 @@ export function TopicActions({ subjectId, chapterId, chapterProgress, status = '
       <Link href={`/subjects/${subjectId}/topics/${chapterId}/practice`} className="col-span-1">
         <Button variant="outline" size="sm" className="w-full rounded-lg border-border hover:bg-secondary hover:text-foreground h-8 text-xs">
           <PenTool className="w-3.5 h-3.5 mr-1" /> Practice
-        </Button>
-      </Link>
-      <Link href={`/subjects/${subjectId}/topics/${chapterId}/quiz`} className="col-span-1">
-        <Button variant="outline" size="sm" className="w-full rounded-lg border-border hover:bg-secondary hover:text-foreground h-8 text-xs">
-          <Target className="w-3.5 h-3.5 mr-1" /> Quiz
         </Button>
       </Link>
     </div>

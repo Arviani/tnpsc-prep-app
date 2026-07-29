@@ -607,34 +607,43 @@ export type Database = {
       }
       current_affairs: {
         Row: {
-          body: string
-          category: string | null
-          created_at: string
-          has_quiz: boolean
           id: string
-          published_date: string
-          source_url: string | null
           title: string
+          category: string | null
+          source: string | null
+          direct_fact: string
+          key_specifics: string[]
+          exam_lens: string | null
+          date: string
+          status: string
+          created_at: string
+          updated_at: string
         }
         Insert: {
-          body: string
-          category?: string | null
-          created_at?: string
-          has_quiz?: boolean
           id?: string
-          published_date: string
-          source_url?: string | null
           title: string
+          category?: string | null
+          source?: string | null
+          direct_fact: string
+          key_specifics?: string[]
+          exam_lens?: string | null
+          date: string
+          status?: string
+          created_at?: string
+          updated_at?: string
         }
         Update: {
-          body?: string
-          category?: string | null
-          created_at?: string
-          has_quiz?: boolean
           id?: string
-          published_date?: string
-          source_url?: string | null
           title?: string
+          category?: string | null
+          source?: string | null
+          direct_fact?: string
+          key_specifics?: string[]
+          exam_lens?: string | null
+          date?: string
+          status?: string
+          created_at?: string
+          updated_at?: string
         }
         Relationships: []
       }

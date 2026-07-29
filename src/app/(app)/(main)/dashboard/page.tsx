@@ -3,6 +3,7 @@ import { ContentArea } from '@/components/common/ContentArea'
 import { ContentHeader } from '@/components/common/ContentHeader'
 import { Clock, Target, Activity, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 export default async function DashboardPage() {
   const user = await authService.getUser()
@@ -52,21 +53,44 @@ export default async function DashboardPage() {
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-4 mt-2">
         {dashboardCards.map((card) => {
           const Icon = card.icon
+          const isDailyQuiz = card.title === 'Daily Quiz'
+          
           return (
-            <div key={card.title} className="p-3 border border-border rounded-md bg-card shadow-sm flex flex-col justify-between h-28 hover:border-border-strong transition-colors">
+            <div 
+              key={card.title} 
+              className={cn(
+                "p-3 border rounded-md shadow-sm flex flex-col justify-between h-28 transition-colors",
+                isDailyQuiz 
+                  ? "border-indigo-200 bg-indigo-50/50 dark:bg-indigo-950/20 dark:border-indigo-800" 
+                  : "border-border bg-card hover:border-border-strong"
+              )}
+            >
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="text-xs font-semibold text-muted-foreground mb-1">{card.title}</h3>
+                  <h3 className={cn(
+                    "text-xs font-semibold mb-1",
+                    isDailyQuiz ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground"
+                  )}>{card.title}</h3>
                   <p className="text-lg font-bold mt-0.5 text-foreground tracking-tight">{card.value}</p>
                 </div>
-                <div className="p-1 bg-surface-muted rounded-md">
-                  <Icon className="h-4 w-4 text-muted-foreground" />
+                <div className={cn(
+                  "p-1 rounded-md",
+                  isDailyQuiz ? "bg-indigo-100 dark:bg-indigo-900/50" : "bg-surface-muted"
+                )}>
+                  <Icon className={cn(
+                    "h-4 w-4",
+                    isDailyQuiz ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground"
+                  )} />
                 </div>
               </div>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-[11px] text-muted-foreground">{card.description}</span>
                 {card.action && (
-                  <Button variant="secondary" size="xs" className="font-semibold h-6 px-2">
+                  <Button 
+                    variant={isDailyQuiz ? "default" : "secondary"} 
+                    size="xs" 
+                    className="font-semibold h-6 px-2"
+                  >
                     Start
                   </Button>
                 )}

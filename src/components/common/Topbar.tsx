@@ -86,7 +86,7 @@ export function Topbar() {
       </div>
 
       <div className="hidden md:block w-[300px]">
-        <div className="relative flex items-center w-full h-[28px] bg-background border border-transparent rounded-full pl-[7px] pr-1 gap-1 shadow-[0_0_1px_0_rgba(0,0,0,0.27),0_1px_2px_0_rgba(0,0,0,0.05)] transition-all hover:shadow-md hover:border-border focus-within:shadow-md focus-within:border-border">
+        <div className="relative flex items-center w-full h-[28px] bg-background dark:bg-[#2C2C2C] border border-transparent dark:border-[#3C3C3C] rounded-full pl-[7px] pr-1 gap-1 shadow-[0_0_1px_0_rgba(0,0,0,0.27),0_1px_2px_0_rgba(0,0,0,0.05)] transition-all hover:shadow-md hover:border-border focus-within:shadow-md focus-within:border-border">
           <Search className="h-4 w-4 text-muted-foreground shrink-0" />
           <div className="relative flex-1 h-full flex items-center">
             <input
@@ -102,7 +102,7 @@ export function Topbar() {
           </div>
           <button 
             onClick={() => useGlobalAIStore.getState().openChat()}
-            className="ai-chip-animated flex items-center justify-center gap-1 pl-2 pr-1 rounded-full text-[12px] font-medium text-muted-foreground hover:text-foreground h-[20px] w-[90px] shrink-0 border border-border"
+            className="ai-chip-animated flex items-center justify-center gap-1 pl-2 pr-1 rounded-full text-[12px] font-medium text-muted-foreground hover:text-foreground h-[20px] w-[90px] shrink-0 border border-border dark:border-[#4C4C4C] dark:bg-[#1C1C1C]"
           >
             <span className="relative z-10 flex items-center gap-1">
               AI Chats

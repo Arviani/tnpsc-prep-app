@@ -6,7 +6,8 @@ export interface ModelUsage {
   todayMessages: number;
   weeklyMessages: number;
   fallbackCount: number;
-  lastResetTime: number; // timestamp
+  lastWeeklyResetTime: number; // timestamp
+  lastDailyResetTime: number; // timestamp
 }
 
 interface ModelUsageState {
@@ -28,6 +29,14 @@ const getNextSundayMidnight = () => {
   return nextSunday.getTime();
 };
 
+const getNextMidnight = () => {
+  const now = new Date();
+  const nextDay = new Date(now);
+  nextDay.setDate(now.getDate() + 1);
+  nextDay.setHours(0, 0, 0, 0);
+  return nextDay.getTime();
+};
+
 export const useModelUsageStore = create<ModelUsageState>()(
   persist(
     (set, get) => ({
@@ -42,7 +51,8 @@ export const useModelUsageStore = create<ModelUsageState>()(
             todayMessages: 0,
             weeklyMessages: 0,
             fallbackCount: 0,
-            lastResetTime: getNextSundayMidnight()
+            lastWeeklyResetTime: getNextSundayMidnight(),
+            lastDailyResetTime: getNextMidnight()
           };
 
           return {
@@ -68,13 +78,34 @@ export const useModelUsageStore = create<ModelUsageState>()(
 
           Object.keys(newUsages).forEach(modelId => {
             const usage = newUsages[modelId];
-            if (now >= usage.lastResetTime) {
+            if (usage.lastResetTime && now >= usage.lastResetTime) {
+              // Migration from old schema
               newUsages[modelId] = {
-                ...usage,
+                ...newUsages[modelId],
                 weeklyMessages: 0,
-                lastResetTime: getNextSundayMidnight()
+                todayMessages: 0,
+                lastWeeklyResetTime: getNextSundayMidnight(),
+                lastDailyResetTime: getNextMidnight()
               };
+              delete (newUsages[modelId] as any).lastResetTime;
               changed = true;
+            } else {
+              if (usage.lastWeeklyResetTime && now >= usage.lastWeeklyResetTime) {
+                newUsages[modelId] = {
+                  ...newUsages[modelId],
+                  weeklyMessages: 0,
+                  lastWeeklyResetTime: getNextSundayMidnight()
+                };
+                changed = true;
+              }
+              if (usage.lastDailyResetTime && now >= usage.lastDailyResetTime) {
+                newUsages[modelId] = {
+                  ...newUsages[modelId],
+                  todayMessages: 0,
+                  lastDailyResetTime: getNextMidnight()
+                };
+                changed = true;
+              }
             }
           });
 

@@ -24,7 +24,7 @@ export default async function SubjectsLayout({
         </div>
         <SecondarySidebarNav subjects={subjects || []} />
       </SecondarySidebar>
-      <div className="flex-1 flex flex-col w-full h-full bg-transparent overflow-hidden">
+      <div className="flex-1 flex flex-col w-full h-full bg-transparent overflow-y-auto custom-scrollbar">
         {children}
       </div>
     </>

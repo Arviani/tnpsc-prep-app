@@ -1,6 +1,7 @@
 import { Sidebar } from './Sidebar'
 import { Topbar } from './Topbar'
 import { GlobalAIChat } from '@/components/ai/GlobalAIChat'
+import { GlobalSearch } from './GlobalSearch'
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
@@ -20,6 +21,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         
         {/* Global AI Chat Sidebar */}
         <GlobalAIChat />
+        
+        {/* Global Search / Command Palette */}
+        <GlobalSearch />
       </div>
     </div>
   )

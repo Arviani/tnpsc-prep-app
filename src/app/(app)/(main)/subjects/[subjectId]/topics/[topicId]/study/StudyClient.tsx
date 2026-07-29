@@ -20,7 +20,7 @@ import { SyllabusValidationPanel } from '@/components/admin/SyllabusValidationPa
 interface StudyClientProps {
   subject: { id: string, name: string };
   chapter: { id: string, title: string };
-  lesson: { content: string, status?: string } | null;
+  lesson: { content: string, tamilContent?: string, status?: string } | null;
 }
 
 export default function StudyClient({ subject, chapter, lesson }: StudyClientProps) {
@@ -234,7 +234,7 @@ export default function StudyClient({ subject, chapter, lesson }: StudyClientPro
             />
           </div>
         ) : hasContent ? (
-          <StudyContent content={lesson.content} topicTitle={chapter.title} subjectTitle="Reasoning" />
+          <StudyContent content={lesson.content} initialTamilContent={lesson.tamilContent} topicTitle={chapter.title} subjectTitle={subject.name} />
         ) : isAdmin ? (
           <div className="bg-card rounded-xl border border-border flex flex-col items-center justify-center h-[350px] text-center p-8 shadow-sm">
             <div className="w-16 h-16 bg-card rounded-full flex items-center justify-center mb-4 shadow-sm border border-border-subtle">

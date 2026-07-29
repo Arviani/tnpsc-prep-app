@@ -432,20 +432,20 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
         </div>
 
         {!hasSubmitted ? (
-          <Button onClick={handleSubmit} disabled={!selectedAnswerId} size="lg" className="w-full text-base font-bold rounded-xl h-14 bg-slate-900 hover:bg-slate-800">
+          <Button onClick={handleSubmit} disabled={!selectedAnswerId} size="lg" className="w-full text-base font-bold rounded-xl h-14 bg-slate-900 hover:bg-slate-800 text-white dark:bg-indigo-600 dark:hover:bg-indigo-700">
             Submit Answer
           </Button>
         ) : (
           <div className="space-y-4">
-            <div className={cn("p-5 rounded-xl flex items-center gap-3 font-semibold", isCorrect ? "bg-green-100 text-green-800" : "bg-red-50 text-red-800 border border-red-100")}>
+            <div className={cn("p-5 rounded-xl flex items-center gap-3 font-semibold", isCorrect ? "bg-green-100 dark:bg-green-950/30 text-green-800 dark:text-green-200 border dark:border-green-900/50" : "bg-red-50 dark:bg-red-950/30 text-red-800 dark:text-red-200 border border-red-100 dark:border-red-900/50")}>
               {isCorrect ? (
                 <>
-                  <div className="bg-green-200 p-1.5 rounded-full"><CheckCircle2 className="w-5 h-5 text-green-700" /></div>
+                  <div className="bg-green-200 dark:bg-green-900/50 p-1.5 rounded-full"><CheckCircle2 className="w-5 h-5 text-green-700 dark:text-green-400" /></div>
                   Excellent! That is the correct answer.
                 </>
               ) : (
                 <>
-                  <div className="bg-red-100 p-1.5 rounded-full"><AlertTriangle className="w-5 h-5 text-red-600" /></div>
+                  <div className="bg-red-100 dark:bg-red-900/50 p-1.5 rounded-full"><AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400" /></div>
                   Incorrect. Let's understand why to avoid this mistake in the exam.
                 </>
               )}
@@ -465,7 +465,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                   {currentQuestion.shortcut && (
-                    <div className="p-3 bg-indigo-50/50 rounded-lg text-indigo-900 border border-indigo-100/50 text-sm">
+                    <div className="p-3 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-lg text-indigo-900 dark:text-indigo-200 border border-indigo-100/50 dark:border-indigo-900/50 text-sm">
                       <strong className="flex items-center gap-1.5 text-indigo-700 mb-1">
                         <Sparkles className="w-4 h-4" /> Shortcut
                       </strong> 
@@ -474,7 +474,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
                   )}
                   
                   {(currentQuestion.exam_tip || (currentQuestion.shortcut && currentQuestion.shortcut.match(/Exam tip:(.*)$/i))) && (
-                    <div className="p-3 bg-emerald-50/50 rounded-lg text-emerald-900 border border-emerald-100/50 text-sm">
+                    <div className="p-3 bg-emerald-50/50 dark:bg-emerald-950/30 rounded-lg text-emerald-900 dark:text-emerald-200 border border-emerald-100/50 dark:border-emerald-900/50 text-sm">
                       <strong className="flex items-center gap-1.5 text-emerald-700 mb-1">
                         <span className="text-base leading-none">💡</span> Exam Tip
                       </strong> 
@@ -483,7 +483,7 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
                   )}
                   
                   {currentQuestion.common_mistake && !isCorrect && (
-                    <div className="p-3 bg-red-50/50 rounded-lg text-red-900 border border-red-100/50 text-sm md:col-span-2">
+                    <div className="p-3 bg-red-50/50 dark:bg-red-950/30 rounded-lg text-red-900 dark:text-red-200 border border-red-100/50 dark:border-red-900/50 text-sm md:col-span-2">
                       <strong className="flex items-center gap-1.5 text-red-700 mb-1">
                         <span className="text-base leading-none">⚠️</span> Common Mistake
                       </strong> 
@@ -494,10 +494,9 @@ export default function PracticeClient({ subject, chapter, questions }: Practice
               </div>
             )}
             
-            {/* Next Action */}
             {hasSubmitted && currentIndex < displayQuestions.length - 1 && (
               <div className="flex justify-end pt-4 animate-in fade-in duration-700">
-                <Button size="lg" onClick={handleNext} className="rounded-xl font-bold bg-indigo-600 hover:bg-indigo-700">
+                <Button size="lg" onClick={handleNext} className="rounded-xl font-bold bg-indigo-600 hover:bg-indigo-700 text-white">
                   Next Challenge <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </div>

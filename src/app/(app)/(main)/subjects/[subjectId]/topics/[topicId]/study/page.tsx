@@ -56,14 +56,17 @@ export default async function StudyPage({ params }: StudyPageProps) {
   }
 
   // It's okay if lesson is missing (it will just be null), as AI can generate it
-  // Content is stored as { markdown: "..." }
-  const lesson = lessonData ? { content: typeof lessonData.content === 'string' ? lessonData.content : ((lessonData.content as any)?.markdown || '') } : null;
+  // Content is stored as { markdown: "...", tamil_markdown: "..." }
+  const lesson = lessonData ? { 
+    content: typeof lessonData.content === 'string' ? lessonData.content : ((lessonData.content as any)?.markdown || ''),
+    tamilContent: typeof lessonData.content === 'object' ? ((lessonData.content as any)?.tamil_markdown || '') : ''
+  } : null;
 
   return (
     <StudyClient 
       subject={{ id: subject.id, name: subject.name }}
       chapter={{ id: chapter.id, title: chapter.title }}
-      lesson={lesson ? { content: lesson.content } : null}
+      lesson={lesson ? { content: lesson.content, tamilContent: lesson.tamilContent } : null}
     />
   );
 }

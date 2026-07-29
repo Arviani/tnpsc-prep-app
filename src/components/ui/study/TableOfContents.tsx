@@ -24,10 +24,13 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
 
   useEffect(() => {
     if (activeId && activeItemRef.current) {
-      activeItemRef.current.scrollIntoView({
-        block: 'nearest',
-        behavior: 'smooth',
-      });
+      // Scroll the TOC container safely without affecting page scroll
+      const container = activeItemRef.current.closest('.overflow-y-auto');
+      if (container) {
+        const itemTop = activeItemRef.current.offsetTop;
+        const containerHalf = container.clientHeight / 2;
+        container.scrollTo({ top: itemTop - containerHalf, behavior: 'smooth' });
+      }
     }
   }, [activeId]);
 
@@ -35,8 +38,28 @@ export function TableOfContents({ headings }: TableOfContentsProps) {
     e.preventDefault();
     const element = document.getElementById(id);
     if (element) {
-      const y = element.getBoundingClientRect().top + window.scrollY - 100;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+      // Find the main scrollable container (from layout.tsx)
+      const scrollContainers = document.querySelectorAll('.overflow-y-auto');
+      // The main content area is likely the last or largest one. 
+      // Let's just find the closest one to the element, or fallback to window.
+      const scrollContainer = element.closest('.overflow-y-auto') as HTMLElement || document.documentElement;
+      
+      const headerOffset = 100; // Offset for sticky headers
+      const elementRect = element.getBoundingClientRect();
+      const containerRect = scrollContainer.getBoundingClientRect();
+      
+      if (scrollContainer === document.documentElement) {
+        window.scrollTo({
+          top: elementRect.top + window.scrollY - headerOffset,
+          behavior: 'smooth'
+        });
+      } else {
+        const targetScrollTop = scrollContainer.scrollTop + elementRect.top - containerRect.top - headerOffset;
+        scrollContainer.scrollTo({
+          top: targetScrollTop,
+          behavior: 'smooth'
+        });
+      }
     }
   };
 

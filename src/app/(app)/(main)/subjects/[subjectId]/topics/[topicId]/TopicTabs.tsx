@@ -15,13 +15,10 @@ export function TopicTabs({ subjectId, topicId }: TopicTabsProps) {
   const basePath = `/subjects/${subjectId}/topics/${topicId}`
 
   const tabs = [
-    { label: 'Overview', href: basePath, icon: LayoutDashboard },
     { label: 'Study', href: `${basePath}/study`, icon: BookOpen },
     { label: 'Examples', href: `${basePath}/examples`, icon: List },
     { label: 'Practice', href: `${basePath}/practice`, icon: Target },
-    { label: 'Topic Quiz', href: `${basePath}/quiz`, icon: ClipboardList },
     { label: 'PYQs', href: `${basePath}/pyqs`, icon: History },
-    { label: 'Revision', href: `${basePath}/revision`, icon: RotateCcw },
     { label: 'Performance', href: `${basePath}/performance`, icon: BarChart2 },
   ]
 

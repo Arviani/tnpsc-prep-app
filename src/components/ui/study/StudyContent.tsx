@@ -1,21 +1,83 @@
-import React, { useMemo } from 'react';
+"use client"
+
+import React, { useMemo, useState } from 'react';
 import { ContentSection } from './ContentSection';
 import { TableOfContents } from './TableOfContents';
 import { StudyLayout } from './StudyLayout';
 import { StudyHero } from './StudyHero';
-import { BookOpen } from 'lucide-react';
+import { BookOpen, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface StudyContentProps {
   content: string;
+  initialTamilContent?: string;
   topicTitle: string;
   subjectTitle: string;
 }
 
-export function StudyContent({ content, topicTitle, subjectTitle }: StudyContentProps) {
+export function StudyContent({ content: initialContent, initialTamilContent, topicTitle, subjectTitle }: StudyContentProps) {
+  const [isTamil, setIsTamil] = useState(false);
+  const [tamilContent, setTamilContent] = useState(initialTamilContent || '');
+  const [isTranslating, setIsTranslating] = useState(false);
+
+  const displayContent = isTamil && tamilContent ? tamilContent : initialContent;
+  const isShowLoading = isTranslating && !tamilContent; // Show loading skeleton or similar if needed
+
+  const handleToggleTamil = async (checked: boolean) => {
+    setIsTamil(checked);
+    if (checked && !tamilContent && initialContent) {
+      if (initialTamilContent) {
+        setTamilContent(initialTamilContent);
+        return;
+      }
+      
+      setIsTranslating(true);
+      try {
+        const response = await fetch('/api/ai/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            messages: [{ role: 'user', content: `Translate the following TNPSC study material to Tamil. Ensure all formatting (markdown, bold, headers) is preserved exactly. Do not add any conversational text or explanation. Only output the translated markdown.\n\n${initialContent}` }],
+            stream: true,
+          })
+        });
+
+        if (!response.ok || !response.body) throw new Error('Failed to translate');
+        
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let result = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          result += decoder.decode(value, { stream: true });
+          setTamilContent(result);
+        }
+
+        const inputTokens = parseInt(response.headers.get('x-input-tokens') || '0', 10);
+        const modelUsed = response.headers.get('x-model-used') || 'Gemma 2 9B';
+        // Estimate output tokens based on chars (approx 4 chars per token)
+        const outputTokens = Math.ceil(result.length / 4);
+        const totalTokens = inputTokens + outputTokens || 2000;
+        const creditsUsed = Math.max(1, Math.ceil(totalTokens / 500));
+        const balance = 1450 - creditsUsed; // Mock balance calculation for now
+        
+        toast.success(`Translation done. Used: ${creditsUsed} credits | Balance: ${balance} | Model: ${modelUsed}`);
+      } catch (e) {
+        toast.error('Translation failed. Please try again.');
+        setIsTamil(false);
+      } finally {
+        setIsTranslating(false);
+      }
+    }
+  };
+
   const { sections, headings } = useMemo(() => {
     const parsedSections: { id: string; title: string; content: string }[] = [];
     const parsedHeadings: { id: string; text: string; level: number }[] = [];
     const slugify = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    const content = displayContent;
 
     // Match both Markdown headings (must be at start of a line or string) and HTML headings
     const headingRegex = /(?:(?:^|\n)(#{1,4})\s+(.+)|<h([1-4])[^>]*>(.*?)<\/h\3>)/gi;
@@ -88,7 +150,7 @@ export function StudyContent({ content, topicTitle, subjectTitle }: StudyContent
     }
 
     return { sections: parsedSections, headings: parsedHeadings };
-  }, [content]);
+  }, [displayContent]);
 
   return (
     <StudyLayout
@@ -97,6 +159,9 @@ export function StudyContent({ content, topicTitle, subjectTitle }: StudyContent
           topicName={topicTitle}
           subjectName={subjectTitle}
           progress={42} // Mocked for now
+          isTamil={isTamil}
+          onToggleTamil={handleToggleTamil}
+          isTranslating={isTranslating}
         />
       }
       sidebar={

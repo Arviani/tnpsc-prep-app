@@ -146,35 +146,31 @@ export default async function ChaptersPage({
                 const mockStatus = index === 0 ? 'published' : index === 1 ? 'draft' : index === 2 ? 'review' : 'empty'
 
                 return (
-                  <div key={chapter.id} className="group bg-card border border-border p-3 rounded-xl shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-all duration-300 flex flex-col">
-                    <div className="flex justify-between items-start mb-2">
-                      <div className="flex-1 pr-3">
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <span className="text-[10px] font-bold text-muted-foreground bg-accent px-1.5 py-0.5 rounded text-center uppercase tracking-wide">
-                            Topic {index + 1}
-                          </span>
-                          <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 px-1.5 py-0.5 rounded text-center uppercase tracking-wide">
-                            Medium
-                          </span>
-                        </div>
-                        <h3 className="text-base font-bold text-foreground line-clamp-1 leading-tight">{chapter.title}</h3>
-                        <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                          {chapter.description || "Dive into the key concepts and fundamental principles of this topic."}
-                        </p>
-                      </div>
-                      
-                      <div className="shrink-0 text-center flex flex-col items-center">
-                        <div className={`w-10 h-10 rounded-full border-[3px] flex items-center justify-center font-bold text-xs ${isCompleted ? 'border-green-500 text-green-600' : 'border-indigo-100 text-indigo-600'}`}>
-                          {chapterProgress}%
+                  <div key={chapter.id} className="group bg-card border border-border p-3 rounded-xl shadow-sm hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-slate-900/50 transition-all duration-300 flex flex-col">
+                    <Link href={`/subjects/${subject.id}/topics/${chapter.id}/study`} className="flex flex-col flex-1 cursor-pointer">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1 pr-3">
+                          <div className="flex items-center gap-2 mb-1.5">
+                            <span className="text-[10px] font-bold text-muted-foreground bg-accent px-1.5 py-0.5 rounded text-center uppercase tracking-wide">
+                              Topic {index + 1}
+                            </span>
+                            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 px-1.5 py-0.5 rounded text-center uppercase tracking-wide">
+                              Medium
+                            </span>
+                          </div>
+                          <h3 className="text-base font-bold text-foreground group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-1 leading-tight">{chapter.title}</h3>
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-1">
+                            {chapter.description || "Dive into the key concepts and fundamental principles of this topic."}
+                          </p>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground font-medium mb-3 pt-2 border-t border-border-subtle">
-                      <div className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {estimatedMins}m</div>
-                      <div className="flex items-center gap-1"><HelpCircle className="w-3.5 h-3.5" /> {questionCount} Qs</div>
-                      <div className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> 24 PYQs</div>
-                    </div>
+                      <div className="flex items-center gap-4 text-xs text-muted-foreground font-medium mb-3 pt-2 border-t border-border-subtle">
+                        <div className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {estimatedMins}m</div>
+                        <div className="flex items-center gap-1"><HelpCircle className="w-3.5 h-3.5" /> {questionCount} Qs</div>
+                        <div className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> 24 PYQs</div>
+                      </div>
+                    </Link>
 
                     <TopicActions 
                       subjectId={subject.id} 

@@ -57,7 +57,7 @@ export function Sidebar() {
 
   return (
     <aside className="h-full shrink-0">
-      <div className="h-full w-[60px] bg-sidebar rounded-lg flex flex-col items-center py-4">
+      <div className="h-full w-[60px] bg-slate-950 rounded-none lg:rounded-lg flex flex-col items-center py-4 border-r lg:border-none border-border">
         <nav className="flex-1 overflow-y-auto w-full px-1.5 space-y-1.5 flex flex-col items-center scrollbar-none">
           {menuItems.map((item) => {
             const isActive = item.exact 

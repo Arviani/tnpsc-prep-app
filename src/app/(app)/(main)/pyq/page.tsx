@@ -17,11 +17,14 @@ export default async function PYQPortalPage() {
     .order('exam', { ascending: true })
 
   if (error) {
-    return <div className="p-8 text-destructive">Failed to load PYQ Papers.</div>
+    console.error('Error fetching PYQ papers:', error)
+    // Fall back to empty array if table doesn't exist yet
   }
 
+  const validPapers = papers || [];
+
   // Group papers by Exam
-  const groupedPapers = papers?.reduce((acc: any, paper: any) => {
+  const groupedPapers = validPapers.reduce((acc: any, paper: any) => {
     if (!acc[paper.exam]) acc[paper.exam] = []
     acc[paper.exam].push(paper)
     return acc
