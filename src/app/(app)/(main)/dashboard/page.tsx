@@ -4,6 +4,7 @@ import { ContentHeader } from '@/components/common/ContentHeader'
 import { Clock, Target, Activity, CheckCircle2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 export default async function DashboardPage() {
   const user = await authService.getUser()
@@ -16,21 +17,24 @@ export default async function DashboardPage() {
       description: 'Modern History - Chapter 4',
       icon: Clock,
       value: 'Resume',
-      action: true
+      action: true,
+      href: '/subjects'
     },
     {
-      title: 'Recent Activity',
-      description: 'Last 7 days of practice',
+      title: 'Today\'s Current Affairs',
+      description: 'New articles processed',
       icon: Activity,
-      value: '85% Accuracy',
-      action: false
+      value: 'Read Now',
+      action: true,
+      href: '/current-affairs'
     },
     {
       title: 'Daily Quiz',
       description: 'Test your knowledge today',
       icon: Target,
       value: 'Pending',
-      action: true
+      action: true,
+      href: '/current-affairs/quiz'
     },
     {
       title: 'Study Progress',
@@ -85,14 +89,16 @@ export default async function DashboardPage() {
               </div>
               <div className="flex items-center justify-between mt-2">
                 <span className="text-[11px] text-muted-foreground">{card.description}</span>
-                {card.action && (
-                  <Button 
-                    variant={isDailyQuiz ? "default" : "secondary"} 
-                    size="xs" 
-                    className="font-semibold h-6 px-2"
-                  >
-                    Start
-                  </Button>
+                {card.action && card.href && (
+                  <Link href={card.href}>
+                    <Button 
+                      variant={isDailyQuiz ? "default" : "secondary"} 
+                      size="xs" 
+                      className="font-semibold h-6 px-2"
+                    >
+                      Start
+                    </Button>
+                  </Link>
                 )}
               </div>
             </div>

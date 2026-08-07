@@ -9,10 +9,10 @@ import { createBrowserClient } from '@supabase/ssr'
 
 interface CurrentAffair {
   id: string
-  title: string
+  headline: string
   category: string
-  source: string
-  date: string
+  source_url: string
+  published_date: string
   status: string
 }
 
@@ -30,7 +30,7 @@ export default function AdminCurrentAffairsPage() {
     setLoading(true)
     const { data } = await supabase
       .from('current_affairs')
-      .select('id, title, category, source, date, status')
+      .select('id, headline, category, source_url, published_date, status')
       .order('created_at', { ascending: false })
     
     if (data) setAffairs(data)
@@ -44,7 +44,7 @@ export default function AdminCurrentAffairsPage() {
   const handleScrape = async () => {
     setScraping(true)
     try {
-      const res = await fetch('/api/admin/scrape-news', { method: 'POST' })
+      const res = await fetch('/api/cron/news', { method: 'GET' })
       const json = await res.json()
       if (res.ok) {
         alert(`Successfully scraped ${json.count} articles!`)
@@ -117,10 +117,10 @@ export default function AdminCurrentAffairsPage() {
                 affairs.map((item) => (
                   <tr key={item.id} className="border-t border-border hover:bg-accent/30 transition-colors">
                     <td className="px-6 py-4 font-medium text-foreground max-w-md truncate">
-                      {item.title}
+                      {item.headline}
                     </td>
                     <td className="px-6 py-4 text-muted-foreground whitespace-nowrap">
-                      {item.date}
+                      {item.published_date}
                     </td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-accent text-[11px] font-semibold text-muted-foreground whitespace-nowrap">

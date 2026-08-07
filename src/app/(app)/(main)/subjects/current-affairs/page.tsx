@@ -10,13 +10,14 @@ import { createBrowserClient } from '@supabase/ssr'
 
 interface Article {
   id: string
-  title: string
+  headline: string
   category: string
-  source: string
-  direct_fact: string
-  key_specifics: string[]
-  exam_lens: string
-  date: string
+  source_url: string
+  provider: string
+  summary: string
+  key_facts: string[]
+  revision_notes: string
+  published_date: string
 }
 
 export default function CurrentAffairsPage() {
@@ -37,7 +38,8 @@ export default function CurrentAffairsPage() {
       const { data, error } = await supabase
         .from('current_affairs')
         .select('*')
-        .eq('date', dateStr)
+        .gte('published_date', `${dateStr}T00:00:00.000Z`)
+        .lte('published_date', `${dateStr}T23:59:59.999Z`)
         .eq('status', 'published')
       
       if (data && data.length > 0) {
@@ -76,13 +78,13 @@ export default function CurrentAffairsPage() {
   const handleScrape = async () => {
     setScraping(true)
     try {
-      const res = await fetch('/api/admin/scrape-news', { method: 'POST' })
+      const res = await fetch('/api/cron/news', { method: 'GET' })
+      const json = await res.json()
       if (res.ok) {
-        // Automatically publish the scraped articles for this demo so they appear immediately
-        await supabase.from('current_affairs').update({ status: 'published' }).eq('status', 'draft')
+        alert(`Successfully scraped ${json.processed} articles!`)
         await fetchData()
       } else {
-        alert('Failed to scrape news')
+        alert(`Error: ${json.error}`)
       }
     } catch (e) {
       console.error(e)
@@ -162,7 +164,7 @@ export default function CurrentAffairsPage() {
                       : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"
                   )}
                 >
-                  <p className="line-clamp-2 leading-tight">{article.title}</p>
+                  <p className="line-clamp-2 leading-tight">{article.headline}</p>
                 </button>
               ))}
             </div>
@@ -177,10 +179,10 @@ export default function CurrentAffairsPage() {
                       <Globe className="w-3.5 h-3.5" /> {selectedArticle.category}
                     </div>
                     <h1 className="text-2xl lg:text-3xl font-bold text-foreground leading-snug mb-3">
-                      {selectedArticle.title}
+                      {selectedArticle.headline}
                     </h1>
                     <p className="text-muted-foreground text-base leading-relaxed">
-                      {selectedArticle.direct_fact}
+                      {selectedArticle.summary}
                     </p>
                   </div>
 
@@ -192,16 +194,16 @@ export default function CurrentAffairsPage() {
 
                     <div className="space-y-6">
                       <div>
-                        <h3 className="text-lg font-bold text-foreground mb-2">Direct fact</h3>
+                        <h3 className="text-lg font-bold text-foreground mb-2">Summary</h3>
                         <p className="text-muted-foreground leading-relaxed text-sm">
-                          {selectedArticle.direct_fact}
+                          {selectedArticle.summary}
                         </p>
                       </div>
 
                       <div>
                         <h3 className="text-lg font-bold text-foreground mb-3">Key specifics</h3>
                         <ul className="space-y-3">
-                          {selectedArticle.key_specifics.map((fact, idx) => (
+                          {selectedArticle.key_facts?.map((fact, idx) => (
                             <li key={idx} className="flex items-start gap-3 text-sm text-muted-foreground leading-relaxed">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 shrink-0" />
                               {fact}
@@ -213,14 +215,14 @@ export default function CurrentAffairsPage() {
                       <div>
                         <h3 className="text-lg font-bold text-foreground mb-2">Exam lens</h3>
                         <p className="text-muted-foreground leading-relaxed text-sm">
-                          {selectedArticle.exam_lens}
+                          {selectedArticle.revision_notes}
                         </p>
                       </div>
                     </div>
 
                     <div className="flex justify-end mt-8">
                       <span className="text-[10px] font-medium bg-accent/50 px-2.5 py-1 rounded text-muted-foreground">
-                        Source - {selectedArticle.source}
+                        Source - {selectedArticle.provider}
                       </span>
                     </div>
                   </div>
