@@ -1,6 +1,7 @@
 import { AIModel, DEFAULT_MODELS } from './models';
 import { AIProvider, ChatMessage, ChatResponse } from './providers/AIProvider';
 import { OpenRouterProvider } from './providers/OpenRouterProvider';
+import { AISecurityGuard } from './security';
 import fs from 'fs';
 import path from 'path';
 
@@ -161,8 +162,13 @@ export class ModelManager {
       
       // Calculate tokens
       const estimatedInput = messages.reduce((acc, msg) => acc + this.estimateTokens(msg.content), 0);
-      let requestedOutput = model.recommendedMaxOutputTokens || 4096;
+      let requestedOutput = model.recommendedMaxOutputTokens || 1200;
       
+      // Enforce global security limit
+      if (!AISecurityGuard.enforceTokenLimit('chat', estimatedInput * 4)) {
+        throw new Error('Request exceeds maximum token limit for chat.');
+      }
+
       // Trim conversation if it exceeds context limit
       let finalMessages = messages;
       if (estimatedInput + requestedOutput > model.contextLength) {

@@ -287,7 +287,7 @@ export function GlobalAIChat() {
   if (!isOpen) return null;
 
   return (
-    <div className="w-[450px] h-full flex flex-col bg-white dark:bg-[#191919] border border-border dark:border-[#2C2C2C] rounded-xl shadow-sm shrink-0 ml-[2px] overflow-hidden">
+    <div className="w-[450px] h-full flex flex-col bg-white dark:bg-[#191919] border border-border dark:border-[#2C2C2C] rounded-xl shrink-0 ml-[2px] overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between p-3 border-b border-transparent">
         <DropdownMenu>

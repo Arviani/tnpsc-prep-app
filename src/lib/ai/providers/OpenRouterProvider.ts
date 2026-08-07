@@ -1,4 +1,5 @@
 import { AIProvider, ChatRequest, ChatResponse, ProviderError } from './AIProvider';
+import { AISecurityGuard } from '../security';
 
 export class OpenRouterProvider implements AIProvider {
   get providerType() {
@@ -44,6 +45,10 @@ export class OpenRouterProvider implements AIProvider {
   }
 
   async chat(request: ChatRequest): Promise<ChatResponse> {
+    if (!AISecurityGuard.validateModel(request.model.providerModelId)) {
+      throw new Error(`[SECURITY] Paid or unknown model rejected: ${request.model.providerModelId}`);
+    }
+
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: 'POST',
       headers: {
@@ -64,6 +69,17 @@ export class OpenRouterProvider implements AIProvider {
       this.handleError(response, data);
     }
 
+    AISecurityGuard.logUsage({
+      userId: 'anonymous', // Would be passed from context ideally
+      model: request.model.providerModelId,
+      provider: 'openrouter',
+      requestType: 'chat',
+      promptTokens: data.usage?.prompt_tokens || 0,
+      completionTokens: data.usage?.completion_tokens || 0,
+      status: 'success',
+      responseTime: 0 // Would calculate duration, simplified here
+    });
+
     return {
       content: data.choices[0]?.message?.content || '',
       modelUsed: request.model,
@@ -72,6 +88,10 @@ export class OpenRouterProvider implements AIProvider {
   }
 
   async chatStream(request: ChatRequest): Promise<ReadableStream> {
+    if (!AISecurityGuard.validateModel(request.model.providerModelId)) {
+      throw new Error(`[SECURITY] Paid or unknown model rejected: ${request.model.providerModelId}`);
+    }
+
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: 'POST',
       headers: {

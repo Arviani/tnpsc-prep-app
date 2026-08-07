@@ -29,7 +29,7 @@ export function SecondarySidebarNav({ subjects }: { subjects: Subject[] }) {
         </div>
       </Link>
 
-      {subjects?.map((subject) => {
+      {subjects?.filter(s => s.name.toLowerCase() !== 'current affairs').map((subject) => {
         const isActive = pathname.startsWith(`/subjects/${subject.id}`)
 
         return (

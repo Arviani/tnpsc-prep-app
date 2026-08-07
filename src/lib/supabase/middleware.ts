@@ -47,9 +47,10 @@ export async function updateSession(request: NextRequest) {
       pathname.startsWith('/dashboard') || 
       pathname.startsWith('/subjects') || 
       pathname.startsWith('/practice') || 
-      pathname.startsWith('/result')
+      pathname.startsWith('/result') ||
+      pathname.startsWith('/admin/ai-usage')
 
-    const isAdminRoute = pathname.startsWith('/admin')
+    const isAdminRoute = pathname.startsWith('/admin') && !pathname.startsWith('/admin/ai-usage')
     const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/signup')
 
     if (isAdminRoute) {

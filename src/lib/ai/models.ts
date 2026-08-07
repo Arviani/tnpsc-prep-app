@@ -3,7 +3,7 @@ export type ProviderType = 'openrouter' | 'ollama' | 'gemini' | 'openai' | 'anth
 export type ModelStatus = 'Available' | 'Busy' | 'Rate Limited' | 'Disabled';
 
 export interface AIModel {
-  id: string; // Internal ID (e.g. 'gemma-4')
+  id: string; // Internal ID
   displayName: string;
   provider: ProviderType;
   providerModelId: string; // The ID expected by the provider API
@@ -16,57 +16,47 @@ export interface AIModel {
   priority: number;
 }
 
-export const DEFAULT_MODELS: AIModel[] = [
+export const FREE_TIER_MODELS: AIModel[] = [
   {
-    id: 'gemma',
-    displayName: 'Gemma 4',
+    id: 'gemma-free',
+    displayName: 'Gemma 2 9B (Free)',
     provider: 'openrouter',
-    providerModelId: 'google/gemini-2.5-flash', // Re-using gemini flash for gemma-4 proxy
-    description: 'Google Gemma 4 27B model. Fast and efficient.',
+    providerModelId: 'google/gemma-2-9b-it:free',
+    description: 'Google Gemma 2 9B model. Free tier.',
     supportsStreaming: true,
     supportsReasoning: false,
     contextLength: 8192,
-    recommendedMaxOutputTokens: 4096,
+    recommendedMaxOutputTokens: 2000,
     isEnabled: true,
     priority: 1
   },
   {
-    id: 'nemotron',
-    displayName: 'Nemotron Ultra',
+    id: 'llama-free',
+    displayName: 'Llama 3 8B (Free)',
     provider: 'openrouter',
-    providerModelId: 'nvidia/llama-3.1-nemotron-70b-instruct',
-    description: 'NVIDIA Nemotron Ultra. Great for reasoning tasks.',
+    providerModelId: 'meta-llama/llama-3-8b-instruct:free',
+    description: 'Meta Llama 3 8B Instruct. Free tier.',
     supportsStreaming: true,
-    supportsReasoning: true,
-    contextLength: 4096,
-    recommendedMaxOutputTokens: 4096,
+    supportsReasoning: false,
+    contextLength: 8192,
+    recommendedMaxOutputTokens: 2000,
     isEnabled: true,
     priority: 2
   },
   {
-    id: 'llama',
-    displayName: 'Llama 3.3 70B',
+    id: 'phi-free',
+    displayName: 'Phi-3 Mini (Free)',
     provider: 'openrouter',
-    providerModelId: 'meta-llama/llama-3.3-70b-instruct',
-    description: 'Meta Llama 3.3 70B Instruct. Highly capable open model.',
+    providerModelId: 'microsoft/phi-3-mini-128k-instruct:free',
+    description: 'Microsoft Phi-3 Mini. Free tier.',
     supportsStreaming: true,
-    supportsReasoning: true,
-    contextLength: 8192,
-    recommendedMaxOutputTokens: 4096,
+    supportsReasoning: false,
+    contextLength: 128000,
+    recommendedMaxOutputTokens: 2000,
     isEnabled: true,
     priority: 3
-  },
-  {
-    id: 'qwen',
-    displayName: 'Qwen 3 32B',
-    provider: 'openrouter',
-    providerModelId: 'qwen/qwen-2.5-coder-32b-instruct',
-    description: 'Qwen 3 32B Instruct. Strong coding and logical reasoning.',
-    supportsStreaming: true,
-    supportsReasoning: true,
-    contextLength: 8192,
-    recommendedMaxOutputTokens: 4096,
-    isEnabled: true,
-    priority: 4
   }
 ];
+
+// Re-export for compatibility with existing codebase
+export const DEFAULT_MODELS = FREE_TIER_MODELS;

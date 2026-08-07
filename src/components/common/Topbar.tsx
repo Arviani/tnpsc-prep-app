@@ -20,13 +20,24 @@ import { useEffect, useState } from 'react'
 import { useWorkspace } from '@/contexts/WorkspaceContext'
 import { ChevronDown, Shield, GraduationCap } from 'lucide-react'
 import { useGlobalAIStore } from '@/hooks/useGlobalAIStore'
+import { useAIUsageStore } from '@/hooks/useAIUsageStore'
+import { cn } from '@/lib/utils'
+import Link from 'next/link'
 
 export function Topbar() {
   const router = useRouter()
   const pathname = usePathname()
   const [userName, setUserName] = useState<string>('User')
   const { workspace, setWorkspace, userRole } = useWorkspace()
+  const { aiUsageStats, fetchUsage } = useAIUsageStore()
   
+  useEffect(() => {
+    fetchUsage()
+    // Refresh usage every 30 seconds
+    const interval = setInterval(fetchUsage, 30000)
+    return () => clearInterval(interval)
+  }, [fetchUsage])
+
   useEffect(() => {
     const fetchUser = async () => {
       const supabase = createClient()
@@ -113,6 +124,28 @@ export function Topbar() {
       </div>
 
       <div className="flex items-center justify-end gap-3 min-w-[200px]">
+        
+        {/* AI Usage Indicator */}
+        {/* AI Usage Indicator */}
+        <div onClick={() => router.push('/admin/ai-usage')} className="hidden sm:flex items-center gap-2 px-3 py-1 group transition-colors h-7 rounded-full hover:bg-accent/30 cursor-pointer" title="Strict Free-Tier Enforced - View Dashboard">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap uppercase tracking-wider group-hover:text-foreground transition-colors">AI Usage</span>
+            <div className="w-[50px] h-1.5 bg-slate-300 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div 
+                className={cn("h-full rounded-full transition-all duration-500", 
+                  (aiUsageStats?.tokenUsagePercentage || 0) > 90 ? "bg-red-500" : 
+                  (aiUsageStats?.tokenUsagePercentage || 0) > 80 ? "bg-amber-500" : 
+                  "bg-blue-500"
+                )} 
+                style={{ width: `${aiUsageStats?.tokenUsagePercentage || 0}%` }} 
+              />
+            </div>
+            <span className="text-[10px] font-bold text-foreground group-hover:text-blue-600 transition-colors">
+              {aiUsageStats?.tokenUsagePercentage || 0}%
+            </span>
+          </div>
+        </div>
+
         <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger className="relative h-7 w-7 rounded-full p-0 overflow-hidden border border-border hover:bg-accent hover:text-accent-foreground outline-none">

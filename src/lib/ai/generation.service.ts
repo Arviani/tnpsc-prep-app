@@ -14,11 +14,8 @@ export interface AIResponse {
   status?: number;
 }
 
-const MODELS = [
-  'google/gemini-2.0-flash-lite-preview-02-05:free',
-  'meta-llama/llama-3.1-8b-instruct:free',
-  'google/gemma-2-9b-it:free'
-];
+import { FREE_TIER_MODELS } from './models';
+import { AISecurityGuard } from './security';
 
 export class AIGenerationService {
   private static async callOpenRouter(prompt: string, model: string): Promise<{ status: number, data: any }> {
@@ -36,6 +33,7 @@ export class AIGenerationService {
       body: JSON.stringify({
         model,
         messages: [{ role: 'user', content: prompt }],
+        max_tokens: 1200 // Default limit, to be safe
       }),
     });
 
@@ -53,9 +51,19 @@ export class AIGenerationService {
     console.log(`${logPrefix} Starting generation for Subject: ${context.subject}, Topic: ${context.topic}`);
     console.log(`${logPrefix} Prompt Length: ${prompt.length}`);
 
-    for (let i = 0; i < MODELS.length; i++) {
-      const model = MODELS[i];
-      console.log(`${logPrefix} Attempting Model: ${model}`);
+    if (!AISecurityGuard.enforceTokenLimit(context.subject, prompt.length)) {
+      return { success: false, error: 'Request exceeds token limit.', status: 403 };
+    }
+
+    for (let i = 0; i < FREE_TIER_MODELS.length; i++) {
+      const modelInfo = FREE_TIER_MODELS[i];
+      const model = modelInfo.providerModelId;
+      
+      if (!AISecurityGuard.validateModel(model)) {
+        continue;
+      }
+
+      console.log(`${logPrefix} Attempting Free Model: ${model}`);
 
       try {
         const startTime = Date.now();
@@ -75,11 +83,28 @@ export class AIGenerationService {
             content = content.replace(/```/g, '').trim();
           }
 
+          AISecurityGuard.logUsage({
+            userId: 'anonymous', // Replace with real user ID from context when available
+            model,
+            provider: 'openrouter',
+            requestType: context.subject,
+            promptTokens: data.usage?.prompt_tokens || 0,
+            completionTokens: data.usage?.completion_tokens || 0,
+            status: 'success',
+            responseTime: duration
+          });
+
           return { success: true, content, modelUsed: model, status: 200 };
         } else if (status === 429) {
           console.warn(`${logPrefix} Rate limit (429) hit on model ${model}. Retrying...`);
+          AISecurityGuard.logUsage({
+            userId: 'anonymous', model, provider: 'openrouter', requestType: context.subject, status: 'rate_limited', responseTime: duration
+          });
         } else {
           console.error(`${logPrefix} API Error on model ${model}:`, data);
+          AISecurityGuard.logUsage({
+            userId: 'anonymous', model, provider: 'openrouter', requestType: context.subject, status: 'error', responseTime: duration
+          });
           if (status >= 500) {
             console.warn(`${logPrefix} Server error (5xx) hit on model ${model}. Retrying...`);
           } else {

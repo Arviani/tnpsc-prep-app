@@ -1,6 +1,9 @@
 import { createClient } from '../supabase/server';
 import { NewsAPIProvider } from './providers/newsapi.provider';
 import { GoogleRSSProvider } from './providers/google-rss.provider';
+import { TheHinduProvider } from './providers/the-hindu.provider';
+import { TimesOfIndiaProvider } from './providers/times-of-india.provider';
+import { RSS_CONFIG } from '../../config/rss.config';
 import { Normalizer } from './normalizer';
 import { Deduplicator } from './deduplicator';
 import { Classifier } from './classifier';
@@ -8,14 +11,23 @@ import { Generator } from './generator';
 import { Article, AIGeneratedContent } from './types';
 
 export class NewsService {
-  static async runDailyIngestion() {
+  static async runDailyIngestion(enabledProviders?: string[]) {
     const supabase = await createClient();
     
-    // 1. Initialize Providers
-    const providers = [
-      new NewsAPIProvider(),
-      new GoogleRSSProvider()
-    ];
+    // 1. Initialize Providers dynamically based on config
+    const providers = [];
+    
+    // Determine which are enabled either globally in config or via passed params
+    const isEnabled = (id: string) => {
+      if (enabledProviders) return enabledProviders.includes(id);
+      const conf = RSS_CONFIG.find(c => c.id === id);
+      return conf ? conf.enabled : false;
+    };
+
+    if (isEnabled('newsapi')) providers.push(new NewsAPIProvider());
+    if (isEnabled('google-rss')) providers.push(new GoogleRSSProvider());
+    if (isEnabled('the-hindu')) providers.push(new TheHinduProvider());
+    if (isEnabled('times-of-india')) providers.push(new TimesOfIndiaProvider());
 
     // 2. Fetch Articles
     let rawArticles: Article[] = [];
@@ -38,8 +50,17 @@ export class NewsService {
 
     let processedCount = 0;
 
-    // 5. Process each article (Limit to top 5 to prevent timeouts/rate limits)
-    const articlesToProcess = uniqueArticles.slice(0, 5);
+    // 5. Process each article (Take up to 3 per provider to ensure diversity)
+    const articlesToProcess: Article[] = [];
+    const providerGroups = uniqueArticles.reduce((acc, article) => {
+      if (!acc[article.provider]) acc[article.provider] = [];
+      acc[article.provider].push(article);
+      return acc;
+    }, {} as Record<string, Article[]>);
+    
+    for (const provider of Object.keys(providerGroups)) {
+      articlesToProcess.push(...providerGroups[provider].slice(0, 3));
+    }
     for (const article of articlesToProcess) {
       try {
         // Check if we already have this URL in the DB to prevent duplicate processing

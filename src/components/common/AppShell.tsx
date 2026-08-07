@@ -15,7 +15,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <Sidebar />
         
         {/* Dynamic Content Panel */}
-        <div className="flex flex-1 w-full h-full bg-background border border-border rounded-lg overflow-hidden shadow-sm relative">
+        <div className="flex flex-1 w-full h-full bg-background border border-border rounded-lg overflow-hidden relative">
           {children}
         </div>
         

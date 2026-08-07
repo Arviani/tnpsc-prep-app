@@ -12,7 +12,11 @@ export async function GET(request: Request) {
   }
 
   try {
-    const result = await NewsService.runDailyIngestion();
+    const url = new URL(request.url);
+    const providersParam = url.searchParams.get('providers');
+    const enabledProviders = providersParam ? providersParam.split(',') : undefined;
+
+    const result = await NewsService.runDailyIngestion(enabledProviders);
     return NextResponse.json(result);
   } catch (error: any) {
     console.error('News Ingestion Cron Failed:', error);

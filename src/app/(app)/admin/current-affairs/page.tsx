@@ -20,6 +20,12 @@ export default function AdminCurrentAffairsPage() {
   const [affairs, setAffairs] = useState<CurrentAffair[]>([])
   const [loading, setLoading] = useState(true)
   const [scraping, setScraping] = useState(false)
+  const [enabledProviders, setEnabledProviders] = useState({
+    newsapi: true,
+    'google-rss': true,
+    'the-hindu': true,
+    'times-of-india': true
+  })
   
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -44,7 +50,12 @@ export default function AdminCurrentAffairsPage() {
   const handleScrape = async () => {
     setScraping(true)
     try {
-      const res = await fetch('/api/cron/news', { method: 'GET' })
+      const activeProviders = Object.entries(enabledProviders)
+        .filter(([_, enabled]) => enabled)
+        .map(([id]) => id)
+        .join(',')
+        
+      const res = await fetch(`/api/cron/news?providers=${activeProviders}`, { method: 'GET' })
       const json = await res.json()
       if (res.ok) {
         alert(`Successfully scraped ${json.count} articles!`)
@@ -80,8 +91,27 @@ export default function AdminCurrentAffairsPage() {
         />
       }
     >
-      <div className="flex justify-end mb-6">
-        <Button onClick={handleScrape} disabled={scraping} className="gap-2 bg-indigo-600 hover:bg-indigo-700">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 bg-card p-4 rounded-xl border border-border shadow-sm">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="text-sm font-semibold text-muted-foreground mr-2">Providers:</span>
+          {Object.entries({
+            newsapi: 'NewsAPI',
+            'google-rss': 'Google RSS',
+            'the-hindu': 'The Hindu',
+            'times-of-india': 'Times of India'
+          }).map(([id, label]) => (
+            <label key={id} className="flex items-center gap-2 text-sm cursor-pointer hover:text-foreground">
+              <input 
+                type="checkbox" 
+                checked={enabledProviders[id as keyof typeof enabledProviders]} 
+                onChange={(e) => setEnabledProviders(prev => ({ ...prev, [id]: e.target.checked }))}
+                className="rounded border-input text-indigo-600 focus:ring-indigo-600 w-4 h-4"
+              />
+              {label}
+            </label>
+          ))}
+        </div>
+        <Button onClick={handleScrape} disabled={scraping} className="gap-2 bg-indigo-600 hover:bg-indigo-700 shrink-0">
           {scraping ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
           {scraping ? 'Scraping & Summarizing...' : 'Scrape Today\'s News'}
         </Button>

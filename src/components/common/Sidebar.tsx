@@ -5,7 +5,9 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { useWorkspace } from '@/contexts/WorkspaceContext'
+import { useLayoutStore } from '@/store/layout.store'
 import {
+  ChevronRight,
   LayoutDashboard,
   Library,
   BookOpen,
@@ -52,6 +54,7 @@ const adminMenuItems: MenuItem[] = [
 export function Sidebar() {
   const pathname = usePathname()
   const { workspace } = useWorkspace()
+  const { isSubjectsCollapsed, toggleSubjectsCollapsed } = useLayoutStore()
 
   const menuItems = workspace === 'admin' ? adminMenuItems : studentMenuItems
 
@@ -59,6 +62,17 @@ export function Sidebar() {
     <aside className="h-full shrink-0">
       <div className="h-full w-[60px] bg-slate-950 rounded-none lg:rounded-lg flex flex-col items-center py-4 border-r lg:border-none border-border">
         <nav className="flex-1 overflow-y-auto w-full px-1.5 space-y-1.5 flex flex-col items-center scrollbar-none">
+          {isSubjectsCollapsed && (
+            <button
+              onClick={toggleSubjectsCollapsed}
+              className="flex flex-col items-center justify-center gap-0.5 rounded-lg w-full py-2.5 mb-2 transition-all duration-200 group relative text-white/50 hover:bg-white/5 hover:text-white"
+              title="Expand Subjects"
+              aria-label="Expand Subjects"
+            >
+              <ChevronRight size={20} className="transition-transform duration-300" />
+            </button>
+          )}
+
           {menuItems.map((item) => {
             const isActive = item.exact 
               ? pathname === item.href 

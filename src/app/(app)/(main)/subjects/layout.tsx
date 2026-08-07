@@ -3,6 +3,7 @@ import { SecondarySidebar } from '@/components/common/SecondarySidebar'
 import { ContentArea } from '@/components/common/ContentArea'
 import Link from 'next/link'
 import { SecondarySidebarNav } from '@/components/common/SecondarySidebarNav'
+import { CollapseSubjectsButton } from '@/components/subjects/CollapseSubjectsButton'
 
 export default async function SubjectsLayout({
   children,
@@ -19,8 +20,9 @@ export default async function SubjectsLayout({
   return (
     <>
       <SecondarySidebar>
-        <div className="flex items-center h-12 px-4 border-b border-border shrink-0">
+        <div className="flex items-center justify-between h-12 px-4 border-b border-border shrink-0">
           <h2 className="font-semibold text-[11px] text-muted-foreground uppercase tracking-wider">Subjects</h2>
+          <CollapseSubjectsButton />
         </div>
         <SecondarySidebarNav subjects={subjects || []} />
       </SecondarySidebar>
