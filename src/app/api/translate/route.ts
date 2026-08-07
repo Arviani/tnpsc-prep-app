@@ -22,13 +22,15 @@ export async function POST(request: Request) {
         'Authorization': `Bearer ${openrouterKey}`
       },
       body: JSON.stringify({
-        model: 'google/gemma-2-9b-it:free',
+        model: 'google/gemma-4-31b-it:free',
         messages: [{ role: 'user', content: prompt }]
       })
     });
 
     if (!response.ok) {
-      throw new Error(`OpenRouter API error: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('OpenRouter translation error response:', response.status, errorText);
+      throw new Error(`OpenRouter API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
