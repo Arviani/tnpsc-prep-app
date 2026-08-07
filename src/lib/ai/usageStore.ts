@@ -78,7 +78,7 @@ export const useModelUsageStore = create<ModelUsageState>()(
 
           Object.keys(newUsages).forEach(modelId => {
             const usage = newUsages[modelId];
-            if (usage.lastResetTime && now >= usage.lastResetTime) {
+            if ((usage as any).lastResetTime && now >= (usage as any).lastResetTime) {
               // Migration from old schema
               newUsages[modelId] = {
                 ...newUsages[modelId],
