@@ -78,6 +78,8 @@ export class StructuredQuestionParser {
       // Not JSON, continue
     }
 
+    let qNumber = 1
+
     // Check if it's the exported .doc (HTML) format
     if (text.includes('<html') && text.includes('<p><b>')) {
       try {
@@ -93,7 +95,7 @@ export class StructuredQuestionParser {
           
           let liMatch;
           while ((liMatch = liRegex.exec(ulContent)) !== null) {
-            const label = liMatch[1].trim();
+            const label = liMatch[1].trim() as 'A' | 'B' | 'C' | 'D' | 'E';
             const body = liMatch[2].trim();
             const isCorrect = liMatch[0].includes('<b>(Correct)</b>');
             
@@ -129,8 +131,6 @@ export class StructuredQuestionParser {
     
     // Actually, a safer way is to split the text by "Answer: (X)" to isolate each question block
     const rawBlocks = text.split(/Answer:\s*\([A-E]\)/i)
-    
-    let qNumber = 1
     
     // Let's use a regex exec approach with optional (E)
     const questionRegex = /((?:.|\n)*?)\s*\(A\)\s*((?:.|\n)*?)\s*\(B\)\s*((?:.|\n)*?)\s*\(C\)\s*((?:.|\n)*?)\s*\(D\)\s*((?:.|\n)*?)(?:\s*\(E\)\s*((?:.|\n)*?))?\s*Answer:\s*\(([A-E])\)/ig
