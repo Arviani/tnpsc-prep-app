@@ -71,6 +71,7 @@ export async function importQuestionsAction(
             body: q.question,
             exam_type: q.exam || paperMetadata?.exam || null,
             year: q.year || paperMetadata?.year || null,
+            topic: q.topic || paperMetadata?.section || null,
             language: q.language || paperMetadata?.language || null,
             marks: q.marks ? Math.round(q.marks) : 1.5,
             is_pyq: true,

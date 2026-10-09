@@ -28,6 +28,7 @@ export function ModeSelection({ selectedMode, onSelect }: ModeSelectionProps) {
         </p>
       </Card>
 
+      {/* AI EXTRACT CARD HIDDEN TEMPORARILY
       <Card 
         className={`p-6 cursor-pointer border-2 transition-all hover:border-primary/50 ${selectedMode === 'ai' ? 'border-primary ring-2 ring-primary/20 bg-primary/5' : 'border-border'}`}
         onClick={() => onSelect('ai')}
@@ -45,6 +46,7 @@ export function ModeSelection({ selectedMode, onSelect }: ModeSelectionProps) {
           Use Gemini Vision AI for scanned PDFs or unstructured question papers. Intelligently extracts questions even from difficult formats.
         </p>
       </Card>
+      */}
     </div>
   )
 }

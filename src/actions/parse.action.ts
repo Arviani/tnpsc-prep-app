@@ -32,21 +32,42 @@ export async function parseDocumentAction(
     // 3. Parse based on mode
     let result: ParserResponse;
     const isPDF = storagePath.toLowerCase().endsWith('.pdf')
+    const isDocx = storagePath.toLowerCase().endsWith('.docx') || storagePath.toLowerCase().endsWith('.doc')
     
+    let text = ''
+    
+    if (!isPDF) {
+      if (isDocx) {
+        try {
+           const mammoth = require('mammoth')
+           // If it's a real docx, this will extract text
+           const extracted = await mammoth.extractRawText({ buffer })
+           text = extracted.value
+           
+           // If mammoth fails or returns nothing, it might be our custom HTML .doc
+           if (!text || text.trim() === '') {
+             text = buffer.toString('utf-8')
+           }
+        } catch (e) {
+           // Fallback if mammoth fails (e.g. for HTML-based .doc)
+           text = buffer.toString('utf-8')
+        }
+      } else {
+        text = buffer.toString('utf-8')
+      }
+    }
+
     if (mode === 'automatic') {
       // Automatic Mode: ZERO AI calls.
-      // We assume the file is a text file, or we convert the buffer to text if it's utf-8.
       if (isPDF) {
-        return { success: false, error: 'Automatic extraction is currently only supported for structured text files (.txt). Please select AI Extract for PDFs.' }
+        return { success: false, error: 'Automatic extraction is currently only supported for structured text files (.txt) and Word Documents. Please select AI Extract for PDFs.' }
       }
-      const text = buffer.toString('utf-8')
       result = await structuredQuestionParser.parseText(text)
     } else {
       // AI Mode: Use Gemini
       if (isPDF) {
          result = await geminiQuestionParser.parseFile(buffer, 'application/pdf')
       } else {
-         const text = buffer.toString('utf-8')
          result = await geminiQuestionParser.parseText(text)
       }
     }

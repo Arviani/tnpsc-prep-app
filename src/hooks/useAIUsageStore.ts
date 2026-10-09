@@ -16,6 +16,7 @@ interface AIUsageState {
   stats: AIUsageStats | null;
   isLoading: boolean;
   fetchUsage: () => Promise<void>;
+  showUsageToast: (consumedTokens: number) => void;
 }
 
 export const useAIUsageStore = create<AIUsageState>((set) => ({

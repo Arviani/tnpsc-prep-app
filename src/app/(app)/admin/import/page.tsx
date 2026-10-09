@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { useImport } from '@/hooks/useImport'
-import { ModeSelection } from '@/components/admin/import/ModeSelection'
 import { UploadArea } from '@/components/admin/import/UploadArea'
 import { ProcessingView } from '@/components/admin/import/ProcessingView'
 import { ReviewWorkspace } from '@/components/admin/import/ReviewWorkspace'
@@ -35,8 +34,6 @@ export default function ImportPage() {
             <h1 className="text-2xl font-bold mb-1">Import Question Paper</h1>
             <p className="text-[13px] text-muted-foreground">Extract TNPSC questions from documents automatically or using Gemini Vision AI.</p>
           </div>
-          
-          <ModeSelection selectedMode={extractionMode} onSelect={setExtractionMode} />
           
           {uploader.error && (
             <div className="mb-6 p-4 bg-destructive/10 text-destructive rounded-md font-medium text-sm border border-destructive/20">

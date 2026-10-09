@@ -26,7 +26,7 @@ export function useImport() {
     return errors
   }, [])
 
-  const handleFileUpload = async (uploadedFile: File) => {
+  const handleFileUpload = async (uploadedFile: File, examName: string, year: string, part: string) => {
     setFile(uploadedFile)
 
     // 1. Upload File to Supabase Storage
@@ -48,7 +48,22 @@ export function useImport() {
       return
     }
 
-    validateCurrentQuestions(questions)
+    const updatedQs = questions.map(q => ({
+      ...q,
+      year: parseInt(year),
+      exam: examName,
+      topic: part
+    }))
+
+    parser.setParsedQuestions(updatedQs)
+    parser.setPaperMetadata({
+      ...parser.paperMetadata,
+      year: parseInt(year),
+      section: part,
+      exam: examName
+    })
+
+    validateCurrentQuestions(updatedQs)
     setCurrentState('review')
   }
 

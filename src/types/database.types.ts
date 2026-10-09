@@ -608,44 +608,100 @@ export type Database = {
       current_affairs: {
         Row: {
           id: string
-          title: string
+          headline: string
+          summary: string
+          key_facts: string[]
+          revision_notes: string | null
+          tnpsc_subject: string | null
+          difficulty: string | null
+          important_dates: any[]
+          important_numbers: any[]
           category: string | null
-          source: string | null
-          direct_fact: string
-          key_specifics: string[]
-          exam_lens: string | null
-          date: string
+          published_date: string
+          source_url: string
+          provider: string
           status: string
+          ai_metadata: any
           created_at: string
           updated_at: string
         }
         Insert: {
           id?: string
-          title: string
+          headline: string
+          summary: string
+          key_facts?: string[]
+          revision_notes?: string | null
+          tnpsc_subject?: string | null
+          difficulty?: string | null
+          important_dates?: any[]
+          important_numbers?: any[]
           category?: string | null
-          source?: string | null
-          direct_fact: string
-          key_specifics?: string[]
-          exam_lens?: string | null
-          date: string
+          published_date: string
+          source_url: string
+          provider: string
           status?: string
+          ai_metadata?: any
           created_at?: string
           updated_at?: string
         }
         Update: {
           id?: string
-          title?: string
+          headline?: string
+          summary?: string
+          key_facts?: string[]
+          revision_notes?: string | null
+          tnpsc_subject?: string | null
+          difficulty?: string | null
+          important_dates?: any[]
+          important_numbers?: any[]
           category?: string | null
-          source?: string | null
-          direct_fact?: string
-          key_specifics?: string[]
-          exam_lens?: string | null
-          date?: string
+          published_date?: string
+          source_url?: string
+          provider?: string
           status?: string
+          ai_metadata?: any
           created_at?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      current_affair_questions: {
+        Row: {
+          id: string
+          current_affair_id: string
+          question_text: string
+          options: any
+          correct_answer: string
+          explanation: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          current_affair_id: string
+          question_text: string
+          options: any
+          correct_answer: string
+          explanation: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          current_affair_id?: string
+          question_text?: string
+          options?: any
+          correct_answer?: string
+          explanation?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "current_affair_questions_current_affair_id_fkey"
+            columns: ["current_affair_id"]
+            isOneToOne: false
+            referencedRelation: "current_affairs"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       daily_quizzes: {
         Row: {

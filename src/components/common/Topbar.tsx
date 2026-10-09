@@ -29,7 +29,7 @@ export function Topbar() {
   const pathname = usePathname()
   const [userName, setUserName] = useState<string>('User')
   const { workspace, setWorkspace, userRole } = useWorkspace()
-  const { aiUsageStats, fetchUsage } = useAIUsageStore()
+  const { stats: aiUsageStats, fetchUsage } = useAIUsageStore()
   
   useEffect(() => {
     fetchUsage()
@@ -111,6 +111,7 @@ export function Topbar() {
               <span className="text-muted-foreground/70 text-[12px] font-medium">⌘ K</span>
             </div>
           </div>
+          {/* AI CHATS BUTTON HIDDEN TEMPORARILY
           <button 
             onClick={() => useGlobalAIStore.getState().openChat()}
             className="ai-chip-animated flex items-center justify-center gap-1 pl-2 pr-1 rounded-full text-[12px] font-medium text-muted-foreground hover:text-foreground h-[20px] w-[90px] shrink-0 border border-border dark:border-[#4C4C4C] dark:bg-[#1C1C1C]"
@@ -120,13 +121,13 @@ export function Topbar() {
               <Sparkles className="h-3 w-3 text-purple-500 fill-purple-400" />
             </span>
           </button>
+          */}
         </div>
       </div>
 
       <div className="flex items-center justify-end gap-3 min-w-[200px]">
         
-        {/* AI Usage Indicator */}
-        {/* AI Usage Indicator */}
+        {/* AI USAGE INDICATOR HIDDEN TEMPORARILY
         <div onClick={() => router.push('/admin/ai-usage')} className="hidden sm:flex items-center gap-2 px-3 py-1 group transition-colors h-7 rounded-full hover:bg-accent/30 cursor-pointer" title="Strict Free-Tier Enforced - View Dashboard">
           <div className="flex items-center gap-2">
             <span className="text-[10px] font-medium text-muted-foreground whitespace-nowrap uppercase tracking-wider group-hover:text-foreground transition-colors">AI Usage</span>
@@ -145,6 +146,7 @@ export function Topbar() {
             </span>
           </div>
         </div>
+        */}
 
         <ThemeToggle />
         <DropdownMenu>

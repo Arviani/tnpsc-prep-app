@@ -44,6 +44,85 @@ export class StructuredQuestionParser {
 
     const questions: ParsedQuestion[] = []
     
+    // Check if it's a JSON file
+    try {
+      const jsonData = JSON.parse(text)
+      if (Array.isArray(jsonData)) {
+        // Assume it's an array of questions
+        const mappedQuestions = jsonData.map((q, i) => ({
+          questionNumber: q.questionNumber || q.question_no || i + 1,
+          question: q.question || q.body || '',
+          options: q.options || [],
+          correctAnswer: q.correctAnswer || q.correct_answer || null,
+          exam: q.exam || paperMetadata.exam,
+          year: q.year || paperMetadata.year,
+          section: q.section || q.topic || paperMetadata.section,
+          subject: q.subject || null,
+        }))
+        return { questions: mappedQuestions, paperMetadata }
+      } else if (jsonData.questions && Array.isArray(jsonData.questions)) {
+        // Assume it's an object with a questions array
+        const mappedQuestions = jsonData.questions.map((q: any, i: number) => ({
+          questionNumber: q.questionNumber || q.question_no || i + 1,
+          question: q.question || q.body || '',
+          options: q.options || [],
+          correctAnswer: q.correctAnswer || q.correct_answer || null,
+          exam: q.exam || paperMetadata.exam,
+          year: q.year || paperMetadata.year,
+          section: q.section || q.topic || paperMetadata.section,
+          subject: q.subject || null,
+        }))
+        return { questions: mappedQuestions, paperMetadata }
+      }
+    } catch (e) {
+      // Not JSON, continue
+    }
+
+    // Check if it's the exported .doc (HTML) format
+    if (text.includes('<html') && text.includes('<p><b>')) {
+      try {
+        const pRegex = /<p><b>\d+\.\s*(.*?)<\/b><\/p>\s*<ul[^>]*>([\s\S]*?)<\/ul>/g;
+        let match;
+        while ((match = pRegex.exec(text)) !== null) {
+          const qText = match[1].trim();
+          const ulContent = match[2];
+          
+          const liRegex = /<li>([A-E])\.\s*(.*?)\s*(?:<b>\(Correct\)<\/b>)?<\/li>/g;
+          const options: Option[] = [];
+          let correctAnswer = null;
+          
+          let liMatch;
+          while ((liMatch = liRegex.exec(ulContent)) !== null) {
+            const label = liMatch[1].trim();
+            const body = liMatch[2].trim();
+            const isCorrect = liMatch[0].includes('<b>(Correct)</b>');
+            
+            options.push({ label, body });
+            if (isCorrect) correctAnswer = label;
+          }
+          
+          if (options.length > 0) {
+            questions.push({
+              questionNumber: qNumber++,
+              question: qText,
+              options,
+              correctAnswer,
+              exam: paperMetadata.exam,
+              year: paperMetadata.year,
+              section: paperMetadata.section,
+              marks: 1.5
+            });
+          }
+        }
+        
+        if (questions.length > 0) {
+          return { questions, paperMetadata };
+        }
+      } catch(e) {
+        // Fallback to regex
+      }
+    }
+
     // Improved Regex approach for the question blocks
     // We combine all lines and split by something that looks like a new question.
     // Since questions may not have numbers, we split by looking for the pattern of (A)... (B)... Answer: (X)
@@ -53,17 +132,8 @@ export class StructuredQuestionParser {
     
     let qNumber = 1
     
-    for (let i = 0; i < rawBlocks.length; i++) {
-      let block = rawBlocks[i].trim()
-      if (!block) continue
-      
-      // Determine the answer for this block by looking at the original text separator
-      // Since split removes the separator, we can find the separator in the original text.
-      // But it's easier to use a regex exec loop to extract block + answer.
-    }
-    
-    // Let's use a regex exec approach
-    const questionRegex = /((?:.|\n)*?)\s*\(A\)\s*((?:.|\n)*?)\s*\(B\)\s*((?:.|\n)*?)\s*\(C\)\s*((?:.|\n)*?)\s*\(D\)\s*((?:.|\n)*?)\s*\(E\)\s*((?:.|\n)*?)\s*Answer:\s*\(([A-E])\)/ig
+    // Let's use a regex exec approach with optional (E)
+    const questionRegex = /((?:.|\n)*?)\s*\(A\)\s*((?:.|\n)*?)\s*\(B\)\s*((?:.|\n)*?)\s*\(C\)\s*((?:.|\n)*?)\s*\(D\)\s*((?:.|\n)*?)(?:\s*\(E\)\s*((?:.|\n)*?))?\s*Answer:\s*\(([A-E])\)/ig
     
     let match;
     while ((match = questionRegex.exec(text)) !== null) {
@@ -88,9 +158,12 @@ export class StructuredQuestionParser {
         { label: 'A', body: match[2].trim() },
         { label: 'B', body: match[3].trim() },
         { label: 'C', body: match[4].trim() },
-        { label: 'D', body: match[5].trim() },
-        { label: 'E', body: match[6].trim() }
+        { label: 'D', body: match[5].trim() }
       ]
+      
+      if (match[6] !== undefined) {
+         options.push({ label: 'E', body: match[6].trim() })
+      }
       
       questions.push({
         questionNumber: extractedNumber,

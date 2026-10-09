@@ -19,8 +19,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {children}
         </div>
         
-        {/* Global AI Chat Sidebar */}
-        <GlobalAIChat />
+        {/* Global AI Chat Sidebar HIDDEN TEMPORARILY */}
+        {/* <GlobalAIChat /> */}
         
         {/* Global Search / Command Palette */}
         <GlobalSearch />
